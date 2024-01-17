@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import AppBar from '@material-ui/core/AppBar';
-import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import UserType from './UserType';
 
-export class UserForm extends Component {
+export class ConnectionForm extends Component {
   state = {
     step: 1,
     employee: 0,
@@ -13,6 +9,21 @@ export class UserForm extends Component {
     userID: '',
     password: ''
   };
+
+  //choose employee or employer
+  userIsEmployee = () => {
+    const { employee } = this.state;
+    this.setState({
+      employee: 1
+    });
+  }
+
+  userIsEmployer = () => {
+    const { employer } = this.state;
+    this.setState({
+      employer: 1
+    });
+  }
 
   // Proceed to next step
   nextStep = () => {
@@ -37,6 +48,7 @@ export class UserForm extends Component {
 
   render() {
     const { step } = this.state;
+    const { employee, employer } = this.state;
     const { userID, password} = this.state;
     const values = { userID, password};
 
@@ -46,32 +58,22 @@ export class UserForm extends Component {
           <UserType
             nextStep={this.nextStep}
             handleChange={this.handleChange}
+            userIsEmployee={this.userIsEmployee}
+            userIsEmployer={this.userIsEmployer}
             values={values}
           />
         );
       case 2:
         return (
-          <FormPersonalDetails
-            nextStep={this.nextStep}
-            prevStep={this.prevStep}
-            handleChange={this.handleChange}
-            values={values}
-          />
+          <>
+          <h2>{employee}{employer}</h2>
+          <h1> hiii </h1>
+          </>
         );
-      case 3:
-        return (
-          <Confirm
-            nextStep={this.nextStep}
-            prevStep={this.prevStep}
-            values={values}
-          />
-        );
-      case 4:
-        return <Success />;
       default:
         (console.log('This is a multi-step form built with React.'))
     }
   }
 }
 
-export default UserForm;
+export default ConnectionForm;
