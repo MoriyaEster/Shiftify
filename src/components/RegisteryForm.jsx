@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Button from '@mui/material/Button';
-import TextField from '@material-ui/core/TextField';
-import {ThemeProvider, MuiThemeProvider} from "@material-ui/core/styles";
+import TextField from '@mui/material/TextField';
+
 
 export class RegisteryForm extends Component {
     state = {
@@ -76,6 +76,16 @@ export class RegisteryForm extends Component {
           />
         <label>:סיסמא</label>
         <br/>
+        {/* if employer */}
+        {/* <TextField
+          placeholder="הכנס מקום עבודה"
+          onChange={this.handleChange('password')}
+          defaultValue={values.password}
+          dir="rtl"
+          type="password"
+          />
+        <label>:מקום עבודה</label>
+        <br/> */}
         <Button
               color="primary"
               variant="contained"
