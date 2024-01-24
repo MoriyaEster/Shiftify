@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import UserType from './UserType';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 
 export class ConnectionForm extends Component {
   state = {
@@ -7,8 +11,9 @@ export class ConnectionForm extends Component {
     employee: 0,
     employer: 0,
     userID: '',
-    password: ''
-  };
+    password: '',
+    workPlace: ''
+    };
 
   //choose employee or employer
   userIsEmployee = () => {
@@ -46,6 +51,12 @@ export class ConnectionForm extends Component {
     this.setState({ [input]: e.target.value });
   };
 
+  handleConnection = () => {
+    console.log("התחבר", this.state.userID, this.state.password);
+}
+
+handlepassword = () => {
+ }
   render() {
     const { step } = this.state;
     const { employee, employer } = this.state;
@@ -64,11 +75,52 @@ export class ConnectionForm extends Component {
           />
         );
       case 2:
+        console.log({employee},{employer});
         return (
           <>
-          <h2>{employee}{employer}</h2>
-          <h1> hiii </h1>
-          </>
+          <h1>התחברות</h1>
+        <p>הכנס פרטים</p>
+        <br/>
+        <TextField
+          placeholder="הכנס ת.ז. "
+          onChange={this.handleChange('userID')}
+          defaultValue={values.userID}
+          dir="rtl"
+          />
+        <label>:.ת.ז</label>
+        <br/>
+        <TextField
+          placeholder="הכנס סיסמא"
+          onChange={this.handleChange('password')}
+          defaultValue={values.password}
+          dir="rtl"
+          type="password"
+          />
+        <label>:סיסמא</label>
+        <br/>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => {
+            navigate('/Registery');
+          }}
+        > הרשמה</Button>
+        <Button
+              color="primary"
+              variant="contained"
+              onClick={() => {
+                this.handleConnection();
+              }}
+            > התחברות</Button>
+          <br/>
+          <Button
+              color="primary"
+              variant="contained"
+              onClick={() => {
+                this.handlepassword();
+              }}
+            > שכחתי סיסמא</Button>
+        </>
         );
       default:
         (console.log('This is a multi-step form built with React.'))
