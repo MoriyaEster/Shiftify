@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import UserType from './UserType';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { useHistory } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
+
 
 export class ConnectionForm extends Component {
   state = {
@@ -98,13 +98,7 @@ handlepassword = () => {
           />
         <label>:סיסמא</label>
         <br/>
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={() => {
-            navigate('/Registery');
-          }}
-        > הרשמה</Button>
+      <NavLink to="/Registery">הרשמה</NavLink>
         <Button
               color="primary"
               variant="contained"
