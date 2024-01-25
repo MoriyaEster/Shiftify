@@ -2,7 +2,7 @@ import React from 'react';
 import { ConnectionForm } from './components/ConnectionForm';
 import './App.css';
 import { RegisteryForm } from './components/RegisteryForm';
-import { Calendar } from './components/Calendar';
+import { SelectShifts } from './components/SelectShifts';
 import { createBrowserRouter,BrowserRouter as Router, Routes, Route, BrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom'; // Import only here
 
 const router = createBrowserRouter(
@@ -10,6 +10,7 @@ const router = createBrowserRouter(
     <Route>
       <Route path="/" element={<ConnectionForm />} />
       <Route path="/Registery" element={<RegisteryForm />} />
+      <Route path="/SelectShifts" element={<SelectShifts />} />
     </Route>
   )
 )
