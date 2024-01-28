@@ -6,38 +6,51 @@ import interactionPlugin from "@fullcalendar/interaction";
 import heLocale from '@fullcalendar/core/locales/he';
 import Button from '@mui/material/Button';
 
-
 const buttonClass = 'shift-button';
 
 export class SelectShifts extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedDate: null,
-            events: []
-        };
-        this.calendarRef = React.createRef();
-    }
+    state = {
+        selectedDate: null,
+        events: [],
+    };
 
+    calendarRef = React.createRef();
+
+    //to handle the click event on the calendar.
+    //extracts the selected date and updates the state with it.
     handleDateClick = (info) => {
         const { date } = info;
-        console.log(info)
         if (date) {
-            const selectedDate = date.toISOString().split('T')[0];
-            console.log("selectedDate",selectedDate)
+            const selectedDate = this.changeDateFormat(date.toLocaleDateString('he-IL').replace(/\./g, '-'));
             this.setState({ selectedDate });
         }
     };
 
+    //do date as YYYY-MM-DD in Isreal timezone
+    changeDateFormat = (Date) => {
+        const originalDateString = Date;
+        const parts = originalDateString.split('-');
+        const day = parts[0];
+        const month = parts[1];
+        const year = parts[2];
+        // Ensure two-digit formatting for day and month
+        const formattedDay = day.padStart(2, '0');
+        const formattedMonth = month.padStart(2, '0');
+        // Construct the YYYY-MM-DD format
+        const formattedDateString = `${year}-${formattedMonth}-${formattedDay}`;
+        return formattedDateString;
+    }
+
     //The shift parameter represents the type of shift (morning, noon, or evening) selected by the user.
     handleShiftSelection = (shift) => {
         const { selectedDate, events } = this.state;
+        
         console.log("2selectedDate",selectedDate)
         if (!selectedDate) {
             console.error('Please select a date first.');
             return;
         }
-    
+        // Check if the event already exists, and either add or remove it
         const existingEventIndex = events.findIndex(event => event.title.includes(selectedDate) && event.title.includes(shift));
     
         if (existingEventIndex !== -1) {
@@ -52,12 +65,13 @@ export class SelectShifts extends Component {
                 start: `${selectedDate}T${shift === 'morning' ? '08:00:00' : shift === 'noon' ? '13:00:00' : '18:00:00'}`,
                 end: `${selectedDate}T${shift === 'morning' ? '13:00:00' : shift === 'noon' ? '18:00:00' : '23:00:00'}`
             };
-    
+            //add the new event to event state
             this.setState(prevState => ({
                 events: [...prevState.events, newEvent]
             }));
         }
     };
+    
     
     handleShifts = () => {
         console.log("הגשת משמרות", this.state.events)
@@ -90,23 +104,31 @@ export class SelectShifts extends Component {
                         end: "dayGridMonth,timeGridWeek,timeGridDay",
                     }}
                     height={"70vh"}
+                    //hebrew
                     locales={[heLocale]}
                     locale="he"
                     dateClick={this.handleDateClick}
                     events={this.state.events}
-                    dayCellContent={({ date }) => (
-                        <div className="custom-day-cell-content">
-                            {this.state.selectedDate && (
-                                <>
-                                    <button onClick={() => this.handleShiftSelection('morning')} className={`${buttonClass}`}>M</button>
-                                    <br/>
-                                    <button onClick={() => this.handleShiftSelection('noon')} className={`${buttonClass}`}>N</button>
-                                    <br/>
-                                    <button onClick={() => this.handleShiftSelection('evening')} className={`${buttonClass}`}>E</button>
-                                </>
-                            )}
-                        </div>
-                    )}
+                    dayCellContent={({ date }) => {
+                        const clickedDate = this.changeDateFormat(date.toLocaleDateString('he-IL').replace(/\./g, '-'));
+                        const today = new Date().toISOString().split('T')[0];              
+                        return (
+                            <div>
+                                {/* show buttons only on days that after today and not prev (today too) */}
+                                {(this.state.selectedDate === clickedDate) && (clickedDate >= today) && (
+                                    <>
+                                        <button onClick={() => this.handleShiftSelection('morning')} className={`${buttonClass}`}>M</button>
+                                        <br/>
+                                        <button onClick={() => this.handleShiftSelection('noon')} className={`${buttonClass}`}>N</button>
+                                        <br/>
+                                        <button onClick={() => this.handleShiftSelection('evening')} className={`${buttonClass}`}>E</button>
+                                    </>
+                                )}
+                            </div>
+                        );
+                    }}
+                    
+                    
                 />
                 <Button
               color="primary"
