@@ -40,3 +40,24 @@
 .read-the-docs {
   color: #888;
 }
+
+
+
+
+/* our additions */
+
+.form-row {
+  display: flex;
+  flex-direction: column; /* Stack the TextField components and labels vertically */
+  padding: '1px 1px';
+}
+
+.form-field {
+  display: flex;
+  align-items: center; /* Align the TextField and label horizontally */
+  /* margin-right: '10px'; */
+}
+
+.label {
+  margin-left: 8px;
+}

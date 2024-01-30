@@ -2,10 +2,10 @@ import React from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useForm, Controller } from 'react-hook-form';
+import '/src/App.css'
 
 export const RegisteryForm = () => {
   const { handleSubmit, control, reset, watch } = useForm();
-
   const handleRegister = (data) => {
     console.log("לחץ הרשמה", data);
     // Perform your registration logic here
@@ -20,6 +20,7 @@ export const RegisteryForm = () => {
       <h1>הרשמה</h1>
       <p>הכנס פרטים</p>
       <form onSubmit={handleSubmit(handleRegister)}>
+      <div className="form-row">
         <Controller
           name="fullName"
           control={control}
@@ -27,19 +28,20 @@ export const RegisteryForm = () => {
           rules={{ required: 'שדה חובה' }}
           render={({ field, fieldState }) => (
             <>
+            <div className="form-field">
               <TextField
                 placeholder="הכנס שם מלא"
                 {...field}
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message}
                 dir="rtl"
-              />
-              <label>:שם מלא</label>
+                />
+                <label class="label">:שם מלא</label>
+              </div>
               <br />
             </>
           )}
         />
-
         <Controller
           name="userID"
           control={control}
@@ -53,19 +55,20 @@ export const RegisteryForm = () => {
           }}
           render={({ field, fieldState }) => (
             <>
+            <div className="form-field">
               <TextField
                 placeholder="הכנס ת.ז."
                 {...field}
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message}
                 dir="rtl"
-              />
-              <label>:.ת.ז</label>
+                />
+                <label class="label">:.ת.ז</label>
+              </div>
               <br />
             </>
           )}
         />
-
         <Controller
           name="phoneNumber"
           control={control}
@@ -79,14 +82,16 @@ export const RegisteryForm = () => {
           }}
           render={({ field, fieldState }) => (
             <>
+            <div className="form-field">
               <TextField
                 placeholder="הכנס טלפון"
                 {...field}
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message}
                 dir="rtl"
-              />
-              <label>:טלפון</label>
+                />
+                <label class="label">:טלפון</label>
+              </div>
               <br />
             </>
           )}
@@ -105,14 +110,16 @@ export const RegisteryForm = () => {
           }}
           render={({ field, fieldState }) => (
             <>
+            <div className="form-field">
               <TextField
                 placeholder="הכנס אימייל"
                 {...field}
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message}
                 dir="rtl"
-              />
-              <label>:אימייל</label>
+                />
+                <label class="label">:אימייל</label>
+              </div>
               <br />
             </>
           )}
@@ -131,6 +138,7 @@ export const RegisteryForm = () => {
           }}
           render={({ field, fieldState }) => (
             <>
+            <div className="form-field">
               <TextField
                 placeholder="הכנס סיסמא"
                 {...field}
@@ -138,8 +146,9 @@ export const RegisteryForm = () => {
                 helperText={fieldState.error?.message}
                 dir="rtl"
                 type="password"
-              />
-              <label>:סיסמא</label>
+                />
+                <label class="label">:סיסמא</label>
+              </div>
               <br />
             </>
           )}
@@ -152,10 +161,10 @@ export const RegisteryForm = () => {
         >
           הרשמה
         </Button>
-
+        </div>
         {/* {watch('status') === 1 && <p>!נרשמת בהצלחה</p>}
         {watch('status') === -1 && <p>שגיאה! נסה שוב בבקשה</p>} */}
-      </form>
+    </form>
     </>
   );
 };
