@@ -3,7 +3,7 @@ import UserType from './UserType';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { NavLink } from 'react-router-dom';
-
+import '/src/App.css'
 
 export class ConnectionForm extends Component {
   state = {
@@ -52,7 +52,8 @@ export class ConnectionForm extends Component {
   };
 
   handleConnection = () => {
-    console.log("התחבר", this.state.userID, this.state.password);
+    const jsonState = JSON.stringify(this.state);
+    console.log("Form data in JSON format:", jsonState);
 }
 
 handlepassword = () => {
@@ -75,12 +76,13 @@ handlepassword = () => {
           />
         );
       case 2:
-        console.log({employee},{employer});
         return (
           <>
           <h1>התחברות</h1>
         <p>הכנס פרטים</p>
+        <div className="form-row">
         <br/>
+        <div className="form-field">
         <TextField
           placeholder="הכנס ת.ז. "
           onChange={this.handleChange('userID')}
@@ -88,7 +90,9 @@ handlepassword = () => {
           dir="rtl"
           />
         <label>:.ת.ז</label>
+        </div>
         <br/>
+        <div className="form-field">
         <TextField
           placeholder="הכנס סיסמא"
           onChange={this.handleChange('password')}
@@ -97,7 +101,9 @@ handlepassword = () => {
           type="password"
           />
         <label>:סיסמא</label>
+        </div>
         <br/>
+        </div>
       <NavLink to="/Registery">הרשמה</NavLink>
         <Button
               color="primary"
@@ -107,14 +113,14 @@ handlepassword = () => {
               }}
             > התחברות</Button>
           <br/>
-          <Button
+          {/* <Button
               color="primary"
               variant="contained"
               onClick={() => {
                 this.handlepassword();
               }}
-            > שכחתי סיסמא</Button>
-        </>
+            > שכחתי סיסמא</Button> */}
+            </>
         );
       default:
         (console.log('This is a multi-step form built with React.'))

@@ -8,6 +8,8 @@ export const RegisteryForm = () => {
   const { handleSubmit, control, reset, watch } = useForm();
   const handleRegister = (data) => {
     console.log("לחץ הרשמה", data);
+    const jsonData = JSON.stringify(data);
+    console.log("Form data in JSON format:", jsonData);
     // Perform your registration logic here
     // If success, update the status
     // reset({ status: 1 });
@@ -36,7 +38,7 @@ export const RegisteryForm = () => {
                 helperText={fieldState.error?.message}
                 dir="rtl"
                 />
-                <label class="label">:שם מלא</label>
+                <label className="label">:שם מלא</label>
               </div>
               <br />
             </>
@@ -63,7 +65,7 @@ export const RegisteryForm = () => {
                 helperText={fieldState.error?.message}
                 dir="rtl"
                 />
-                <label class="label">:.ת.ז</label>
+                <label className="label">:.ת.ז</label>
               </div>
               <br />
             </>
@@ -90,7 +92,7 @@ export const RegisteryForm = () => {
                 helperText={fieldState.error?.message}
                 dir="rtl"
                 />
-                <label class="label">:טלפון</label>
+                <label className="label">:טלפון</label>
               </div>
               <br />
             </>
@@ -118,7 +120,7 @@ export const RegisteryForm = () => {
                 helperText={fieldState.error?.message}
                 dir="rtl"
                 />
-                <label class="label">:אימייל</label>
+                <label className="label">:אימייל</label>
               </div>
               <br />
             </>
@@ -147,7 +149,7 @@ export const RegisteryForm = () => {
                 dir="rtl"
                 type="password"
                 />
-                <label class="label">:סיסמא</label>
+                <label className="label">:סיסמא</label>
               </div>
               <br />
             </>
