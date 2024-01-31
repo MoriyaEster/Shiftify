@@ -11,6 +11,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<ConnectionForm />} />
       <Route path="/Registery" element={<RegisteryForm />} />
       <Route path="/SelectShifts" element={<SelectShifts />} />
+      <Route path="/HomePageEmployee" element={<HomePageEmployee />} />
     </Route>
   )
 )
