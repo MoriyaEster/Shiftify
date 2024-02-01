@@ -13,7 +13,24 @@ export const RegisteryForm = () => {
 
   const handleRegister = (data) => {
     console.log("לחץ הרשמה", data);
-    const jsonData = JSON.stringify(data);
+    let employeeValue;
+  
+    // Check the value of employer
+    if (employer === '1') {
+      // Employer is selected
+      employeeValue = 0;
+    } else {
+      // Employee is selected or employer is not specified
+      employeeValue = 1;
+    }
+    // Add employee and employer to the data object
+    const newData = {
+      employee: employeeValue,
+      employer: employer,
+      ...data
+    };
+    console.log("לחץ הרשמה", newData);
+    const jsonData = JSON.stringify(newData);
     console.log("Form data in JSON format:", jsonData);
     // Perform your registration logic here
     // If success, update the status
@@ -30,7 +47,7 @@ export const RegisteryForm = () => {
       break;
     case '1':
       content = <Controller
-      name="fullName"
+      name="workplace"
       control={control}
       defaultValue=""
       rules={{ required: 'שדה חובה' }}
