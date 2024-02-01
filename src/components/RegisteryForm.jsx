@@ -3,9 +3,14 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useForm, Controller } from 'react-hook-form';
 import '/src/App.css'
+import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 export const RegisteryForm = () => {
   const { handleSubmit, control, reset, watch } = useForm();
+  const { employer } = useParams();
+  console.log(`employer ${employer}`);
+
   const handleRegister = (data) => {
     console.log("לחץ הרשמה", data);
     const jsonData = JSON.stringify(data);
@@ -15,6 +20,39 @@ export const RegisteryForm = () => {
     // reset({ status: 1 });
     // If error
     // reset({ status: -1 });
+  }
+
+  // if employer need to have workplace
+  let content;
+  console.log("befor switch",employer)
+  switch (employer) {
+    case '0':
+      break;
+    case '1':
+      content = <Controller
+      name="fullName"
+      control={control}
+      defaultValue=""
+      rules={{ required: 'שדה חובה' }}
+      render={({ field, fieldState }) => (
+        <>
+        <div className="form-field">
+          <TextField
+            placeholder="הכנס מקום עבודה"
+            {...field}
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message}
+            dir="rtl"
+            />
+            <label className="label">:מקום עבודה</label>
+          </div>
+          <br />
+        </>
+      )}
+    />;
+      break;
+    default:
+      break;
   }
 
   return (
@@ -155,7 +193,8 @@ export const RegisteryForm = () => {
             </>
           )}
         />
-
+        {/* if employer need to have workplace */}
+        {content}
         <Button
           color="primary"
           variant="contained"

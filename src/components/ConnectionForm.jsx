@@ -20,6 +20,8 @@ export class ConnectionForm extends Component {
     const { employee } = this.state;
     this.setState({
       employee: 1
+    }, () => {
+      console.log(this.state);
     });
   }
 
@@ -27,6 +29,8 @@ export class ConnectionForm extends Component {
     const { employer } = this.state;
     this.setState({
       employer: 1
+    }, () => {
+      console.log(this.state);
     });
   }
 
@@ -66,6 +70,7 @@ handlepassword = () => {
     const { employee, employer } = this.state;
     const { userID, password} = this.state;
     const values = { userID, password};
+
 
     switch (step) {
       case 1:
@@ -107,7 +112,12 @@ handlepassword = () => {
         </div>
         <br/>
         </div>
-      <NavLink to="/Registery">הרשמה</NavLink>
+      {/* <NavLink to="/Registery">הרשמה</NavLink> */}
+      {console.log("employer before registery",this.state.employer)}
+      <NavLink to={{
+          pathname: `/Registery/${employer}`
+
+        }}>הרשמה</NavLink>
         <Button
               color="primary"
               variant="contained"
