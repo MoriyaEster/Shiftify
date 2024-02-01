@@ -22,7 +22,7 @@ export const RegisteryForm = () => {
       <h1>הרשמה</h1>
       <p>הכנס פרטים</p>
       <form onSubmit={handleSubmit(handleRegister)}>
-      <div className="form-row">
+      <div className="form-col">
         <Controller
           name="fullName"
           control={control}
