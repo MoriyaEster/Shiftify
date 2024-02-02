@@ -3,7 +3,7 @@ import { ConnectionForm } from './components/ConnectionForm';
 import './App.css';
 import { RegisteryForm } from './components/RegisteryForm';
 import { SelectShifts } from './components/SelectShifts';
-import { HomePageEmployee } from './components/HomePageEmployee';
+import { HomePage } from './components/HomePage';
 import { ProfileEmployee } from './components/ProfileEmployee';
 import { ProfileEmployer } from './components/ProfileEmployer';
 import { WorkersManagement } from './components/WorkersManagement';
@@ -19,7 +19,7 @@ const router = createBrowserRouter(
         <Route path=":employer" element={<RegisteryForm />}/>
       </Route>
       <Route path="/SelectShifts" element={<SelectShifts />} />
-      <Route path="/HomePageEmployee" element={<HomePageEmployee />} />
+      <Route path="/HomePage" element={<HomePage />} />
       <Route path="/ProfileEmployee" element={<ProfileEmployee />} /> 
       <Route path="/ProfileEmployer" element={<ProfileEmployer />} /> 
       <Route path="/WorkersManagement" element={<WorkersManagement />} />
