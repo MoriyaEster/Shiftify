@@ -4,8 +4,7 @@ import './App.css';
 import { RegisteryForm } from './components/RegisteryForm';
 import { SelectShifts } from './components/SelectShifts';
 import { HomePage } from './components/HomePage';
-import { ProfileEmployee } from './components/ProfileEmployee';
-import { ProfileEmployer } from './components/ProfileEmployer';
+import { Profile } from './components/Profile';
 import { WorkersManagement } from './components/WorkersManagement';
 import { ShiftManagement } from './components/ShiftManagement';
 
@@ -20,8 +19,7 @@ const router = createBrowserRouter(
       </Route>
       <Route path="/SelectShifts" element={<SelectShifts />} />
       <Route path="/HomePage" element={<HomePage />} />
-      <Route path="/ProfileEmployee" element={<ProfileEmployee />} /> 
-      <Route path="/ProfileEmployer" element={<ProfileEmployer />} /> 
+      <Route path="/Profile" element={<Profile />} /> 
       <Route path="/WorkersManagement" element={<WorkersManagement />} />
       <Route path="/ShiftManagement" element={<ShiftManagement />} />
     </Route>
