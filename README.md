@@ -11,4 +11,5 @@ sudo apt-get install -y nodejs`
 * `npm run dev -o`
 
 ### Backend
-* 
+* `cd backend`
+* `sudo apt-get install python3`
