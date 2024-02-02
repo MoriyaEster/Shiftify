@@ -5,9 +5,10 @@ import { RegisteryForm } from './components/RegisteryForm';
 import { SelectShifts } from './components/SelectShifts';
 import { HomePage } from './components/HomePage';
 import { Profile } from './components/Profile';
-import { Profile } from './components/Entry';
-import { WorkersManagement } from './components/WorkersManagement';
+import { Entry } from './components/Entry';
+// import { WorkersManagement } from './components/WorkersManagement';
 import { ShiftManagement } from './components/ShiftManagement';
+import { ApprovedShift } from './components/ApprovedShift';
 
 import { createBrowserRouter,BrowserRouter as Router, Routes, Route, BrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
 
@@ -20,12 +21,12 @@ const router = createBrowserRouter(
       </Route>
       <Route path="/SelectShifts" element={<SelectShifts />} />
       <Route path="/HomePage" element={<HomePage />} >
-        <Route path="/Entry" element={<RegisteryForm />}/>
+        <Route path="/Entry" element={<Entry />}/>
       </Route>
       <Route path="/Profile" element={<Profile />} /> 
-      <Route path="/WorkersManagement" element={<WorkersManagement />} />
+      {/* <Route path="/WorkersManagement" element={<WorkersManagement />} /> */}
       <Route path="/ShiftManagement" element={<ShiftManagement />} />
-      <Route path="/ShiftManagement" element={<ShiftManagement />} />
+      <Route path="/ApprovedShift" element={<ApprovedShift />} />
     </Route>
   )
 )
