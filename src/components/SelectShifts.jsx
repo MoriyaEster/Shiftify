@@ -6,6 +6,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import heLocale from '@fullcalendar/core/locales/he';
 import Button from '@mui/material/Button';
 import '/src/App.css' 
+import { Header } from './Header';
 
 const buttonClass = 'shift-button';
 
@@ -82,6 +83,7 @@ export class SelectShifts extends Component {
     render() {
         return (
             <div>
+                <Header/>
                 <h1>בחירת משמרות</h1>
                 <p>לחץ על תאריך רצוי ובחר זמינות עבור </p>
                 <p> E-ערב , N-צהריים, M-בוקר </p>

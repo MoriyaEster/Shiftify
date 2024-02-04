@@ -7,6 +7,7 @@ import heLocale from '@fullcalendar/core/locales/he';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { Header } from './Header';
 
 
 export class ShiftManagement extends Component {
@@ -113,6 +114,7 @@ export class ShiftManagement extends Component {
 
         return (
             <div>
+                <Header/>
                 <h1>קביעת משמרות</h1>
                 <p>לחץ על תאריך רצוי ובחר עובדים עבור כל משמרת</p>
                 <FullCalendar

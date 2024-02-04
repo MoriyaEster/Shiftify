@@ -4,6 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import heLocale from '@fullcalendar/core/locales/he';
+import { Header } from './Header';
 
 const buttonClass = 'shift-button';
 
@@ -21,6 +22,7 @@ export class ApprovedShift extends Component {
     render() {
         return (
             <div>
+                <Header/>
                 <h1>משמרות מאושרות</h1>
                 <FullCalendar
                     ref={this.calendarRef}
