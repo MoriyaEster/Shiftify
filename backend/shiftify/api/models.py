@@ -18,10 +18,12 @@ class Shifts(models.Model):
     date = models.DateTimeField()
     type = models.IntegerField()
     workplace = models.ForeignKey(Workplace, on_delete=models.CASCADE)
-    assigned_user = models.ForeignKey(User, on_delete=models.CASCADE, many=True)
+    assigned_users = models.ForeignKey(User, on_delete=models.CASCADE, many=True)
+    proposed_users = models.ForeignKey(User, on_delete=models.CASCADE, many=True)
 
-class ProposedShifts(models.Model):
+class ActualShift(models.Model):
     date = models.DateTimeField()
     type = models.IntegerField()
     workplace = models.ForeignKey(Workplace, on_delete=models.CASCADE)
-    assigned_user = models.ForeignKey(User, on_delete=models.CASCADE, many=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, many=True)
+    time_worked = models.IntegerField()
