@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-// import {ThemeProvider, MuiThemeProvider} from "@material-ui/core/styles";
 import Button from '@mui/material/Button';
-
+import '/src/App.css'
 
 export class UserType extends Component {
     continue = e => {
@@ -19,7 +18,8 @@ export class UserType extends Component {
     render() {
       return (
         <>
-          {/* <MuiThemeProvider> */}
+        <div className="form-col">
+        <div className="form-field">
             <Button
               color="primary"
               variant="contained"
@@ -28,7 +28,9 @@ export class UserType extends Component {
                 this.continue();
               }}
             > עובד</Button>
-
+            </div>
+            <br/>
+            <div className="form-field">
             <Button
               color="primary"
               variant="contained"
@@ -37,7 +39,8 @@ export class UserType extends Component {
                 this.continue();
               }}
             > מעסיק</Button>
-          {/* </MuiThemeProvider> */}
+            </div>
+            </div>
         </>
       );
     }

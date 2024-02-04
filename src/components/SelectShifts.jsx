@@ -5,6 +5,8 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import heLocale from '@fullcalendar/core/locales/he';
 import Button from '@mui/material/Button';
+import '/src/App.css' 
+import { Header } from './Header';
 
 const buttonClass = 'shift-button';
 
@@ -16,7 +18,7 @@ export class SelectShifts extends Component {
 
     calendarRef = React.createRef();
 
-    //to handle the click event on the calendar.
+    //to handle the click date on the calendar.
     //extracts the selected date and updates the state with it.
     handleDateClick = (info) => {
         const { date } = info;
@@ -45,7 +47,6 @@ export class SelectShifts extends Component {
     handleShiftSelection = (shift) => {
         const { selectedDate, events } = this.state;
         
-        console.log("2selectedDate",selectedDate)
         if (!selectedDate) {
             console.error('Please select a date first.');
             return;
@@ -72,24 +73,17 @@ export class SelectShifts extends Component {
         }
     };
     
-    
+    //send to the backend the events
     handleShifts = () => {
         console.log("הגשת משמרות", this.state.events)
+        //need to send to the backend the events
     }
   
 
     render() {
         return (
             <div>
-                <style>
-                    {`
-                        .${buttonClass} {
-                            font-size: 10px;
-                            padding: 3px 6px;
-                            margin: 2px;
-                        }
-                    `}
-                </style>
+                <Header/>
                 <h1>בחירת משמרות</h1>
                 <p>לחץ על תאריך רצוי ובחר זמינות עבור </p>
                 <p> E-ערב , N-צהריים, M-בוקר </p>
@@ -107,8 +101,11 @@ export class SelectShifts extends Component {
                     //hebrew
                     locales={[heLocale]}
                     locale="he"
+                    //when choose a specific date
                     dateClick={this.handleDateClick}
+                    //show on the calander the events
                     events={this.state.events}
+                    //when click on a specific date show the buttons
                     dayCellContent={({ date }) => {
                         const clickedDate = this.changeDateFormat(date.toLocaleDateString('he-IL').replace(/\./g, '-'));
                         const today = new Date().toISOString().split('T')[0];              

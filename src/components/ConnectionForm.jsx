@@ -20,6 +20,8 @@ export class ConnectionForm extends Component {
     const { employee } = this.state;
     this.setState({
       employee: 1
+    }, () => {
+      console.log(this.state);
     });
   }
 
@@ -27,6 +29,8 @@ export class ConnectionForm extends Component {
     const { employer } = this.state;
     this.setState({
       employer: 1
+    }, () => {
+      console.log(this.state);
     });
   }
 
@@ -52,7 +56,10 @@ export class ConnectionForm extends Component {
   };
 
   handleConnection = () => {
-    const jsonState = JSON.stringify(this.state);
+    // Exclude 'step' property from the state
+    const { step, ...stateWithoutStep } = this.state;
+    // Convert the modified state object to a JSON string
+    const jsonState = JSON.stringify(stateWithoutStep);
     console.log("Form data in JSON format:", jsonState);
 }
 
@@ -63,6 +70,7 @@ handlepassword = () => {
     const { employee, employer } = this.state;
     const { userID, password} = this.state;
     const values = { userID, password};
+
 
     switch (step) {
       case 1:
@@ -80,7 +88,7 @@ handlepassword = () => {
           <>
           <h1>התחברות</h1>
         <p>הכנס פרטים</p>
-        <div className="form-row">
+        <div className="form-col">
         <br/>
         <div className="form-field">
         <TextField
@@ -89,7 +97,7 @@ handlepassword = () => {
           defaultValue={values.userID}
           dir="rtl"
           />
-        <label>:.ת.ז</label>
+        <label className="label">:.ת.ז</label>
         </div>
         <br/>
         <div className="form-field">
@@ -100,11 +108,14 @@ handlepassword = () => {
           dir="rtl"
           type="password"
           />
-        <label>:סיסמא</label>
+        <label className="label">:סיסמא</label>
         </div>
         <br/>
         </div>
-      <NavLink to="/Registery">הרשמה</NavLink>
+      {console.log("employer before registery",this.state.employer)}
+      <NavLink to={{
+          pathname: `/Registery/${employer}`
+        }}>הרשמה</NavLink>
         <Button
               color="primary"
               variant="contained"
