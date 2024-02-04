@@ -112,11 +112,9 @@ handlepassword = () => {
         </div>
         <br/>
         </div>
-      {/* <NavLink to="/Registery">הרשמה</NavLink> */}
       {console.log("employer before registery",this.state.employer)}
       <NavLink to={{
           pathname: `/Registery/${employer}`
-
         }}>הרשמה</NavLink>
         <Button
               color="primary"

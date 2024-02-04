@@ -8,7 +8,6 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
-const buttonClass = 'shift-button';
 
 export class ShiftManagement extends Component {
     state = {
@@ -19,12 +18,14 @@ export class ShiftManagement extends Component {
         employees: [
             { id: 1, name: 'Employee 1' },
             { id: 2, name: 'Employee 2' },
-            // Add more employees as needed
+            // need to change to only the employees that want that shift on a spacific date
         ],
     };
 
     calendarRef = React.createRef();
 
+    //to handle the click date on the calendar.
+    //extracts the selected date and updates the state with it.
     handleDateClick = (info) => {
         const { date } = info;
         if (date) {
@@ -33,6 +34,7 @@ export class ShiftManagement extends Component {
         }
     };
 
+    //do date as YYYY-MM-DD in Isreal timezone
     changeDateFormat = (Date) => {
         const originalDateString = Date;
         const parts = originalDateString.split('-');
@@ -45,6 +47,7 @@ export class ShiftManagement extends Component {
         return formattedDateString;
     };
 
+    // Handle employee selection for a specific date and shift
     handleEmployeeSelection = (date, shift, selectedEmployees) => {
         const key = `${date}-${shift}`;
         const allSelectedEmployees = { ...this.state.allSelectedEmployees };
@@ -64,6 +67,7 @@ export class ShiftManagement extends Component {
         );
     };
     
+    // Handle shift selection and create/update events accordingly
     handleShiftSelection = (shift) => {
         const { selectedDate, events, selectedEmployees, allSelectedEmployees } = this.state;
     
@@ -98,10 +102,10 @@ export class ShiftManagement extends Component {
         }));
     };
     
-    
-
+    //send to the backend the events
     handleShifts = () => {
         console.log("הגשת משמרות", this.state);
+        //need to send to the backend the events
     };
 
     render() {
@@ -109,16 +113,6 @@ export class ShiftManagement extends Component {
 
         return (
             <div>
-                <style>
-                    {`
-                        .${buttonClass} {
-                            font-size: 8px; /* Adjust the font size */
-                            padding: 2px 2px; /* Adjust the padding */
-                            margin: 1px; /* Adjust the margin */
-                        }
-                    `}
-                </style>
-
                 <h1>קביעת משמרות</h1>
                 <p>לחץ על תאריך רצוי ובחר עובדים עבור כל משמרת</p>
                 <FullCalendar
@@ -131,16 +125,19 @@ export class ShiftManagement extends Component {
                         end: "dayGridMonth,timeGridWeek,timeGridDay",
                     }}
                     height={"120vh"}
+                    //hebrew
                     locales={[heLocale]}
                     locale="he"
+                    //when choose a specific date
                     dateClick={this.handleDateClick}
+                    //show on the calander the events
                     events={this.state.events}
+                    //to calculate how many employees where choosen ans show it on the event
                     eventContent={({ event }) => (
                         <>
                             <div style={{ fontSize: '12px' }} dangerouslySetInnerHTML={{ __html: event.title }}></div>
                         </>
-                    )}
-                    
+                    )}                    
                     eventClick={(info) => {
                         const existingEventIndex = this.state.events.findIndex(event => event.id === info.event.id);
 
@@ -151,30 +148,32 @@ export class ShiftManagement extends Component {
                             this.setState({ events: updatedEvents });
                         }
                     }}
+                    //when click on a specific date show the dropdowns
                     dayCellContent={({ date }) => {
                         const clickedDate = this.changeDateFormat(date.toLocaleDateString('he-IL').replace(/\./g, '-'));
                         const today = new Date().toISOString().split('T')[0];
                         return (
                             <div>
+                                {/* show dropdowns only on days that after today and not prev (today too) */}
                                 {(selectedDate === clickedDate) && (clickedDate >= today) && (
                                     <>
                                         <Dropdown
                                             label="Morning"
-                                            employees={employees}
+                                            employees={employees} //need to change to only emploees that wanted that shift
                                             onSelect={(selectedEmployees) => this.handleEmployeeSelection(clickedDate, 'morning', selectedEmployees)}
                                             preselectedEmployees={allSelectedEmployees[`${clickedDate}-morning`] || []}
                                         />
                                         <br />
                                         <Dropdown
                                             label="Noon"
-                                            employees={employees}
+                                            employees={employees} //need to change to only emploees that wanted that shift
                                             onSelect={(selectedEmployees) => this.handleEmployeeSelection(clickedDate, 'noon', selectedEmployees)}
                                             preselectedEmployees={allSelectedEmployees[`${clickedDate}-noon`] || []}
                                         />
                                         <br />
                                         <Dropdown
                                             label="Evening"
-                                            employees={employees}
+                                            employees={employees} //need to change to only emploees that wanted that shift
                                             onSelect={(selectedEmployees) => this.handleEmployeeSelection(clickedDate, 'evening', selectedEmployees)}
                                             preselectedEmployees={allSelectedEmployees[`${clickedDate}-evening`] || []}
                                         />
@@ -194,9 +193,11 @@ export class ShiftManagement extends Component {
     }
 }
 
+// Component for handling shift dropdowns
 const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
     const [selectedEmployees, setSelectedEmployees] = React.useState(preselectedEmployees || []);
 
+    // Handle the change in selected employees
     const handleSelectChange = (event) => {
         const selectedOptions = event.target.value;
         setSelectedEmployees(selectedOptions);
