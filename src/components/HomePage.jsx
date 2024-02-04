@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom'; 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import '/src/App.css';
 import { Entry } from './Entry';
+import { Header } from './Header';
+import {properties } from '/src/properties.jsx';
 
 export const HomePage = () => {
+  const navigate = useNavigate(); 
+
+  const { handleUserConnection } = properties();
+
+  useEffect(() => {
+    if (handleUserConnection() == 0) {
+      // Redirect to /Registery
+      navigate('/');
+    }
+  }, [navigate]);
+
   // Use useState hook to create state variables
   const [state, setState] = useState({
     step: 0,
@@ -91,14 +104,15 @@ export const HomePage = () => {
   }
 
   return (
-    <>
+    <div dir="rtl">
+       <Header/>
       <h1>שלום ... </h1>
       <div>
         <h3>בחר מקום עבודה:</h3>
         <Dropdown options={options} onSelect={handleOptionSelect} />
         {content}
       </div>
-    </>
+    </div>
   );
 };
 
