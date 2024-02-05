@@ -5,6 +5,7 @@ import { RegisteryForm } from './components/RegisteryForm';
 import { SelectShifts } from './components/SelectShifts';
 import { HomePage } from './components/HomePage';
 import { Profile } from './components/Profile';
+import { EditEmployee} from './components/EditEmployee';
 import { WorkersManagement } from './components/WorkersManagement';
 import { ShiftManagement } from './components/ShiftManagement';
 import { ApprovedShift } from './components/ApprovedShift';
@@ -22,6 +23,7 @@ const router = createBrowserRouter(
       <Route path="/SelectShifts" element={<SelectShifts />} />
       <Route path="/HomePage" element={<HomePage />} />
       <Route path="/Profile" element={<Profile />} /> 
+      <Route path="/EditEmployee" element={<EditEmployee />} /> 
       <Route path="/WorkersManagement" element={<WorkersManagement />} /> 
       <Route path="/ShiftManagement" element={<ShiftManagement />} />
       <Route path="/ApprovedShift" element={<ApprovedShift />} />

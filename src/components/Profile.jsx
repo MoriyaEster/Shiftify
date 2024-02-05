@@ -1,11 +1,15 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
 import { useNavigate } from 'react-router-dom';
+import EditEmployee from './EditEmployee';
+import Button from 'react-bootstrap/Button';
 
 export const Profile = () => {
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingField, setEditingField] = useState(null); // Track the field being edited
+
   // Fields left blank by default
   const user = {
     fullName: '',
@@ -20,65 +24,35 @@ export const Profile = () => {
   const { handleUserConnection } = useUser();
 
   useEffect(() => {
-    if (handleUserConnection() == false) {
+    if (handleUserConnection() === false) {
       // Redirect to /Registery
       navigate('/');
     }
   }, [navigate]);
 
-  // Use state to track user type
-  const [userType, setUserType] = useState('employer');
+  const handleEditButtonClick = (field) => {
+    setShowEditModal(true);
+    setEditingField(field);
+  };
 
-  // Content for employee
-  const employeeContent = (
-    <>
-      <div>
-        <h2>Workplaces</h2>
-        {/* Placeholder content, can be replaced with actual data */}
-        <Link to="/workplaces">Edit Workplaces</Link>
-      </div>
-    </>
-  );
-
-  // Content for employer
-  const employerContent = (
-    <>
-      <div>
-        <h2>Employees List</h2>
-        {/* Placeholder content, can be replaced with actual data */}
-        <Link to="/employeesList">View Employees List</Link>
-      </div>
-    </>
-  );
+  const handleEditModalClose = () => {
+    setShowEditModal(false);
+    setEditingField(null);
+  };
 
   return (
     <div>
-      <Header/>
+      <Header />
       <h1>Profile Page</h1>
-      <div>
-        <h2>Full Name: {user.fullName}</h2>
-        <Link to="/edit/fullName">Edit</Link>
-      </div>
-      <div>
-        <h2>ID: {user.id}</h2>
-        <Link to="/edit/id">Edit</Link>
-      </div>
-      <div>
-        <h2>Phone Number: {user.phoneNumber}</h2>
-        <Link to="/edit/phoneNumber">Edit</Link>
-      </div>
-      <div>
-        <h2>Email: {user.email}</h2>
-        <Link to="/edit/email">Edit</Link>
-      </div>
-      <div>
-        <h2>Password: {user.password}</h2>
-        <Link to="/edit/password">Edit</Link>
-      </div>
-
-      {/* Conditional rendering based on user type */}
-      {userType === 'employee' && employeeContent}
-      {userType === 'employer' && employerContent}
+      {/* Loop through user fields and render edit buttons */}
+      {Object.keys(user).map((field) => (
+        <div key={field}>
+          <h2>{field === 'fullName' ? 'Full Name' : field}</h2>
+          <Button onClick={() => handleEditButtonClick(field)}>Edit</Button>
+        </div>
+      ))}
+      {/* Render the EditEmployee modal */}
+      {showEditModal && <EditEmployee field={editingField} onClose={handleEditModalClose} />}
     </div>
   );
 };
