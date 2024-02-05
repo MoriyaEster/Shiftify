@@ -13,7 +13,7 @@ export const Header = () => {
 
   return (
     <>
-      <div className="img-container">
+      <div className="img-container" dir="rtl">
         <Link to="/HomePage">
           <img className="img-backbutton" src="src/photos/backbutton.jpg" alt="backbutton" />
         </Link>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Component } from 'react';
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -10,173 +10,199 @@ import Select from '@mui/material/Select';
 import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
 import { useNavigate } from 'react-router-dom';
+import UserConnectionChecker from './UserConnectionChecker';
 
-export const ShiftManagement = () => {
-    const { handleUserConnection } = useUser();
-    const navigate = useNavigate();
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [events, setEvents] = useState([]);
-    const [selectedEmployees, setSelectedEmployees] = useState({});
-    const [allSelectedEmployees, setAllSelectedEmployees] = useState({});
-    const [employees] = useState([
-        { id: 1, name: 'Employee 1' },
-        { id: 2, name: 'Employee 2' },
-        // ... add other employees as needed
-    ]);
+export class ShiftManagement extends Component {
 
-    useEffect(() => {
-        if (handleUserConnection() === false) {
-            // Redirect to /Registery
-            navigate('/');
-        }
-    }, [handleUserConnection, navigate]);
-
-    const calendarRef = React.createRef();
-
-    const handleDateClick = (info) => {
+    state = {
+        selectedDate: null,
+        events: [],
+        selectedEmployees: {}, // Changed to store employees for each day and shift
+        allSelectedEmployees: {}, // To store selected employees across different days
+        employees: [
+            { id: 1, name: 'Employee 1' },
+            { id: 2, name: 'Employee 2' },
+            // need to change to only the employees that want that shift on a spacific date
+        ],
+    };
+	calendarRef = React.createRef();
+	
+    //to handle the click date on the calendar.
+    //extracts the selected date and updates the state with it.
+    handleDateClick = (info) => {
         const { date } = info;
         if (date) {
-            const selectedDate = changeDateFormat(date.toLocaleDateString('he-IL').replace(/\./g, '-'));
-            setSelectedDate(selectedDate);
+            const selectedDate = this.changeDateFormat(date.toLocaleDateString('he-IL').replace(/\./g, '-'));
+            this.setState({ selectedDate });
         }
     };
 
-    const changeDateFormat = (Date) => {
-        const parts = Date.split('-');
+    //do date as YYYY-MM-DD in Isreal timezone
+    changeDateFormat = (Date) => {
+        const originalDateString = Date;
+        const parts = originalDateString.split('-');
         const day = parts[0];
         const month = parts[1];
         const year = parts[2];
         const formattedDay = day.padStart(2, '0');
         const formattedMonth = month.padStart(2, '0');
-        return `${year}-${formattedMonth}-${formattedDay}`;
+        const formattedDateString = `${year}-${formattedMonth}-${formattedDay}`;
+        return formattedDateString;
     };
 
-    const handleEmployeeSelection = (date, shift, selectedEmployees) => {
+    // Handle employee selection for a specific date and shift
+    handleEmployeeSelection = (date, shift, selectedEmployees) => {
         const key = `${date}-${shift}`;
-        setAllSelectedEmployees({
-            ...allSelectedEmployees,
-            [key]: selectedEmployees.map(id => employees.find(employee => employee.id === id).name),
-        });
-
-        setSelectedEmployees((prevSelected) => ({
-            ...prevSelected,
-            [key]: selectedEmployees.map(id => employees.find(employee => employee.id === id).name),
-        }));
-
-        handleShiftSelection(shift);
+        const allSelectedEmployees = { ...this.state.allSelectedEmployees };
+        allSelectedEmployees[key] = selectedEmployees.map(id => this.state.employees.find(employee => employee.id === id).name);
+    
+        this.setState(
+            (prevState) => ({
+                selectedEmployees: {
+                    ...prevState.selectedEmployees,
+                    [key]: selectedEmployees.map(id => this.state.employees.find(employee => employee.id === id).name),
+                },
+                allSelectedEmployees,
+            }),
+            () => {
+                this.handleShiftSelection(shift);
+            }
+        );
     };
-
-    const handleShiftSelection = (shift) => {
+    
+    // Handle shift selection and create/update events accordingly
+    handleShiftSelection = (shift) => {
+        const { selectedDate, events, selectedEmployees, allSelectedEmployees } = this.state;
+    
         if (!selectedDate) {
             console.error('Please select a date first.');
             return;
         }
-
+    
         const key = `${selectedDate}-${shift}`;
         const existingEventIndex = events.findIndex(event => event.title.includes(selectedDate) && event.title.includes(shift));
-
+    
+        // If the event already exists, remove it
         if (existingEventIndex !== -1) {
             const updatedEvents = [...events];
             updatedEvents.splice(existingEventIndex, 1);
-            setEvents(updatedEvents);
+            this.setState({ events: updatedEvents });
         }
-
+    
+        // Add the new event
         const selectedEmployeeNames = selectedEmployees[key] || [];
         const numEmployees = selectedEmployeeNames.length;
         const newEvent = {
-            id: events.length > 0 ? Math.max(...events.map(event => event.id)) + 1 : 1,
+            id: events.length > 0 ? Math.max(...events.map(event => event.id)) + 1 : 1, // Assign a unique ID
             title: `${shift} - ${selectedDate}<br />סה"כ ${numEmployees}: <br /> ${selectedEmployeeNames.join(', ')}`,
             start: `${selectedDate}T${shift === 'morning' ? '08:00:00' : shift === 'noon' ? '13:00:00' : '18:00:00'}`,
             end: `${selectedDate}T${shift === 'morning' ? '13:00:00' : shift === 'noon' ? '18:00:00' : '23:00:00'}`,
             employees: selectedEmployeeNames,
         };
-
-        setEvents((prevEvents) => [...prevEvents, newEvent]);
+    
+        this.setState(prevState => ({
+            events: [...prevState.events, newEvent],
+        }));
     };
-
-    const handleShifts = () => {
-        console.log("הגשת משמרות", { events, selectedEmployees, allSelectedEmployees });
+    
+    //send to the backend the events
+    handleShifts = () => {
+        console.log("הגשת משמרות", this.state);
         //need to send to the backend the events
     };
 
-    return (
-        <div>
-            <Header />
-            <h1>קביעת משמרות</h1>
-            <p>לחץ על תאריך רצוי ובחר עובדים עבור כל משמרת</p>
-            <FullCalendar
-                ref={calendarRef}
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                initialView={"timeGridWeek"}
-                headerToolbar={{
-                    start: "today prev,next",
-                    center: "title",
-                    end: "dayGridMonth,timeGridWeek,timeGridDay",
-                }}
-                height={"120vh"}
-                locales={[heLocale]}
-                locale="he"
-                dateClick={handleDateClick}
-                events={events}
-                eventContent={({ event }) => (
-                    <>
-                        <div style={{ fontSize: '12px' }} dangerouslySetInnerHTML={{ __html: event.title }}></div>
-                    </>
-                )}
-                eventClick={(info) => {
-                    const existingEventIndex = events.findIndex(event => event.id === info.event.id);
+    render() {
+        const { selectedDate, employees, events, allSelectedEmployees } = this.state;
 
-                    if (existingEventIndex !== -1) {
-                        const updatedEvents = [...events];
-                        updatedEvents.splice(existingEventIndex, 1);
-                        setEvents(updatedEvents);
-                    }
-                }}
-                dayCellContent={({ date }) => {
-                    const clickedDate = changeDateFormat(date.toLocaleDateString('he-IL').replace(/\./g, '-'));
-                    const today = new Date().toISOString().split('T')[0];
-                    return (
-                        <div>
-                            {(selectedDate === clickedDate) && (clickedDate >= today) && (
-                                <>
-                                    <Dropdown
-                                        label="Morning"
-                                        employees={employees}
-                                        onSelect={(selectedEmployees) => handleEmployeeSelection(clickedDate, 'morning', selectedEmployees)}
-                                        preselectedEmployees={allSelectedEmployees[`${clickedDate}-morning`] || []}
-                                    />
-                                    <br />
-                                    <Dropdown
-                                        label="Noon"
-                                        employees={employees}
-                                        onSelect={(selectedEmployees) => handleEmployeeSelection(clickedDate, 'noon', selectedEmployees)}
-                                        preselectedEmployees={allSelectedEmployees[`${clickedDate}-noon`] || []}
-                                    />
-                                    <br />
-                                    <Dropdown
-                                        label="Evening"
-                                        employees={employees}
-                                        onSelect={(selectedEmployees) => handleEmployeeSelection(clickedDate, 'evening', selectedEmployees)}
-                                        preselectedEmployees={allSelectedEmployees[`${clickedDate}-evening`] || []}
-                                    />
-                                </>
-                            )}
-                        </div>
-                    );
-                }}
-            />
-            <Button
-                color="primary"
-                variant="contained"
-                onClick={handleShifts}
-            > הגשת משמרות</Button>
-        </div>
-    );
-};
+        return (
+            <div>
+                <UserConnectionChecker />
+                <Header/>
+                <h1>קביעת משמרות</h1>
+                <p>לחץ על תאריך רצוי ובחר עובדים עבור כל משמרת</p>
+                <FullCalendar
+                    ref={this.calendarRef}
+                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                    initialView={"timeGridWeek"}
+                    headerToolbar={{
+                        start: "today prev,next",
+                        center: "title",
+                        end: "dayGridMonth,timeGridWeek,timeGridDay",
+                    }}
+                    height={"120vh"}
+                    //hebrew
+                    locales={[heLocale]}
+                    locale="he"
+                    //when choose a specific date
+                    dateClick={this.handleDateClick}
+                    //show on the calander the events
+                    events={this.state.events}
+                    //to calculate how many employees where choosen ans show it on the event
+                    eventContent={({ event }) => (
+                        <>
+                            <div style={{ fontSize: '12px' }} dangerouslySetInnerHTML={{ __html: event.title }}></div>
+                        </>
+                    )}                    
+                    eventClick={(info) => {
+                        const existingEventIndex = this.state.events.findIndex(event => event.id === info.event.id);
 
+                        if (existingEventIndex !== -1) {
+                            // If the event exists, remove it
+                            const updatedEvents = [...this.state.events];
+                            updatedEvents.splice(existingEventIndex, 1);
+                            this.setState({ events: updatedEvents });
+                        }
+                    }}
+                    //when click on a specific date show the dropdowns
+                    dayCellContent={({ date }) => {
+                        const clickedDate = this.changeDateFormat(date.toLocaleDateString('he-IL').replace(/\./g, '-'));
+                        const today = new Date().toISOString().split('T')[0];
+                        return (
+                            <div>
+                                {/* show dropdowns only on days that after today and not prev (today too) */}
+                                {(selectedDate === clickedDate) && (clickedDate >= today) && (
+                                    <>
+                                        <Dropdown
+                                            label="Morning"
+                                            employees={employees} //need to change to only emploees that wanted that shift
+                                            onSelect={(selectedEmployees) => this.handleEmployeeSelection(clickedDate, 'morning', selectedEmployees)}
+                                            preselectedEmployees={allSelectedEmployees[`${clickedDate}-morning`] || []}
+                                        />
+                                        <br />
+                                        <Dropdown
+                                            label="Noon"
+                                            employees={employees} //need to change to only emploees that wanted that shift
+                                            onSelect={(selectedEmployees) => this.handleEmployeeSelection(clickedDate, 'noon', selectedEmployees)}
+                                            preselectedEmployees={allSelectedEmployees[`${clickedDate}-noon`] || []}
+                                        />
+                                        <br />
+                                        <Dropdown
+                                            label="Evening"
+                                            employees={employees} //need to change to only emploees that wanted that shift
+                                            onSelect={(selectedEmployees) => this.handleEmployeeSelection(clickedDate, 'evening', selectedEmployees)}
+                                            preselectedEmployees={allSelectedEmployees[`${clickedDate}-evening`] || []}
+                                        />
+                                    </>
+                                )}
+                            </div>
+                        );
+                    }}
+                />
+                <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={this.handleShifts}
+                > הגשת משמרות</Button>
+            </div>
+        );
+    }
+}
+
+// Component for handling shift dropdowns
 const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
-    const [selectedEmployees, setSelectedEmployees] = useState(preselectedEmployees || []);
+    const [selectedEmployees, setSelectedEmployees] = React.useState(preselectedEmployees || []);
 
+    // Handle the change in selected employees
     const handleSelectChange = (event) => {
         const selectedOptions = event.target.value;
         setSelectedEmployees(selectedOptions);
@@ -202,5 +228,6 @@ const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
         </div>
     );
 };
+
 
 export default ShiftManagement;
