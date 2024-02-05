@@ -21,23 +21,23 @@ export const SelectShifts = () => {
   const { handleUserId } = useUser();
   const [userID, setUserID] = useState(handleUserId());
   
-  //get  info from backend
-  useEffect(() => {
-    // Fetch events for the user
-    const fetchUserEvents = async () => {
-      try {
-        const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&type=1`;
-        const response = await axios.get(apiUrl);
-        console.log("response.data", response.data);
-        setEvents(response.data.events);
-      } catch (error) {
-        console.error('Error fetching user events:', error);
-      }
-    };
-    // Call the fetchUserEvents function
-    fetchUserEvents();
-    console.log("userID", userID);
-  }, [userID]);
+  // //get  info from backend
+  // useEffect(() => {
+  //   // Fetch events for the user
+  //   const fetchUserEvents = async () => {
+  //     try {
+  //       const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&type=1`;
+  //       const response = await axios.get(apiUrl);
+  //       console.log("response:", response);
+  //       setEvents(response.data.events);
+  //     } catch (error) {
+  //       console.error('Error fetching user events:', error);
+  //     }
+  //   };
+  //   // Call the fetchUserEvents function
+  //   fetchUserEvents();
+  //   console.log("userID", userID);
+  // }, [userID]);
 
 
   const calendarRef = React.createRef();
