@@ -3,9 +3,9 @@ import UserType from './UserType';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { NavLink, useNavigate } from 'react-router-dom';
-// import { properties } from '/src/properties.jsx';
 import '/src/App.css';
 import { useUser } from '/src/UserContext.jsx';
+import { ModelRegistery } from './ModelRegistery';
 
 export const ConnectionForm = () => {
     const [state, setState] = useState({
@@ -16,6 +16,10 @@ export const ConnectionForm = () => {
         password: '',
         workPlace: ''
     });
+
+    const [showModal, setShowModal] = useState(false);
+    const [status, setStatus] = useState(null);
+    const [contentPOPUP, setContentPOPUP] = useState(null);
 
     const navigate = useNavigate();
     const { handleLogin } = useUser();  // Using the hook from properties.jsx
@@ -48,12 +52,25 @@ export const ConnectionForm = () => {
         }));
     };
 
-    const handleConnection = () => {
+    const handleConnection = async () => {
         const { step, ...stateWithoutStep } = state;
         const jsonState = JSON.stringify(stateWithoutStep);
         console.log("Form data in JSON format:", jsonState);
-        handleLogin(jsonState);
-        navigate('/HomePage');
+
+        try {
+            //check the status
+            setStatus(200);
+            setContentPOPUP("התחברת בהצלחה");
+            setShowModal(true);
+      
+            await handleLogin(jsonState);
+          } catch (error) {
+            console.error("Registration failed:", error);
+            setStatus(-1);
+            setContentPOPUP("שגיאה! נסה שוב בבקשה");
+            setShowModal(true);
+          }
+        // navigate('/HomePage');
     };
 
     const values = { userID: state.userID, password: state.password };
@@ -107,10 +124,11 @@ export const ConnectionForm = () => {
                         onClick={handleConnection}
                     > התחברות</Button>
                     <br />
+                    <ModelRegistery show={showModal} onClose={() => setShowModal(false)} status={status} content={contentPOPUP}/>
                 </>
             );
         default:
-            (console.log('This is a multi-step form built with React.'));
+            break;
     }
 };
 
