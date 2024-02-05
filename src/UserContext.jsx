@@ -34,6 +34,8 @@ export const UserProvider = ({ children }) => {
   // Function to get user_id
   const handleUserId = () => user.user_id;
 
+  const handleUserType = () => user.user_type;
+
   // Function to check if the user is connected
   const handleUserConnection = () => user.connected;
 
@@ -43,6 +45,7 @@ export const UserProvider = ({ children }) => {
     handleLogin,
     handleLogout,
     handleUserId,
+    handleUserType,
     handleUserConnection,
   };
 

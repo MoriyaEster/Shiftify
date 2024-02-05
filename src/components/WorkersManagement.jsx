@@ -1,8 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import '/src/App.css';
 import { Header } from './Header';
+import { useUser } from '/src/UserContext.jsx';
 
 export const WorkersManagement = () => {
+  
+  const navigate = useNavigate();
+
+  const { handleUserConnection } = useUser();
+
+  useEffect(() => {
+    if (handleUserConnection() == false) {
+      // Redirect to /Registery
+      navigate('/');
+    }
+  }, [navigate]);
+
   // State to track the selected value of the dropdown
   const [selectedWorker, setSelectedWorker] = useState('');
   const [newWorkerName, setNewWorkerID] = useState('');
@@ -41,7 +55,7 @@ export const WorkersManagement = () => {
 
   return (
     <div>
-      <Header/>
+      <Header />
       <div dir="rtl">
         <h2>ניהול עובדים</h2>
         <div>
@@ -59,7 +73,7 @@ export const WorkersManagement = () => {
             ))}
           </select>
         </div>
-        
+
         {/* Buttons */}
         <div>
           <button onClick={handleGetInfoOfWorker}>פרטי עובד</button>

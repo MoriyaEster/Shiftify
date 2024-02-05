@@ -1,7 +1,9 @@
-// ProfilePage.js
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Header } from './Header';
+import { useUser } from '/src/UserContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 export const Profile = () => {
   // Fields left blank by default
@@ -12,6 +14,17 @@ export const Profile = () => {
     email: '',
     password: '',
   };
+
+  const navigate = useNavigate();
+
+  const { handleUserConnection } = useUser();
+
+  useEffect(() => {
+    if (handleUserConnection() == false) {
+      // Redirect to /Registery
+      navigate('/');
+    }
+  }, [navigate]);
 
   // Use state to track user type
   const [userType, setUserType] = useState('employer');
@@ -40,6 +53,7 @@ export const Profile = () => {
 
   return (
     <div>
+      <Header/>
       <h1>Profile Page</h1>
       <div>
         <h2>Full Name: {user.fullName}</h2>

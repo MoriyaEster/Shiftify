@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
+import { useUser } from '/src/UserContext.jsx';
 import '/src/App.css';
 
 export class Header extends Component {
 
-  handleLogout = () => {
-   // in the properties we have to change it to 0
+
+
+  logout = () => {
+    const { handleLogout } = useUser();
+    handleLogout();
   }
 
 
@@ -22,11 +26,11 @@ export class Header extends Component {
             <img className="img-profile" src="src/photos/profile.jpg" alt="profile" />
           </Link>
           <Link to="/">
-          <Button
+            <Button
               color="primary"
               variant="contained"
               onClick={() => {
-                this.handleLogout();
+                this.logout();
               }}
             > התנתקות</Button>
           </Link>
