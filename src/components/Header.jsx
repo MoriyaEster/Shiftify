@@ -4,13 +4,8 @@ import Button from '@mui/material/Button';
 import { useUser } from '/src/UserContext.jsx';
 import '/src/App.css';
 
-<<<<<<< HEAD
-
-export class Header extends Component {
-=======
 export const Header = () => {
   const { handleLogout } = useUser();
->>>>>>> cd940c6aa613283bd77108cc7eefdeb108ae5981
 
   const logout = () => {
     handleLogout();
