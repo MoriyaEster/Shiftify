@@ -3,8 +3,9 @@ import UserType from './UserType';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { properties } from '/src/properties.jsx';
+// import { properties } from '/src/properties.jsx';
 import '/src/App.css';
+import { useUser } from '/src/UserContext.jsx';
 
 export const ConnectionForm = () => {
     const [state, setState] = useState({
@@ -17,7 +18,7 @@ export const ConnectionForm = () => {
     });
 
     const navigate = useNavigate();
-    const { handleLogin } = properties();  // Using the hook from properties.jsx
+    const { handleLogin } = useUser();  // Using the hook from properties.jsx
 
     const userIsEmployee = () => {
         setState(prevState => ({

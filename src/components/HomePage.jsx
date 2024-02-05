@@ -5,12 +5,13 @@ import TextField from '@mui/material/TextField';
 import '/src/App.css';
 import { Entry } from './Entry';
 import { Header } from './Header';
-import {properties } from '/src/properties.jsx';
+// import {properties } from '/src/properties.jsx';
+import { useUser } from '/src/UserContext.jsx';
 
 export const HomePage = () => {
   const navigate = useNavigate(); 
 
-  const { handleUserConnection } = properties();
+  const { handleUserConnection } = useUser();
 
   useEffect(() => {
     if (handleUserConnection() == 0) {

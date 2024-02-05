@@ -8,6 +8,7 @@ import { Profile } from './components/Profile';
 import { WorkersManagement } from './components/WorkersManagement';
 import { ShiftManagement } from './components/ShiftManagement';
 import { ApprovedShift } from './components/ApprovedShift';
+import { UserProvider } from './UserContext';
 
 import { createBrowserRouter,BrowserRouter as Router, Routes, Route, BrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
 
@@ -30,7 +31,9 @@ const router = createBrowserRouter(
 
 function App() {
   return (
+    <UserProvider>
     <RouterProvider router={router} />
+    </UserProvider>
   );
 }
 
