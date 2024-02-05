@@ -26,7 +26,7 @@ export const SelectShifts = () => {
   //   // Fetch events for the user
   //   const fetchUserEvents = async () => {
   //     try {
-  //       const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&type=1`;
+  //       const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&type=0`;
   //       const response = await axios.get(apiUrl);
   //       console.log("response:", response);
   //       setEvents(response.data.events);
@@ -88,7 +88,20 @@ export const SelectShifts = () => {
 
   const handleShifts = () => {
     console.log("הגשת משמרות", events);
-    //need to send to the backend the events
+
+    // //need to send to the backend the events
+    // // Define the API endpoint
+    // const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&type=0`;
+    // // Make a POST request using Axios
+    // axios.post(apiUrl, events)
+    //   .then(response => {
+    //     // Handle successful response
+    //     setResponseData(response.data);
+    //   })
+    //   .catch(error => {
+    //     // Handle error
+    //     console.error('Error posting data:', error);
+    //   });
   };
 
   return (
