@@ -7,22 +7,38 @@ import heLocale from '@fullcalendar/core/locales/he';
 import Button from '@mui/material/Button';
 import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
-import { useNavigate } from 'react-router-dom';
+import UserConnectionChecker from './UserConnectionChecker';
+import axios from 'axios';
 
 const buttonClass = 'shift-button';
 
 export const SelectShifts = () => {
-  const { handleUserConnection } = useUser();
-  const navigate = useNavigate();
+  
   const [selectedDate, setSelectedDate] = useState(null);
   const [events, setEvents] = useState([]);
 
+  //save userID
+  const { handleUserId } = useUser();
+  const [userID, setUserID] = useState(handleUserId());
+  
+  //get  info from backend
   useEffect(() => {
-    if (handleUserConnection() === false) {
-      // Redirect to /Registery
-      navigate('/');
-    }
-  }, [handleUserConnection, navigate]);
+    // Fetch events for the user
+    const fetchUserEvents = async () => {
+      try {
+        const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&type=1`;
+        const response = await axios.get(apiUrl);
+        console.log("response.data", response.data);
+        setEvents(response.data.events);
+      } catch (error) {
+        console.error('Error fetching user events:', error);
+      }
+    };
+    // Call the fetchUserEvents function
+    fetchUserEvents();
+    console.log("userID", userID);
+  }, [userID]);
+
 
   const calendarRef = React.createRef();
 
@@ -78,6 +94,7 @@ export const SelectShifts = () => {
   return (
     <div>
       <Header />
+      <UserConnectionChecker />
       <h1>בחירת משמרות</h1>
       <p>לחץ על תאריך רצוי ובחר זמינות עבור </p>
       <p> E-ערב , N-צהריים, M-בוקר </p>

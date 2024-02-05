@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import UserType from './UserType';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -14,8 +14,7 @@ export const ConnectionForm = () => {
         employee: 0,
         employer: 0,
         userID: '',
-        password: '',
-        workPlace: ''
+        password: ''
     });
     const { handleSubmit, control } = useForm();
     const [showModal, setShowModal] = useState(false);
@@ -50,14 +49,29 @@ export const ConnectionForm = () => {
         setState(prevState => ({
             ...prevState,
             [input]: e.target.value
-        }));
+        }), () => {
+            // Log the updated state after the state is set
+            const { step, ...stateWithoutStep } = state;
+            const jsonState = JSON.stringify(stateWithoutStep);
+            console.log("Form data in JSON format:", jsonState);
+        });
     };
+    
+    useEffect(() => {
+        console.log("ContentPOPUP:", contentPOPUP);
+        console.log("Status:", status);
+        console.log("ShowModal:", showModal);
+      }, [contentPOPUP, status, showModal]);
 
-    const handleConnection = async () => {
-        const { step, ...stateWithoutStep } = state;
-        const jsonState = JSON.stringify(stateWithoutStep);
+    const handleConnection = async (data) => {
+        const newData = {
+            employer: state.employer,
+            ...data
+          };
+        // Use the callback function of setState to get the latest state
+        const jsonState = JSON.stringify(newData);
+        console.log("state.employer:", state.employer);
         console.log("Form data in JSON format:", jsonState);
-
         try {
             //check the status
             setStatus(200);
@@ -65,6 +79,7 @@ export const ConnectionForm = () => {
             setShowModal(true);
       
             await handleLogin(jsonState);
+            console.log("Form data in JSON format:", jsonState);
           } catch (error) {
             console.error("Registration failed:", error);
             setStatus(-1);
