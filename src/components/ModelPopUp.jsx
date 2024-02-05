@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 
-export function ModelRegistery({ show, onClose, status, content }) {
+export function ModelPopUp({ show, onClose, status, content }) {
     const navigate = useNavigate();
 
     const handleClose = () => {
@@ -24,7 +24,6 @@ export function ModelRegistery({ show, onClose, status, content }) {
                 keyboard={false}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title dir="rtl">ססטוס</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div dir="rtl">
@@ -45,4 +44,4 @@ export function ModelRegistery({ show, onClose, status, content }) {
     );
 }
 
-export default ModelRegistery;
+export default ModelPopUp;

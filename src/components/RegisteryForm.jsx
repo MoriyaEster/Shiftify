@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useForm, Controller } from 'react-hook-form';
 import { useParams} from 'react-router-dom';
-import { ModelRegistery } from './ModelRegistery';
+import { ModelPopUp } from './ModelPopUp';
 import { useUser } from '/src/UserContext.jsx';
 
 export const RegisteryForm = () => {
@@ -228,7 +228,7 @@ export const RegisteryForm = () => {
           הרשמה
         </Button>
         </div>
-        <ModelRegistery show={showModal} onClose={() => setShowModal(false)} status={status} content={contentPOPUP}/>
+        <ModelPopUp show={showModal} onClose={() => setShowModal(false)} status={status} content={contentPOPUP}/>
       </form>
     </>
   );
