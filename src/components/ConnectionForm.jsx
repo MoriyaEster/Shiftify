@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import UserType from './UserType';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { useForm, Controller } from 'react-hook-form';
 import { NavLink, useNavigate } from 'react-router-dom';
-// import { properties } from '/src/properties.jsx';
 import '/src/App.css';
 import { useUser } from '/src/UserContext.jsx';
+import { ModelPopUp } from './ModelPopUp';
 
 export const ConnectionForm = () => {
     const [state, setState] = useState({
@@ -16,6 +17,10 @@ export const ConnectionForm = () => {
         password: '',
         workPlace: ''
     });
+    const { handleSubmit, control } = useForm();
+    const [showModal, setShowModal] = useState(false);
+    const [status, setStatus] = useState(null);
+    const [contentPOPUP, setContentPOPUP] = useState(null);
 
     const navigate = useNavigate();
     const { handleLogin } = useUser();  // Using the hook from properties.jsx
@@ -48,12 +53,25 @@ export const ConnectionForm = () => {
         }));
     };
 
-    const handleConnection = () => {
+    const handleConnection = async () => {
         const { step, ...stateWithoutStep } = state;
         const jsonState = JSON.stringify(stateWithoutStep);
         console.log("Form data in JSON format:", jsonState);
-        handleLogin(jsonState);
-        navigate('/HomePage');
+
+        try {
+            //check the status
+            setStatus(200);
+            setContentPOPUP("התחברת בהצלחה");
+            setShowModal(true);
+      
+            await handleLogin(jsonState);
+          } catch (error) {
+            console.error("Registration failed:", error);
+            setStatus(-1);
+            setContentPOPUP("שגיאה! נסה שוב בבקשה");
+            setShowModal(true);
+          }
+        // navigate('/HomePage');
     };
 
     const values = { userID: state.userID, password: state.password };
@@ -74,43 +92,76 @@ export const ConnectionForm = () => {
                 <>
                     <h1>התחברות</h1>
                     <p>הכנס פרטים</p>
-                    <div className="form-col">
+                    <form onSubmit={handleSubmit(handleConnection)}>
+                        <div className="form-col">
                         <br />
-                        <div className="form-field">
-                            <TextField
-                                placeholder="הכנס ת.ז. "
-                                onChange={handleChange('userID')}
-                                defaultValue={values.userID}
-                                dir="rtl"
+                            <Controller
+                                name="userID"
+                                control={control}
+                                defaultValue=""
+                                rules={{
+                                required: 'שדה חובה',
+                                pattern: {
+                                    value: /^[0-9]+$/,
+                                    message: 'יש להזין רק מספרים'
+                                }
+                                }}
+                                render={({ field, fieldState }) => (
+                                <div className="form-field">
+                                    <TextField
+                                    placeholder="הכנס ת.ז. "
+                                    {...field}
+                                    error={!!fieldState.error}
+                                    helperText={fieldState.error?.message}
+                                    dir="rtl"
+                                    />
+                                    <label className="label">:.ת.ז</label>
+                                </div>
+                                )}
                             />
-                            <label className="label">:.ת.ז</label>
-                        </div>
                         <br />
-                        <div className="form-field">
-                            <TextField
-                                placeholder="הכנס סיסמא"
-                                onChange={handleChange('password')}
-                                defaultValue={values.password}
-                                dir="rtl"
-                                type="password"
+                            <Controller
+                                name="password"
+                                control={control}
+                                defaultValue=""
+                                rules={{
+                                required: 'שדה חובה',
+                                minLength: {
+                                    value: 5,
+                                    message: 'סיסמה צריכה להיות לפחות 5 תווים'
+                                }
+                                }}
+                                render={({ field, fieldState }) => (
+                                <div className="form-field">
+                                    <TextField
+                                    placeholder="הכנס סיסמא"
+                                    {...field}
+                                    error={!!fieldState.error}
+                                    helperText={fieldState.error?.message}
+                                    dir="rtl"
+                                    type="password"
+                                    />
+                                    <label className="label">:סיסמא</label>
+                                </div>
+                                )}
                             />
-                            <label className="label">:סיסמא</label>
-                        </div>
                         <br />
-                    </div>
+                        </div>
                     <NavLink to={{
                         pathname: `/Registery/${state.employer}`
                     }}>הרשמה</NavLink>
                     <Button
                         color="primary"
                         variant="contained"
-                        onClick={handleConnection}
+                        type="submit"
                     > התחברות</Button>
                     <br />
+                    </form>
+                    <ModelPopUp show={showModal} onClose={() => setShowModal(false)} status={status} content={contentPOPUP}/>
                 </>
             );
         default:
-            (console.log('This is a multi-step form built with React.'));
+            break;
     }
 };
 
