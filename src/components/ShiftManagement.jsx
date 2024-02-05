@@ -220,7 +220,10 @@ const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
                 style={{ fontSize: '12px', padding: '1px', margin: '1px' }}
             >
                 {employees.map((employee) => (
-                    <MenuItem key={employee.id} value={employee.id}>
+                    <MenuItem key={employee.id} value={employee.id}
+                    style={{
+                        backgroundColor: selectedEmployees.includes(employee.id) ? 'lightblue' : 'inherit',
+                    }}>
                         {employee.name}
                     </MenuItem>
                 ))}

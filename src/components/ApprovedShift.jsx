@@ -21,6 +21,9 @@ export const ApprovedShift = () => {
     }
   }, [handleUserConnection, navigate]);
 
+  //get events from backend!!!!
+    //needs to be end:"2024-02-09T18:00:00" start:"2024-02-09T13:00:00" title:"noon Shift - 2024-02-09" 
+
   return (
     <div>
       <Header />

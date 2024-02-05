@@ -26,6 +26,8 @@ export const SelectShifts = () => {
 
   const calendarRef = React.createRef();
 
+  //to handle the click date on the calendar.
+    //extracts the selected date and updates the state with it.
   const handleDateClick = (info) => {
     const { date } = info;
     if (date) {
@@ -34,6 +36,7 @@ export const SelectShifts = () => {
     }
   };
 
+  //do date as YYYY-MM-DD in Isreal timezone
   const changeDateFormat = (date) => {
     const parts = date.split('-');
     const day = parts[0].padStart(2, '0');
@@ -42,24 +45,27 @@ export const SelectShifts = () => {
     return `${year}-${month}-${day}`;
   };
 
+  //The shift parameter represents the type of shift (morning, noon, or evening) selected by the user.
   const handleShiftSelection = (shift) => {
     if (!selectedDate) {
       console.error('Please select a date first.');
       return;
     }
-
+    // Check if the event already exists, and either add or remove it
     const existingEventIndex = events.findIndex(event => event.title.includes(selectedDate) && event.title.includes(shift));
-
+    // If the event already exists, remove it
     if (existingEventIndex !== -1) {
       const updatedEvents = [...events];
       updatedEvents.splice(existingEventIndex, 1);
       setEvents(updatedEvents);
     } else {
+      // If the event doesn't exist, add it
       const newEvent = {
         title: `${shift} Shift - ${selectedDate}`,
         start: `${selectedDate}T${shift === 'morning' ? '08:00:00' : shift === 'noon' ? '13:00:00' : '18:00:00'}`,
         end: `${selectedDate}T${shift === 'morning' ? '13:00:00' : shift === 'noon' ? '18:00:00' : '23:00:00'}`
       };
+        //add the new event to event state
       setEvents(prevEvents => [...prevEvents, newEvent]);
     }
   };
@@ -86,10 +92,14 @@ export const SelectShifts = () => {
           end: "dayGridMonth,timeGridWeek,timeGridDay",
         }}
         height={"70vh"}
+        //hebrew
         locales={[heLocale]}
         locale="he"
+        //when choose a specific date
         dateClick={handleDateClick}
+        //show on the calander the events
         events={events}
+         //when click on a specific date show the buttons
         dayCellContent={({ date }) => {
           const clickedDate = changeDateFormat(date.toLocaleDateString('he-IL').replace(/\./g, '-'));
           const today = new Date().toISOString().split('T')[0];
