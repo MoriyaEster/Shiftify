@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import EditEmployee from './EditEmployee';
-import Button from 'react-bootstrap/Button';
 
 export const Profile = () => {
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [editingField, setEditingField] = useState(null); // Track the field being edited
+  const [showFullNameModal, setShowFullNameModal] = useState(false);
+  const [showIdModal, setShowIdModal] = useState(false);
+  const [showPhoneNumberModal, setShowPhoneNumberModal] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(false); // Add state for email modal
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   // Fields left blank by default
   const user = {
@@ -20,7 +21,6 @@ export const Profile = () => {
   };
 
   const navigate = useNavigate();
-
   const { handleUserConnection } = useUser();
 
   useEffect(() => {
@@ -30,29 +30,30 @@ export const Profile = () => {
     }
   }, [navigate]);
 
-  const handleEditButtonClick = (field) => {
-    setShowEditModal(true);
-    setEditingField(field);
-  };
-
-  const handleEditModalClose = () => {
-    setShowEditModal(false);
-    setEditingField(null);
-  };
-
   return (
     <div>
       <Header />
       <h1>Profile Page</h1>
-      {/* Loop through user fields and render edit buttons */}
-      {Object.keys(user).map((field) => (
-        <div key={field}>
-          <h2>{field === 'fullName' ? 'Full Name' : field}</h2>
-          <Button onClick={() => handleEditButtonClick(field)}>Edit</Button>
-        </div>
-      ))}
-      {/* Render the EditEmployee modal */}
-      {showEditModal && <EditEmployee field={editingField} onClose={handleEditModalClose} />}
+      <div>
+        <h2>Full Name: {user.fullName}</h2>
+        <EditEmployee field="Full Name" show={showFullNameModal} onClose={() => setShowFullNameModal(false)} />
+      </div>
+      <div>
+        <h2>ID: {user.id}</h2>
+        <EditEmployee field="ID" show={showIdModal} onClose={() => setShowIdModal(false)} />
+      </div>
+      <div>
+        <h2>Phone Number: {user.phoneNumber}</h2>
+        <EditEmployee field="Phone Number" show={showPhoneNumberModal} onClose={() => setShowPhoneNumberModal(false)} />
+      </div>
+      <div>
+        <h2>Email: {user.email}</h2>
+        <EditEmployee field="Email" show={showEmailModal} onClose={() => setShowEmailModal(false)} />
+      </div>
+      <div>
+        <h2>Password: {user.password}</h2>
+        <EditEmployee field="Password" show={showPasswordModal} onClose={() => setShowPasswordModal(false)} />
+      </div>
     </div>
   );
 };
