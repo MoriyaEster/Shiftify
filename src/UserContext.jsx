@@ -15,6 +15,9 @@ export const UserProvider = ({ children }) => {
   const handleLogin = (data) => {
     
     const parsedData = JSON.parse(data);
+    console.log("parsedData", parsedData);
+    console.log("userID", parsedData.userID);
+    console.log("employer", parsedData.employer);
     setUser({
       user_id: parsedData.userID,
       user_type: parsedData.employer,

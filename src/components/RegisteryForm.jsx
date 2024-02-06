@@ -25,12 +25,13 @@ export const RegisteryForm = () => {
     const jsonData = JSON.stringify(newData);
     
     console.log("newData:", newData);
+    console.log("jsonData:", jsonData);
     try {
       //check the status
       setStatus(200);
       setContentPOPUP("נרשמת בהצלחה");
       setShowModal(true);
-
+      
       await handleLogin(jsonData);
     } catch (error) {
       console.error("Registration failed:", error);
