@@ -10,9 +10,10 @@ export function ModelPopUp({ show, onClose, status, content }) {
     const handleClose = () => {
         // Close the modal
         onClose();
-
-        // Navigate to "/HomePage"
-        navigate('/HomePage');
+        if(status == 200){
+            // Navigate to "/HomePage"
+            navigate('/HomePage');
+        }
     };
 
     return (

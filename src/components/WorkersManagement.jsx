@@ -4,6 +4,7 @@ import '/src/App.css';
 import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
 import Button from '@mui/material/Button';
+import { ModelPopUp } from './ModelPopUp';
 
 export const WorkersManagement = () => {
   
@@ -21,6 +22,11 @@ export const WorkersManagement = () => {
   // State to track the selected value of the dropdown
   const [selectedWorker, setSelectedWorker] = useState('');
   const [newWorkerName, setNewWorkerID] = useState('');
+
+  //for popup
+  const [showModal, setShowModal] = useState(false);
+  const [status, setStatus] = useState(null);
+  const [contentPOPUP, setContentPOPUP] = useState(null);
 
   // Dummy work places data for the dropdown options
   const workPlaces = [
@@ -51,6 +57,11 @@ export const WorkersManagement = () => {
   const handleRemoveWorker = () => {
     // Add your logic to handle removing a worker
     console.log('Remove Worker button clicked');
+    //popup!
+      //need to check the status
+      setStatus(200);
+      setContentPOPUP("מחקת עובד בהצלחה ");
+      setShowModal(true);
   };
 
   const handleInputWorkerID = (event) => {
@@ -60,6 +71,12 @@ export const WorkersManagement = () => {
   const handleAddWorker = () => {
     // Add your logic to handle removing a worker
     console.log('Remove Worker button clicked');
+    //popup!
+      //need to check the status
+      setStatus(200);
+      setContentPOPUP("הוספת עובד בהצלחה ");
+      setShowModal(true);
+
   };
 
   return (
@@ -71,7 +88,7 @@ export const WorkersManagement = () => {
           {/* Dropdown select */}
           <select 
             className='body'
-            id="workerSelect"
+            id="workePlaceSelect"
             value={selectedWorker}
             onChange={handleWorkerChange}
             style={{ marginBottom: '5px' , color:'black'}}
@@ -143,6 +160,7 @@ export const WorkersManagement = () => {
           </Button>
         </div>
       </div>
+      <ModelPopUp show={showModal} onClose={() => setShowModal(false)} status={status} content={contentPOPUP}/>
     </div>
   );
 };
