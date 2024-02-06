@@ -71,23 +71,13 @@ export const WorkHoursManagement = () => {
     console.log('Remove Worker button clicked');
   };
 
-  const { handleUserConnection, handleUserType, handleUserId } = useUser();
-
-  const [state, setState] = useState({
-    step: 0,
-    work_place_value: "",
-    userType: handleUserType(),
-    userID: handleUserId()
-  });
-
-  const handleOptionSelect = (selectedValue) => {
-    setState((prevState) => ({ ...prevState, step: 1, work_place_value: selectedValue }));
-  };
+  const { handleUserType, handleUserId } = useUser();
+  const [userType, setUserType] = useState(1);
+  // const [userType, setUserType] = useState(handleUserType());
+  const [userID, setUserID] = useState(handleUserId());
 
   let content;
-  switch (state.step) {
-    case 1:
-      switch (state.userType) {
+  switch (userType) {
         case 1: // employer
           content = (
             <>
@@ -115,7 +105,6 @@ export const WorkHoursManagement = () => {
           // need to send error
           break;
       }
-  }
   let clock;
   clock = (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
