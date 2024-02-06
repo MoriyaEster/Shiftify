@@ -1,38 +1,43 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
+function EditEmployee({ field }) {
+  const [show, setShow] = useState(false);
+  const [fieldValue, setFieldValue] = useState('');
 
-// Added onClose prop
-export const EditEmployee = ({ onClose }) => {
-  const [show, setShow] = useState(true);
+  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
 
-  const handleClose = () => {
-    setShow(false);
-    onClose();
+  const handleEdit = () => {
+    // Handle edit logic here
   };
-
-  // Add your edit logic here
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
-        {/* Modal content */}
+      <button onClick={handleShow}>Edit {field}</button>
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal title</Modal.Title>
+          <Modal.Title>Edit {field}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          I will not close if you click outside me. Do not even try to press escape key.
+          <input
+            type="text"
+            value={fieldValue}
+            onChange={(e) => setFieldValue(e.target.value)}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary">Understood</Button>
+          <Button variant="primary" onClick={handleEdit}>
+            Save Changes
+          </Button>
         </Modal.Footer>
       </Modal>
     </>
   );
-};
+}
 
 export default EditEmployee;
