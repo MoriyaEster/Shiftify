@@ -7,6 +7,7 @@ import { HomePage } from './components/HomePage';
 import { Profile } from './components/Profile';
 import { EditEmployee} from './components/EditEmployee';
 import { WorkersManagement } from './components/WorkersManagement';
+import { WorkHoursManagement } from './components/WorkHoursManagement';
 import { ShiftManagement } from './components/ShiftManagement';
 import { ApprovedShift } from './components/ApprovedShift';
 import { UserProvider } from './UserContext';
@@ -25,6 +26,7 @@ const router = createBrowserRouter(
       <Route path="/Profile" element={<Profile />} /> 
       <Route path="/EditEmployee" element={<EditEmployee />} /> 
       <Route path="/WorkersManagement" element={<WorkersManagement />} /> 
+      <Route path="/WorkHoursManagement" element={<WorkHoursManagement />} /> 
       <Route path="/ShiftManagement" element={<ShiftManagement />} />
       <Route path="/ApprovedShift" element={<ApprovedShift />} />
     </Route>
