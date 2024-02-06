@@ -131,7 +131,7 @@ export const WorkHoursManagement = () => {
           {/* Dropdown select */}
           <select 
             className='body'
-            id="workerSelect"
+            id="workePlaceSelect"
             value={selectedWorker}
             onChange={handleWorkerChange}
             style={{ marginBottom: '5px' , color:'black'}}
