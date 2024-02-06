@@ -21,23 +21,22 @@ export const SelectShifts = () => {
   const { handleUserId } = useUser();
   const [userID, setUserID] = useState(handleUserId());
   
-  // //get  info from backend
-  // useEffect(() => {
-  //   // Fetch events for the user
-  //   const fetchUserEvents = async () => {
-  //     try {
-  //       const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&type=0`;
-  //       const response = await axios.get(apiUrl);
-  //       console.log("response:", response);
-  //       setEvents(response.data.events);
-  //     } catch (error) {
-  //       console.error('Error fetching user events:', error);
-  //     }
-  //   };
-  //   // Call the fetchUserEvents function
-  //   fetchUserEvents();
-  //   console.log("userID", userID);
-  // }, [userID]);
+  //get  info from backend
+  useEffect(() => {
+    // Fetch events for the user
+    const fetchUserEvents = async () => {
+      try {
+        const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&type=0`;
+        const response = await axios.get(apiUrl);
+        console.log("response:", response);
+        // setEvents(response.data.events);
+      } catch (error) {
+        console.error('Error fetching user events:', error);
+      }
+    };
+    // Call the fetchUserEvents function
+    fetchUserEvents();
+  }, []);
 
 
   const calendarRef = React.createRef();
@@ -89,19 +88,21 @@ export const SelectShifts = () => {
   const handleShifts = () => {
     console.log("הגשת משמרות", events);
 
-    // //need to send to the backend the events
-    // // Define the API endpoint
-    // const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&type=0`;
-    // // Make a POST request using Axios
-    // axios.post(apiUrl, events)
-    //   .then(response => {
-    //     // Handle successful response
-    //     setResponseData(response.data);
-    //   })
-    //   .catch(error => {
-    //     // Handle error
-    //     console.error('Error posting data:', error);
-    //   });
+    const jsonEvents = JSON.stringify(events);
+    console.log("Form events in JSON format:", jsonEvents);
+    //need to send to the backend the events
+    // Define the API endpoint
+    const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&type=0`;
+    // Make a POST request using Axios
+    axios.post(apiUrl, jsonEvents)
+      .then(response => {
+        // Handle successful response
+        setResponseData(response.data);
+      })
+      .catch(error => {
+        // Handle error
+        console.error('Error posting data:', error);
+      });
   };
 
   return (
