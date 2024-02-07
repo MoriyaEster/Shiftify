@@ -31,6 +31,7 @@ export const UserProvider = ({ children }) => {
       user_id: null,
       user_type: null,
       connected: false,
+      work_place: null
     });
   };
 
@@ -42,6 +43,15 @@ export const UserProvider = ({ children }) => {
   // Function to check if the user is connected
   const handleUserConnection = () => user.connected;
 
+  const handleWorkPlace = () => user.work_place;
+
+  const handleWorkPlaceChoosen = (work_place) => {
+    setUser({
+      work_place: work_place
+    });
+    console.log("work_place", work_place);
+  }
+
   // Pass the state and functions to the context provider
   const contextValue = {
     user,
@@ -50,6 +60,8 @@ export const UserProvider = ({ children }) => {
     handleUserId,
     handleUserType,
     handleUserConnection,
+    handleWorkPlace,
+    handleWorkPlaceChoosen
   };
 
   return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;

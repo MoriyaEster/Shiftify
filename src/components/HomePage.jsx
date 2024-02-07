@@ -21,7 +21,8 @@ export const HomePage = () => {
     step: 0,
     work_place_value: "",
     userType: handleUserType(),
-    userID: handleUserId()
+    userID: handleUserId(),
+    workPlaces: []
   });
 
   const Dropdown = ({ options, onSelect }) => {
@@ -32,21 +33,37 @@ export const HomePage = () => {
         </option>
         {options.map((option) => (
           <option key={option.id} value={option.value}>
-            {option.label}
+            {option.value}
           </option>
         ))}
       </select>
     );
   };
 
-  const options = [
-    { id: 1, value: 'option1', label: 'Option 1' },
-    { id: 2, value: 'option2', label: 'Option 2' },
-  ];
+  useEffect(() => {
+    // Fetch your JSON data of work places here and update the state
+    const jsonData = {
+      "workPlaces": ["Workplace 1", "Workplace 2", "Workplace 3"],
+    };
 
+    setState((prevState) => ({
+      ...prevState,
+      workPlaces: jsonData.workPlaces,
+    }));
+  }, [state.work_place_value]);
+
+  const generateOptions = () => {
+    return state.workPlaces.map((workPlace, index) => ({
+      id: index + 1,
+      value: workPlace,
+    }));
+  };
   const handleOptionSelect = (selectedValue) => {
     setState((prevState) => ({ ...prevState, step: 1, work_place_value: selectedValue }));
   };
+
+  const options = generateOptions();
+
 
   let content;
   switch (state.step) {
@@ -62,6 +79,9 @@ export const HomePage = () => {
               <NavLink className="form-field" to="/ApprovedShift">
                 צפיה במשמרות מאושרות
               </NavLink>
+              <NavLink className="form-field" to="/WorkHoursManagement">
+                צפיה בדו"ח שעות
+              </NavLink>
             </>
           );
           break;
@@ -75,7 +95,7 @@ export const HomePage = () => {
                 <NavLink className="form-field" to="/WorkersManagement">
                   ניהול עובדים
                 </NavLink>
-                <NavLink className="form-field" to="/HourlyReport">
+                <NavLink className="form-field" to="/WorkHoursManagement">
                   ניהול דוח שעות
                 </NavLink>
               </div>
