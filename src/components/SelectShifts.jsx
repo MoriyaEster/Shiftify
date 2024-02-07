@@ -21,15 +21,31 @@ export const SelectShifts = () => {
   const { handleUserId } = useUser();
   const [userID, setUserID] = useState(handleUserId());
   
+  const handeljson = (jsondata) => {
+    const eventsArray = JSON.parse(jsondata);
+      // Modify the date format in the array
+      const formattedArray = eventsArray.map((event) => ({
+        title: event.title,
+        start: new Date(event.start),
+        end: new Date(event.end),
+      }));
+      setEvents(formattedArray);
+      console.log("events from json: ", formattedArray);
+      console.log("events: ", events);
+  }
+
   //get  info from backend
   useEffect(() => {
     // Fetch events for the user
+    const json  = '[{"title":"morning Shift - 2024-02-07","start":"2024-02-07T08:00:00","end":"2024-02-07T13:00:00"},{"title":"noon Shift - 2024-02-07","start":"2024-02-07T13:00:00","end":"2024-02-07T18:00:00"},{"title":"morning Shift - 2024-02-08","start":"2024-02-08T08:00:00","end":"2024-02-08T13:00:00"},{"title":"noon Shift - 2024-02-09","start":"2024-02-09T13:00:00","end":"2024-02-09T18:00:00"},{"title":"noon Shift - 2024-02-10","start":"2024-02-10T13:00:00","end":"2024-02-10T18:00:00"}]';
+    handeljson(json);
     const fetchUserEvents = async () => {
       try {
         const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&type=0`;
         const response = await axios.get(apiUrl);
         console.log("response:", response);
         // setEvents(response.data.events);
+        // handeljson(response.data.events);
         if (response.status === 200) {
           console.log("Data fetched successfully:", response.data);
           // Update state or perform other actions with the data

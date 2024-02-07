@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -7,26 +7,64 @@ import heLocale from '@fullcalendar/core/locales/he';
 import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
 import { useNavigate } from 'react-router-dom';
+import UserConnectionChecker from './UserConnectionChecker';
+import axios from 'axios';
 
 const buttonClass = 'shift-button';
 
 export const ApprovedShift = () => {
-  const { handleUserConnection } = useUser();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (handleUserConnection() === false) {
-      // Redirect to /Registery
-      navigate('/');
-    }
-  }, [handleUserConnection, navigate]);
 
   //get events from backend!!!!
     //needs to be end:"2024-02-09T18:00:00" start:"2024-02-09T13:00:00" title:"noon Shift - 2024-02-09" 
+    //save userID
+  const { handleUserId } = useUser();
+  const [userID, setUserID] = useState(handleUserId());
+  const [events, setEvents] = useState([]);
+  
+  const handeljson = (jsondata) => {
+    const eventsArray = JSON.parse(jsondata);
+      // Modify the date format in the array
+      const formattedArray = eventsArray.map((event) => ({
+        title: event.title,
+        start: new Date(event.start),
+        end: new Date(event.end),
+      }));
+      setEvents(formattedArray);
+      console.log("events from json: ", formattedArray);
+      console.log("events: ", events);
+  }
+
+  //get  info from backend
+  useEffect(() => {
+    // Fetch events for the user
+    const json  = '[{"title":"morning Shift - 2024-02-07","start":"2024-02-07T08:00:00","end":"2024-02-07T13:00:00"},{"title":"noon Shift - 2024-02-07","start":"2024-02-07T13:00:00","end":"2024-02-07T18:00:00"},{"title":"morning Shift - 2024-02-08","start":"2024-02-08T08:00:00","end":"2024-02-08T13:00:00"},{"title":"noon Shift - 2024-02-09","start":"2024-02-09T13:00:00","end":"2024-02-09T18:00:00"},{"title":"noon Shift - 2024-02-10","start":"2024-02-10T13:00:00","end":"2024-02-10T18:00:00"}]';
+    handeljson(json);
+    const fetchUserEvents = async () => {
+      try {
+        const apiUrl = `shifthify/api/ApprovedShift?userID=${userID}&type=1`;
+        const response = await axios.get(apiUrl);
+        console.log("response:", response);
+        // setEvents(response.data.events);
+        // handeljson(response.data.events);
+        if (response.status === 200) {
+          console.log("Data fetched successfully:", response.data);
+          // Update state or perform other actions with the data
+          // setEvents(response.data.events);
+        } else {
+          console.error(`Unexpected status code: ${response.status}`);
+        }
+      } catch (error) {
+        console.error('Error fetching user events:', error);
+      }
+    };
+    // Call the fetchUserEvents function
+    fetchUserEvents();
+  }, [userID]);
 
   return (
     <div>
       <Header />
+      <UserConnectionChecker />
       <h1>משמרות מאושרות</h1>
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -40,7 +78,7 @@ export const ApprovedShift = () => {
         //hebrew
         locales={[heLocale]}
         locale="he"
-        events={[]}
+        events={events}
       />
     </div>
   );
