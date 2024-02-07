@@ -31,28 +31,28 @@ export const Profile = () => {
   }, [navigate]);
 
   return (
-    <div>
+    <div dir="rtl">
       <Header />
-      <h1>Profile Page</h1>
+      <h1>פרופיל</h1>
       <div>
-        <h2>Full Name: {user.fullName}</h2>
-        <EditEmployee field="Full Name" show={showFullNameModal} onClose={() => setShowFullNameModal(false)} />
+        <h2>שם מלא: {user.fullName}</h2>
+        <EditEmployee field="שם מלא" show={showFullNameModal} onClose={() => setShowFullNameModal(false)} />
       </div>
       <div>
-        <h2>ID: {user.id}</h2>
-        <EditEmployee field="ID" show={showIdModal} onClose={() => setShowIdModal(false)} />
+        <h2>תעודת זהות: {user.id}</h2>
+        <EditEmployee field="תעודת זהות" show={showIdModal} onClose={() => setShowIdModal(false)} />
       </div>
       <div>
-        <h2>Phone Number: {user.phoneNumber}</h2>
-        <EditEmployee field="Phone Number" show={showPhoneNumberModal} onClose={() => setShowPhoneNumberModal(false)} />
+        <h2>מספר טלפון: {user.phoneNumber}</h2>
+        <EditEmployee field="מספר טלפון" show={showPhoneNumberModal} onClose={() => setShowPhoneNumberModal(false)} />
       </div>
       <div>
-        <h2>Email: {user.email}</h2>
-        <EditEmployee field="Email" show={showEmailModal} onClose={() => setShowEmailModal(false)} />
+        <h2>אימייל: {user.email}</h2>
+        <EditEmployee field="אימייל" show={showEmailModal} onClose={() => setShowEmailModal(false)} />
       </div>
       <div>
-        <h2>Password: {user.password}</h2>
-        <EditEmployee field="Password" show={showPasswordModal} onClose={() => setShowPasswordModal(false)} />
+        <h2>סיסמא: {user.password}</h2>
+        <EditEmployee field="סיסמא" show={showPasswordModal} onClose={() => setShowPasswordModal(false)} />
       </div>
     </div>
   );

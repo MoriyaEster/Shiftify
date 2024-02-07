@@ -10,6 +10,7 @@ export const UserProvider = ({ children }) => {
     user_type: null,
     connected: false,
     work_place: null,
+    user_name: null
   });
 
   // Function to handle login
@@ -23,6 +24,7 @@ export const UserProvider = ({ children }) => {
       user_id: parsedData.userID,
       user_type: parsedData.employer,
       connected: true,
+      user_name: parsedData.userName,
     });
   };
 
@@ -32,7 +34,8 @@ export const UserProvider = ({ children }) => {
       user_id: null,
       user_type: null,
       connected: false,
-      work_place: null
+      work_place: null,
+      user_name: null,
     });
   };
 
@@ -40,6 +43,8 @@ export const UserProvider = ({ children }) => {
   const handleUserId = () => user.user_id;
 
   const handleUserType = () => user.user_type;
+
+  const handleUserName = () => user.user_name;
 
   // Function to check if the user is connected
   const handleUserConnection = () => user.connected;
@@ -53,7 +58,6 @@ export const UserProvider = ({ children }) => {
     }));
     // Log the updated state using the callback function
     setUser((updatedUser) => {
-      console.log("user updated:", updatedUser);
       return updatedUser; // Return the updated state
     });
   };
@@ -65,6 +69,7 @@ export const UserProvider = ({ children }) => {
     handleLogout,
     handleUserId,
     handleUserType,
+    handleUserName,
     handleUserConnection,
     handleWorkPlace,
     handleWorkPlaceChoosen

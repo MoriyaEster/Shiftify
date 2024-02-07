@@ -14,11 +14,11 @@ export function EditEmployee({ field }) {
   };
 
   return (
-    <>
-      <button onClick={handleShow}>Edit {field}</button>
+    <div dir="rtl">
+      <button onClick={handleShow}>ערוך {field}</button>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit {field}</Modal.Title>
+          <Modal.Title>ערוך {field}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <input
@@ -29,14 +29,14 @@ export function EditEmployee({ field }) {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            סגור
           </Button>
           <Button variant="primary" onClick={handleEdit}>
-            Save Changes
+            שמור שינויים
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
   );
 }
 

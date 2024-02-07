@@ -9,7 +9,7 @@ import { useUser } from '/src/UserContext.jsx';
 export const HomePage = () => {
   const navigate = useNavigate();
 
-  const { handleUserConnection, handleUserType, handleUserId, handleWorkPlaceChoosen } = useUser();
+  const { handleUserConnection, handleUserType, handleUserId, handleWorkPlaceChoosen, handleUserName } = useUser();
 
   useEffect(() => {
     if (handleUserConnection() === false) {
@@ -50,8 +50,9 @@ export const HomePage = () => {
     setState((prevState) => ({
       ...prevState,
       workPlaces: jsonData.workPlaces,
+      userName: handleUserName(),
     }));
-  }, [state.work_place_value]);
+  }, []);
 
   const generateOptions = () => {
     return state.workPlaces.map((workPlace, index) => ({
@@ -59,6 +60,7 @@ export const HomePage = () => {
       value: workPlace,
     }));
   };
+
   const handleOptionSelect = (selectedValue) => {
     setState((prevState) => ({ ...prevState, step: 1, work_place_value: selectedValue }));
     handleWorkPlaceChoosen(selectedValue);
@@ -113,7 +115,7 @@ export const HomePage = () => {
   return (
     <div dir="rtl">
       <Header />
-      <h1>שלום ... </h1>
+      <h1>שלום {state.userName} </h1>
       <div>
         <h3>בחר מקום עבודה:</h3>
         <Dropdown options={options} onSelect={handleOptionSelect} />
