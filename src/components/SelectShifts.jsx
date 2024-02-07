@@ -18,8 +18,9 @@ export const SelectShifts = () => {
   const [events, setEvents] = useState([]);
 
   //save userID
-  const { handleUserId } = useUser();
+  const { handleUserId ,handleWorkPlace } = useUser();
   const [userID, setUserID] = useState(handleUserId());
+  const [WorkPlace, setWorkPlace] = useState(handleWorkPlace());
   
   const handeljson = (jsondata) => {
     const eventsArray = JSON.parse(jsondata);
@@ -134,6 +135,7 @@ export const SelectShifts = () => {
       });
   };
   
+  
 
   return (
     <div>
@@ -143,6 +145,7 @@ export const SelectShifts = () => {
       <p>לחץ על תאריך רצוי ובחר זמינות עבור </p>
       <p> E-ערב , N-צהריים, M-בוקר </p>
       <p>(לחיצה על כפתור תוסיף משמרת ולחיצה נוספת תוריד משמרת)</p>
+      <h4>{WorkPlace} :מקום העבודה הנבחר </h4>
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

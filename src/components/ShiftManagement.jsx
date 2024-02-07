@@ -28,8 +28,9 @@ export const ShiftManagement = () => {
     const calendarRef = React.createRef();
 
     //save userID
-const { handleUserId } = useUser();
-const [userID, setUserID] = useState(handleUserId());
+    const { handleUserId ,handleWorkPlace } = useUser();
+    const [userID, setUserID] = useState(handleUserId());
+    const [WorkPlace, setWorkPlace] = useState(handleWorkPlace());
 
       
 const handeljsonevents = (jsondata) => {
@@ -216,6 +217,7 @@ const handeljsonevents = (jsondata) => {
                 <Header/>
                 <h1>קביעת משמרות</h1>
                 <p>לחץ על תאריך רצוי ובחר עובדים עבור כל משמרת</p>
+                <h4>{WorkPlace} :מקום העבודה הנבחר </h4>
                 <FullCalendar
                     ref={calendarRef}
                     plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

@@ -16,9 +16,10 @@ export const ApprovedShift = () => {
 
   //get events from backend!!!!
     //needs to be end:"2024-02-09T18:00:00" start:"2024-02-09T13:00:00" title:"noon Shift - 2024-02-09" 
-    //save userID
-  const { handleUserId } = useUser();
+  //save userID
+  const { handleUserId ,handleWorkPlace } = useUser();
   const [userID, setUserID] = useState(handleUserId());
+  const [WorkPlace, setWorkPlace] = useState(handleWorkPlace());
   const [events, setEvents] = useState([]);
   
   const handeljson = (jsondata) => {
@@ -41,7 +42,7 @@ export const ApprovedShift = () => {
     handeljson(json);
     const fetchUserEvents = async () => {
       try {
-        const apiUrl = `shifthify/api/ApprovedShift?userID=${userID}&type=1`;
+        const apiUrl = `shifthify/api/ApprovedShift?userID=${userID}&type=1&workplace=`;
         const response = await axios.get(apiUrl);
         console.log("response:", response);
         // setEvents(response.data.events);
@@ -66,6 +67,7 @@ export const ApprovedShift = () => {
       <Header />
       <UserConnectionChecker />
       <h1>משמרות מאושרות</h1>
+      <h4>{WorkPlace} :מקום העבודה הנבחר </h4>
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView={"timeGridWeek"}
