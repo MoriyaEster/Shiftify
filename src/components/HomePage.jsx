@@ -9,7 +9,7 @@ import { useUser } from '/src/UserContext.jsx';
 export const HomePage = () => {
   const navigate = useNavigate();
 
-  const { handleUserConnection, handleUserType, handleUserId } = useUser();
+  const { handleUserConnection, handleUserType, handleUserId, handleWorkPlaceChoosen } = useUser();
 
   useEffect(() => {
     if (handleUserConnection() === false) {
@@ -22,6 +22,7 @@ export const HomePage = () => {
     work_place_value: "",
     userType: handleUserType(),
     userID: handleUserId(),
+    userName: "",
     workPlaces: []
   });
 
@@ -60,6 +61,7 @@ export const HomePage = () => {
   };
   const handleOptionSelect = (selectedValue) => {
     setState((prevState) => ({ ...prevState, step: 1, work_place_value: selectedValue }));
+    handleWorkPlaceChoosen(selectedValue);
   };
 
   const options = generateOptions();

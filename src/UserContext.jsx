@@ -9,6 +9,7 @@ export const UserProvider = ({ children }) => {
     user_id: null,
     user_type: null,
     connected: false,
+    work_place: null,
   });
 
   // Function to handle login
@@ -46,11 +47,16 @@ export const UserProvider = ({ children }) => {
   const handleWorkPlace = () => user.work_place;
 
   const handleWorkPlaceChoosen = (work_place) => {
-    setUser({
+    setUser((prevUser) => ({
+      ...prevUser,
       work_place: work_place
+    }));
+    // Log the updated state using the callback function
+    setUser((updatedUser) => {
+      console.log("user updated:", updatedUser);
+      return updatedUser; // Return the updated state
     });
-    console.log("work_place", work_place);
-  }
+  };
 
   // Pass the state and functions to the context provider
   const contextValue = {
