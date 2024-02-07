@@ -30,13 +30,20 @@ export const SelectShifts = () => {
         const response = await axios.get(apiUrl);
         console.log("response:", response);
         // setEvents(response.data.events);
+        if (response.status === 200) {
+          console.log("Data fetched successfully:", response.data);
+          // Update state or perform other actions with the data
+          // setEvents(response.data.events);
+        } else {
+          console.error(`Unexpected status code: ${response.status}`);
+        }
       } catch (error) {
         console.error('Error fetching user events:', error);
       }
     };
     // Call the fetchUserEvents function
     fetchUserEvents();
-  }, []);
+  }, [userID]);
 
 
   const calendarRef = React.createRef();
@@ -87,23 +94,30 @@ export const SelectShifts = () => {
 
   const handleShifts = () => {
     console.log("הגשת משמרות", events);
-
+  
     const jsonEvents = JSON.stringify(events);
     console.log("Form events in JSON format:", jsonEvents);
-    //need to send to the backend the events
-    // Define the API endpoint
-    const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&type=0`;
+  
+    // Define the API endpoint (assuming the endpoint supports POST requests)
+    const apiUrl = `shifthify/api/SelectShifts?userID=${userID}`;
+  
     // Make a POST request using Axios
-    axios.post(apiUrl, jsonEvents)
+    axios.post(apiUrl, jsonEvents, {
+      headers: {
+        'Content-Type': 'application/json', // Set the Content-Type header for JSON data
+      },
+    })
       .then(response => {
-        // Handle successful response
-        setResponseData(response.data);
+        // Handle successful response if needed
+        console.log("Data posted successfully:", response.data);
       })
       .catch(error => {
         // Handle error
         console.error('Error posting data:', error);
+        // Optionally, provide user feedback or take specific actions based on the error
       });
   };
+  
 
   return (
     <div>
