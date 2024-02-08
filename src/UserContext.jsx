@@ -9,13 +9,17 @@ export const UserProvider = ({ children }) => {
     user_id: null,
     user_type: null,
     connected: false,
+    work_places: [],
     work_place: null,
-    user_name: null
+    user_name: null,
+    phone_number: null,
+    email: null
+
   });
 
   // Function to handle login
   const handleLogin = (data) => {
-    
+
     const parsedData = JSON.parse(data);
     console.log("parsedData", parsedData);
     console.log("userID", parsedData.userID);
@@ -24,7 +28,10 @@ export const UserProvider = ({ children }) => {
       user_id: parsedData.userID,
       user_type: parsedData.employer,
       connected: true,
+      work_places: parsedData.workPlaces,
       user_name: parsedData.userName,
+      phone_number: parsedData.phoneNumber,
+      email: parsedData.email
     });
   };
 
@@ -34,8 +41,12 @@ export const UserProvider = ({ children }) => {
       user_id: null,
       user_type: null,
       connected: false,
+      work_places: [],
       work_place: null,
       user_name: null,
+      phone_number: null,
+      email: null
+
     });
   };
 
@@ -46,10 +57,23 @@ export const UserProvider = ({ children }) => {
 
   const handleUserName = () => user.user_name;
 
+  const handleUserPhoneNumber = () => user.phone_number;
+
+  const handleUserEmail = () => user.email;
+
   // Function to check if the user is connected
   const handleUserConnection = () => user.connected;
 
   const handleWorkPlace = () => user.work_place;
+
+  //const handleWorkPlaces = () => user.work_places;
+  const handleWorkPlaces = () => {
+    const jsonData = {
+      "workPlaces": ["Workplace 1", "Workplace 2", "Workplace 3"],
+    };
+    console.log("jsonData", jsonData);
+    return jsonData;  // Return just the array
+  };
 
   const handleWorkPlaceChoosen = (work_place) => {
     setUser((prevUser) => ({
@@ -72,7 +96,10 @@ export const UserProvider = ({ children }) => {
     handleUserName,
     handleUserConnection,
     handleWorkPlace,
-    handleWorkPlaceChoosen
+    handleWorkPlaceChoosen,
+    handleUserPhoneNumber,
+    handleUserEmail,
+    handleWorkPlaces
   };
 
   return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;

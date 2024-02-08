@@ -9,7 +9,7 @@ import { useUser } from '/src/UserContext.jsx';
 export const HomePage = () => {
   const navigate = useNavigate();
 
-  const { handleUserConnection, handleUserType, handleUserId, handleWorkPlaceChoosen, handleUserName } = useUser();
+  const { handleUserConnection, handleUserType, handleUserId, handleWorkPlaceChoosen, handleUserName, handleWorkPlaces } = useUser();
 
   useEffect(() => {
     if (handleUserConnection() === false) {
@@ -22,9 +22,11 @@ export const HomePage = () => {
     work_place_value: "",
     userType: handleUserType(),
     userID: handleUserId(),
-    userName: "",
-    workPlaces: []
+    userName: handleUserName(),
+    workPlaces: handleWorkPlaces()
   });
+
+
 
   const Dropdown = ({ options, onSelect }) => {
     return (
@@ -41,21 +43,8 @@ export const HomePage = () => {
     );
   };
 
-  useEffect(() => {
-    // Fetch your JSON data of work places here and update the state
-    const jsonData = {
-      "workPlaces": ["Workplace 1", "Workplace 2", "Workplace 3"],
-    };
-
-    setState((prevState) => ({
-      ...prevState,
-      workPlaces: jsonData.workPlaces,
-      userName: handleUserName(),
-    }));
-  }, []);
-
   const generateOptions = () => {
-    return state.workPlaces.map((workPlace, index) => ({
+    return state.workPlaces.workPlaces.map((workPlace, index) => ({
       id: index + 1,
       value: workPlace,
     }));
