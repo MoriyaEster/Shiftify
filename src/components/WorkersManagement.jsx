@@ -10,7 +10,7 @@ import UserConnectionChecker from './UserConnectionChecker';
 
 export const WorkersManagement = () => {
 
-  const { handleUserType, handleUserId, handleWorkPlaceChoosen, handleUserName , handleUserPhoneNumber,
+  const { handleUserType, handleUserId, handleWorkPlace, handleUserName , handleUserPhoneNumber,
     handleUserEmail } = useUser();
 
   const [userType, setUserType] = useState(handleUserType());
@@ -18,7 +18,7 @@ export const WorkersManagement = () => {
   const [userPhone, setUserPhone] = useState(handleUserPhoneNumber());
   const [userEmail, setEmail] = useState(handleUserEmail());
   const [userName, setUserName] = useState(handleUserName());
-  const [userWorkPlace, setWorkPlace] = useState(handleWorkPlaceChoosen());
+  const [userWorkPlace, setWorkPlace] = useState(handleWorkPlace());
 
   // State to track the selected value of the dropdown
   const [selectedWorker, setSelectedWorker] = useState('');
@@ -50,12 +50,10 @@ export const WorkersManagement = () => {
     setSelectedWorker(event.target.value);
   };
 
-  let info;
+  const [info, setInfo] = useState(null);
   const handleGetInfoOfWorker = () => {
     // Add your logic to handle getting info of a worker
-    info = (
-      <h1>gdsgu</h1>
-    );
+    setInfo(<h1>gdsgu</h1>);
     console.log('info of Worker button clicked');
   };
 

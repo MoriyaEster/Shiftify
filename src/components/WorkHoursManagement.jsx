@@ -15,7 +15,7 @@ import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 
 export const WorkHoursManagement = () => {
   
-  const { handleUserType, handleUserId, handleWorkPlaceChoosen, handleUserName , handleUserPhoneNumber,
+  const { handleUserType, handleUserId, handleWorkPlace, handleUserName , handleUserPhoneNumber,
     handleUserEmail } = useUser();
 
   // State to track the selected value of the dropdown
