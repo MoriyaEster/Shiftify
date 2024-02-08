@@ -3,7 +3,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import '/src/App.css';
 import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
-import Button from '@mui/material/Button';
+
+import UserConnectionChecker from './UserConnectionChecker';
 
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -11,18 +12,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 
+
 export const WorkHoursManagement = () => {
   
-  const navigate = useNavigate();
-
-  //const { handleUserConnection } = useUser();
-
-  // useEffect(() => {
-  //   if (handleUserConnection() == false) {
-  //     // Redirect to /Registery
-  //     navigate('/');
-  //   }
-  // }, [navigate]);
+  const { handleUserType, handleUserId, handleWorkPlaceChoosen, handleUserName , handleUserPhoneNumber,
+    handleUserEmail } = useUser();
 
   // State to track the selected value of the dropdown
   const [selectedWorker, setSelectedWorker] = useState('');
@@ -52,29 +46,6 @@ export const WorkHoursManagement = () => {
     setSelectedWorker(event.target.value);
   };
 
-  const handleGetInfoOfWorker = () => {
-    // Add your logic to handle getting info of a worker
-    console.log('info of Worker button clicked');
-  };
-
-  const handleRemoveWorker = () => {
-    // Add your logic to handle removing a worker
-    console.log('Remove Worker button clicked');
-  };
-
-  const handleInputWorkerID = (event) => {
-    setNewWorkerID(event.target.value);
-  };
-
-  const handleAddWorker = () => {
-    // Add your logic to handle removing a worker
-    console.log('Remove Worker button clicked');
-  };
-
-  const { handleUserType, handleUserId } = useUser();
-  const [userType, setUserType] = useState(1);
-  // const [userType, setUserType] = useState(handleUserType());
-  const [userID, setUserID] = useState(handleUserId());
 
   let content;
   switch (userType) {
@@ -88,7 +59,7 @@ export const WorkHoursManagement = () => {
                   id="workerSelect"
                   value={selectedWorker}
                   onChange={handleWorkerChange}
-                  style={{ marginBottom: '5px' }}
+                  style={{ marginBottom: '5px' ,color:'black'}}
                 >
                   <option value="">עובדים:</option>
                   {workers.map((worker, index) => (
@@ -124,6 +95,7 @@ export const WorkHoursManagement = () => {
   );
   return (
     <div>
+      <UserConnectionChecker />
       <Header />
       <div dir="rtl">
         <h2>ניהול דוח שעות</h2>
@@ -146,8 +118,7 @@ export const WorkHoursManagement = () => {
         </div>
 
         {content}{/* if manager so he can choose also workers */}
-        <h4>עבור שבוע:</h4>
-        <h4>dd.mm-dd.mm yyyy</h4> {/* to change */}
+        <h4>עבור שבוע אחרון:</h4>
         <div className='container'>
           <h3 className="h3">ראשון</h3>
           <h5 className="h5">dd.mm.yyyy</h5> {/* to change */}
@@ -196,15 +167,6 @@ export const WorkHoursManagement = () => {
           {clock}
           <h1>-</h1>
           {clock}
-        </div>
-        
-        {/* Button */}
-        <div>
-          <Button 
-          color="primary"
-          variant="contained"
-          onClick={handleAddWorker}>שליחת תלוש עבור חודש mm.yy
-          </Button>
         </div>
       </div>
     </div>

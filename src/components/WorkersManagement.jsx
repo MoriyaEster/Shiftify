@@ -2,22 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '/src/App.css';
 import { Header } from './Header';
-import { useUser } from '/src/UserContext.jsx';
 import Button from '@mui/material/Button';
 import { ModelPopUp } from './ModelPopUp';
+import { useUser } from '/src/UserContext.jsx';
+
+import UserConnectionChecker from './UserConnectionChecker';
 
 export const WorkersManagement = () => {
-  
-  const navigate = useNavigate();
 
-  const { handleUserConnection } = useUser();
+  const { handleUserType, handleUserId, handleWorkPlaceChoosen, handleUserName , handleUserPhoneNumber,
+    handleUserEmail } = useUser();
 
-  // useEffect(() => {
-  //   if (handleUserConnection() == false) {
-  //     // Redirect to /Registery
-  //     navigate('/');
-  //   }
-  // }, [navigate]);
+  const [userType, setUserType] = useState(handleUserType());
+  const [userID, setUserID] = useState(handleUserId());
+  const [userPhone, setUserPhone] = useState(handleUserPhoneNumber());
+  const [userEmail, setEmail] = useState(handleUserEmail());
+  const [userName, setUserName] = useState(handleUserName());
+  const [userWorkPlace, setWorkPlace] = useState(handleWorkPlaceChoosen());
 
   // State to track the selected value of the dropdown
   const [selectedWorker, setSelectedWorker] = useState('');
@@ -49,8 +50,12 @@ export const WorkersManagement = () => {
     setSelectedWorker(event.target.value);
   };
 
+  let info;
   const handleGetInfoOfWorker = () => {
     // Add your logic to handle getting info of a worker
+    info = (
+      <h1>gdsgu</h1>
+    );
     console.log('info of Worker button clicked');
   };
 
@@ -81,6 +86,7 @@ export const WorkersManagement = () => {
 
   return (
     <div>
+      <UserConnectionChecker />
       <Header />
       <div dir="rtl">
         <h2>ניהול עובדים</h2>
@@ -128,6 +134,7 @@ export const WorkersManagement = () => {
             style={{ marginBottom: '5px' }}
             >פרטי עובד
           </Button>
+          {info}
         </div>
 
         <div>
