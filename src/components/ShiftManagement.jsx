@@ -159,7 +159,14 @@ const handeljsonevents = (jsondata) => {
 
     const handleEmployeeSelection = (date, shift, selectedEmployees) => {
         const key = `${date}-${shift}`;
-
+    
+        if (selectedEmployees.length === 0) {
+            console.error('Selected employees array is empty.');
+            // REMOVE THE EVENT
+            setEvents((prevEvents) => prevEvents.filter(event => !(event.title.includes(date) && event.title.includes(shift))));
+            return;
+        }
+    
         switch (shift) {
             case 'morning':
                 setSelectedEmployeesM((prevSelectedEmployees) => ({
@@ -196,6 +203,7 @@ const handeljsonevents = (jsondata) => {
         }
     };
     
+    
     useEffect(() => {
         // Call the function you want to execute after state update
         if (selectedEmployeesM && selectedEmployeesM[`${selectedDate}-morning`]) {
@@ -218,6 +226,10 @@ const handleShiftSelection = (shift) => {
         console.error('Please select a date first.');
         return;
     }
+    
+    console.log("mormimg:",selectedEmployeesM);
+    console.log("noun:",selectedEmployeesN);
+    console.log("evning:",selectedEmployeesE);
 
     const key = `${selectedDate}-${shift}`;
 
@@ -312,6 +324,9 @@ const handleShiftSelection = (shift) => {
                     dayCellContent={({ date }) => {
                         const clickedDate = changeDateFormat(date.toLocaleDateString('he-IL').replace(/\./g, '-'));
                         const today = new Date().toISOString().split('T')[0];
+                        console.log("mormimg:",employeesM);
+                        console.log("noun:",employeesN);
+                        console.log("evning:",employeesE);
                         return (
                             <div>
                                 {/* show dropdowns only on days that after today and not prev (today too) */}
@@ -353,6 +368,7 @@ const handleShiftSelection = (shift) => {
 }
 
 // Component for handling shift dropdowns
+// Component for handling shift dropdowns
 const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
     const [selectedEmployees, setSelectedEmployees] = React.useState(preselectedEmployees || []);
 
@@ -374,9 +390,9 @@ const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
                 style={{ fontSize: '12px', padding: '1px', margin: '1px' }}
             >
                 {employees.map((employee) => (
-                    <MenuItem key={employee.id} value={employee.id}
+                    <MenuItem key={employee?.id} value={employee?.id}
                         style={{
-                            backgroundColor: selectedEmployees.includes(employee.id) ? 'lightblue' : 'inherit',
+                            backgroundColor: selectedEmployees.includes(employee?.id) ? 'lightblue' : 'inherit',
                         }}>
                         {employee?.name || ''}
                     </MenuItem>
@@ -385,6 +401,8 @@ const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
         </div>
     );
 };
+
+
 
 
 
