@@ -10,6 +10,7 @@ import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 
 
@@ -18,20 +19,18 @@ export const WorkHoursManagement = () => {
   const { handleUserType, handleUserId, handleWorkPlace, handleUserName , handleUserPhoneNumber,
     handleUserEmail } = useUser();
 
+  const [userType, setUserType] = useState(handleUserType());
+  const [userID, setUserID] = useState(handleUserId());
+  const [userPhone, setUserPhone] = useState(handleUserPhoneNumber());
+  const [userEmail, setEmail] = useState(handleUserEmail());
+  const [userName, setUserName] = useState(handleUserName());
+  const [userWorkPlace, setWorkPlace] = useState(handleWorkPlace());
+
   // State to track the selected value of the dropdown
   const [selectedWorker, setSelectedWorker] = useState('');
   const [newWorkerName, setNewWorkerID] = useState('');
 
-  // Dummy work places data for the dropdown options
-  const workPlaces = [
-    'Workplace 1',
-    'Workplace 2',
-    'Workplace 3',
-    'Workplace 4',
-    'Workplace 5',
-    'Workplace 6',
-    // Add more work places as needed
-  ];
+  
 
   // Dummy worker data for the dropdown options
   const workers = [
@@ -99,74 +98,13 @@ export const WorkHoursManagement = () => {
       <Header />
       <div dir="rtl">
         <h2>ניהול דוח שעות</h2>
-        <div>
-          {/* Dropdown select */}
-          <select 
-            className='body'
-            id="workePlaceSelect"
-            value={selectedWorker}
-            onChange={handleWorkerChange}
-            style={{ marginBottom: '5px' , color:'black'}}
-          >
-            <option value="">מקומות עבודה:</option>
-            {workPlaces.map((Workplace, index) => (
-              <option key={index} value={Workplace}>
-                {Workplace}
-              </option>
-            ))}
-          </select>
-        </div>
-
         {content}{/* if manager so he can choose also workers */}
-        <h4>עבור שבוע אחרון:</h4>
-        <div className='container'>
-          <h3 className="h3">ראשון</h3>
-          <h5 className="h5">dd.mm.yyyy</h5> {/* to change */}
-          {clock}
-          <h1>-</h1>
-          {clock}
-        </div>
-        <div className='container'>
-          <h3 className="h3">שני</h3>
-          <h5 className="h5">dd.mm.yyyy</h5> {/* to change */}
-          {clock}
-          <h1>-</h1>
-          {clock}
-        </div>
-        <div className='container'>
-          <h3 className="h3">שלישי</h3>
-          <h5 className="h5">dd.mm.yyyy</h5> {/* to change */}
-          {clock}
-          <h1>-</h1>
-          {clock}
-        </div>
-        <div className='container'>
-          <h3 className="h3">רביעי</h3>
-          <h5 className="h5">dd.mm.yyyy</h5> {/* to change */}
-          {clock}
-          <h1>-</h1>
-          {clock}
-        </div>
-        <div className='container'>
-          <h3 className="h3">חמישי</h3>
-          <h5 className="h5">dd.mm.yyyy</h5> {/* to change */}
-          {clock}
-          <h1>-</h1>
-          {clock}
-        </div>
-        <div className='container'>
-          <h3 className="h3">שישי</h3>
-          <h5 className="h5">dd.mm.yyyy</h5> {/* to change */}
-          {clock}
-          <h1>-</h1>
-          {clock}
-        </div>
-        <div className='container'>
-          <h3 className="h3">שבת</h3>
-          <h5 className="h5">dd.mm.yyyy</h5> {/* to change */}
-          {clock}
-          <h1>-</h1>
-          {clock}
+        <div dir="ltr">
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={['DatePicker', 'DatePicker', 'DatePicker']}>
+              <DatePicker label={"חודש לבדיקה"} views={['month', 'year']} />
+            </DemoContainer>
+          </LocalizationProvider>
         </div>
       </div>
     </div>

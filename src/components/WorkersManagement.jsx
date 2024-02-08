@@ -53,7 +53,18 @@ export const WorkersManagement = () => {
   const [info, setInfo] = useState(null);
   const handleGetInfoOfWorker = () => {
     // Add your logic to handle getting info of a worker
-    setInfo(<h1>gdsgu</h1>);
+    setInfo(
+      <>
+        <h5>שם: {userName}</h5>
+        <h5>תעודת זהות: {userID}</h5>
+        <h5>טלפון: {userPhone}</h5>
+        <h5>אימייל: {userEmail}</h5>
+
+      </>
+
+      );
+      
+    
     console.log('info of Worker button clicked');
   };
 
