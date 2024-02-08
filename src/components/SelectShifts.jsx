@@ -110,13 +110,16 @@ export const SelectShifts = () => {
   };
 
   const handleShifts = () => {
-    console.log("הגשת משמרות", events);
-  
-    const jsonEvents = JSON.stringify(events);
+    // Add userID to each event object
+    const eventsWithUserID = events.map(event => ({ ...event, userID, WorkPlace }));
+
+    console.log("הגשת משמרות", eventsWithUserID);
+
+    const jsonEvents = JSON.stringify(eventsWithUserID);
     console.log("Form events in JSON format:", jsonEvents);
   
     // Define the API endpoint (assuming the endpoint supports POST requests)
-    const apiUrl = `shifthify/api/SelectShifts?userID=${userID}`;
+    const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&WorkPlace=${WorkPlace}`;
   
     // Make a POST request using Axios
     axios.post(apiUrl, jsonEvents, {

@@ -18,12 +18,14 @@ export const ShiftManagement = () => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [events, setEvents] = useState([]);
     const [selectedEmployees, setSelectedEmployees] = useState({});
+    const [selectedEmployeesM, setSelectedEmployeesM] = useState({});
+    const [selectedEmployeesN, setSelectedEmployeesN] = useState({});
+    const [selectedEmployeesE, setSelectedEmployeesE] = useState({});
     const [allSelectedEmployees, setAllSelectedEmployees] = useState({});
-    const [employees, setEmployees] = useState([
-    { id: 1, name: 'Employee 1' },
-    { id: 2, name: 'Employee 2' },
-    // need to change to only the employees that want that shift on a specific date
-  ]);
+    const [employees, setEmployees] = useState([]);
+    const [employeesM, setEmployeesM] = useState([]);
+    const [employeesN, setEmployeesN] = useState([]);
+    const [employeesE, setEmployeesE] = useState([]);
 	
     const calendarRef = React.createRef();
 
@@ -51,11 +53,11 @@ const handeljsonevents = (jsondata) => {
   //get events from backend
   useEffect (() => {
     // Fetch events for the user
-    const json = '[{"title": "morning - 2024-02-08 - סה\\"כ 1 - Employee 1","start": "2024-02-08T08:00:00","end": "2024-02-08T13:00:00","employees": ["Employee 1"]},{"title": "evening - 2024-02-08 - סה\\"כ 2 - Employee 1, Employee 2","start": "2024-02-08T18:00:00","end": "2024-02-08T23:00:00","employees": ["Employee 1", "Employee 2"]},{"title": "evening - 2024-02-09 - סה\\"כ 2 - Employee 1, Employee 2","start": "2024-02-09T18:00:00","end": "2024-02-09T23:00:00","employees": ["Employee 1", "Employee 2"]}]';
+    const json = '[{"title": "morning - 2024-02-08 - סה\\"כ 1 - Employee 1","start": "2024-02-08T08:00:00","end": "2024-02-08T13:00:00","employees": ["Employee 1"]},{"title": "evening - 2024-02-08 - סה\\\\\\"כ 2 - Employee 1, Employee 2","start": "2024-02-08T18:00:00","end": "2024-02-08T23:00:00","employees": ["Employee 1", "Employee 2"]},{"title": "evening - 2024-02-09 - סה\\\\\\"כ 2 - Employee 1, Employee 2","start": "2024-02-09T18:00:00","end": "2024-02-09T23:00:00","employees": ["Employee 1", "Employee 2"]}]';
     handeljsonevents(json);
     const fetchUserEvents = async () => {
       try {
-        const apiUrl = `shifthify/api/ShiftManagement?userID=${userID}&type=0`;
+        const apiUrl = `shifthify/api/ShiftManagement?userID=${userID}&WorkPlace=${WorkPlace}'`;
         const response = await axios.get(apiUrl);
         console.log("response:", response);
         // handeljsonevents(response.data.events);
@@ -76,28 +78,44 @@ const handeljsonevents = (jsondata) => {
 
   const handeljsonemployees = (jsondata) => {
     const data = JSON.parse(jsondata);
-    const employeeNames = data.employees; // Extract employee names from the JSON
 
-    // Modify the data structure and set it into state
-    const formattedArray = employeeNames.map((employeeName, index) => ({
-        id: index + 1, // You can use a unique identifier like index or any other appropriate method
-        name: employeeName
+    // Assuming the JSON structure is like: {"date": "2024-02-08", "morning": ["Employee 1", "Employee 2"], ...}
+    const { date, morning, noon, evening } = data;
+
+    // Modify the data structure for each shift and set it into state
+    const formattedMorning = morning.map((employeeName, index) => ({
+        id: index + 1,
+        name: employeeName,
     }));
+    setEmployeesM(formattedMorning);
 
-    setEmployees(formattedArray);
-    console.log("employees from json: ", formattedArray);
-    console.log("employees in state: ", employees);
-  }
+    const formattedNoon = noon.map((employeeName, index) => ({
+        id: index + 1,
+        name: employeeName,
+    }));
+    setEmployeesN(formattedNoon);
+
+    const formattedEvening = evening.map((employeeName, index) => ({
+        id: index + 1,
+        name: employeeName,
+    }));
+    setEmployeesE(formattedEvening);
+
+    console.log("Morning employees from json: ", formattedMorning);
+    console.log("Noon employees from json: ", formattedNoon);
+    console.log("Evening employees from json: ", formattedEvening);
+};
+
 
   //get employees from backend
   useEffect(() => {
     // Fetch events for the user
-    const json  = '{"employees": ["Employee 1","Employee 2"]}';
+    const json  = '{"date": "2024-02-08","morning": ["Employee 1"],"noon": ["Employee 1", "Employee 2"],"evening": ["Employee 1", "Employee 2"]}';
     handeljsonemployees(json);
     console.log("selected date:", selectedDate)
     const fetchUserEmployees = async () => {
       try {
-        const apiUrl = `shifthify/api/ShiftManagement?userID=${userID}&date=${selectedDate}`;
+        const apiUrl = `shifthify/api/ShiftManagement?WorkPlace=${WorkPlace}&date=${selectedDate}`;
         const response = await axios.get(apiUrl);
         console.log("response:", response);
         // handeljsonemployees(response.data.events);
@@ -141,66 +159,105 @@ const handeljsonevents = (jsondata) => {
 
     const handleEmployeeSelection = (date, shift, selectedEmployees) => {
         const key = `${date}-${shift}`;
-    
-        // Update selected employees for the specific key
-        setSelectedEmployees((prevSelectedEmployees) => ({
-            ...prevSelectedEmployees,
-            [key]: selectedEmployees.map((id) => employees.find((employee) => employee.id === id).name),
-        }));
-    
-        // Update all selected employees
-        setAllSelectedEmployees((prevAllSelectedEmployees) => ({
-            ...prevAllSelectedEmployees,
-            [key]: selectedEmployees.map((id) => employees.find((employee) => employee.id === id).name),
-        }));
+
+        switch (shift) {
+            case 'morning':
+                setSelectedEmployeesM((prevSelectedEmployees) => ({
+                    ...prevSelectedEmployees,
+                    [key]: selectedEmployees.map((id) => employeesM.find((employee) => employee.id === id).name),
+                }));
+                setAllSelectedEmployees((prevAllSelectedEmployees) => ({
+                    ...prevAllSelectedEmployees,
+                    [key]: selectedEmployees.map((id) => employeesM.find((employee) => employee.id === id).name),
+                }));
+                break;
+            case 'noon':
+                setSelectedEmployeesN((prevSelectedEmployees) => ({
+                    ...prevSelectedEmployees,
+                    [key]: selectedEmployees.map((id) => employeesN.find((employee) => employee.id === id).name),
+                }));
+                setAllSelectedEmployees((prevAllSelectedEmployees) => ({
+                    ...prevAllSelectedEmployees,
+                    [key]: selectedEmployees.map((id) => employeesN.find((employee) => employee.id === id).name),
+                }));
+                break;
+            case 'evening':
+                setSelectedEmployeesE((prevSelectedEmployees) => ({
+                    ...prevSelectedEmployees,
+                    [key]: selectedEmployees.map((id) => employeesE.find((employee) => employee.id === id).name),
+                }));
+                setAllSelectedEmployees((prevAllSelectedEmployees) => ({
+                    ...prevAllSelectedEmployees,
+                    [key]: selectedEmployees.map((id) => employeesE.find((employee) => employee.id === id).name),
+                }));
+                break;
+            default:
+                break;
+        }
     };
     
     useEffect(() => {
         // Call the function you want to execute after state update
-        if (selectedEmployees && selectedEmployees[`${selectedDate}-morning`]) {
+        if (selectedEmployeesM && selectedEmployeesM[`${selectedDate}-morning`]) {
             handleShiftSelection('morning');
         }
-        if (selectedEmployees && selectedEmployees[`${selectedDate}-noon`]) {
+        if (selectedEmployeesN && selectedEmployeesN[`${selectedDate}-noon`]) {
             handleShiftSelection('noon');
         }
-        if (selectedEmployees && selectedEmployees[`${selectedDate}-evening`]) {
+        if (selectedEmployeesE && selectedEmployeesE[`${selectedDate}-evening`]) {
             handleShiftSelection('evening');
         }
     
-    }, [selectedDate, selectedEmployees]);
+    }, [selectedDate, selectedEmployeesM, selectedEmployeesN, selectedEmployeesE]);
     
 
     
     // Handle shift selection and create/update events accordingly
-    const handleShiftSelection = (shift) => {
-        if (!selectedDate) {
-            console.error('Please select a date first.');
-            return;
-        }
+const handleShiftSelection = (shift) => {
+    if (!selectedDate) {
+        console.error('Please select a date first.');
+        return;
+    }
 
-        const key = `${selectedDate}-${shift}`;
-        const existingEventIndex = events.findIndex((event) => event.title.includes(selectedDate) && event.title.includes(shift));
+    const key = `${selectedDate}-${shift}`;
 
-        // If the event already exists, remove it
-        if (existingEventIndex !== -1) {
-            const updatedEvents = [...events];
-            updatedEvents.splice(existingEventIndex, 1);
-            setEvents(updatedEvents);
-        }
+    // Remove existing event for the selected shift and date
+    const updatedEvents = events.filter(
+        (event) => !(event.title.includes(selectedDate) && event.title.includes(shift))
+    );
 
-        // Add the new event
-        const selectedEmployeeNames = selectedEmployees[key] || [];
-        const numEmployees = selectedEmployeeNames.length; // Count the number of selected employees
-        const newEvent = {
-            id: events.length > 0 ? Math.max(...events.map((event) => event.id)) + 1 : 1, // Assign a unique ID
-            title: `${shift} - ${selectedDate}<br />סה"כ ${numEmployees}: <br /> ${selectedEmployeeNames.join(', ')}`,
-            start: `${selectedDate}T${shift === 'morning' ? '08:00:00' : shift === 'noon' ? '13:00:00' : '18:00:00'}`,
-            end: `${selectedDate}T${shift === 'morning' ? '13:00:00' : shift === 'noon' ? '18:00:00' : '23:00:00'}`,
-            employees: selectedEmployeeNames,
-        };
+    let selectedEmployeeNames = [];
 
-        setEvents((prevEvents) => [...prevEvents, newEvent]);
+    // Add the new event
+    switch (shift) {
+        case 'morning':
+            selectedEmployeeNames = selectedEmployeesM[key] || [];
+            break;
+        case 'noon':
+            selectedEmployeeNames = selectedEmployeesN[key] || [];
+            break;
+        case 'evening':
+            selectedEmployeeNames = selectedEmployeesE[key] || [];
+            break;
+        default:
+            break;
+    }
+
+    const numEmployees = selectedEmployeeNames.length;
+
+    const newEvent = {
+        // id: events.length > 0 ? Math.max(...events.map((event) => event.id)) + 1 : 1,
+        title: `${shift} - ${selectedDate}<br />סה"כ ${numEmployees}: <br /> ${selectedEmployeeNames.join(', ')}`,
+        start: `${selectedDate}T${shift === 'morning' ? '08:00:00' : shift === 'noon' ? '13:00:00' : '18:00:00'}`,
+        end: `${selectedDate}T${shift === 'morning' ? '13:00:00' : shift === 'noon' ? '18:00:00' : '23:00:00'}`,
+        employees: selectedEmployeeNames,
     };
+
+    setEvents([...updatedEvents, newEvent]);
+    console.log("events", events);
+};
+
+    
 
     
     //send to the backend the events
@@ -262,23 +319,23 @@ const handeljsonevents = (jsondata) => {
                                     <>
                                         <Dropdown
                                             label="Morning"
-                                            employees={employees} //need to change to only emploees that wanted that shift
-                                            onSelect={(selectedEmployees) => handleEmployeeSelection(clickedDate, 'morning', selectedEmployees)}
-                                            preselectedEmployees={allSelectedEmployees[`${clickedDate}-morning`] || []}
+                                            employees={employeesM}
+                                            onSelect={(selectedEmployeesM) => handleEmployeeSelection(selectedDate, 'morning', selectedEmployeesM)}
+                                            preselectedEmployees={selectedEmployeesM[`${selectedDate}-morning`] || []}
                                         />
                                         <br />
                                         <Dropdown
                                             label="Noon"
-                                            employees={employees} //need to change to only emploees that wanted that shift
-                                            onSelect={(selectedEmployees) => handleEmployeeSelection(clickedDate, 'noon', selectedEmployees)}
-                                            preselectedEmployees={allSelectedEmployees[`${clickedDate}-noon`] || []}
+                                            employees={employeesN}
+                                            onSelect={(selectedEmployeesN) => handleEmployeeSelection(selectedDate, 'noon', selectedEmployeesN)}
+                                            preselectedEmployees={selectedEmployeesN[`${selectedDate}-noon`] || []}
                                         />
                                         <br />
                                         <Dropdown
                                             label="Evening"
-                                            employees={employees} //need to change to only emploees that wanted that shift
-                                            onSelect={(selectedEmployees) => handleEmployeeSelection(clickedDate, 'evening', selectedEmployees)}
-                                            preselectedEmployees={allSelectedEmployees[`${clickedDate}-evening`] || []}
+                                            employees={employeesE}
+                                            onSelect={(selectedEmployeesE) => handleEmployeeSelection(selectedDate, 'evening', selectedEmployeesE)}
+                                            preselectedEmployees={selectedEmployeesE[`${selectedDate}-evening`] || []}
                                         />
                                     </>
                                 )}
@@ -318,16 +375,18 @@ const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
             >
                 {employees.map((employee) => (
                     <MenuItem key={employee.id} value={employee.id}
-                    style={{
-                        backgroundColor: selectedEmployees.includes(employee.id) ? 'lightblue' : 'inherit',
-                    }}>
-                        {employee.name}
+                        style={{
+                            backgroundColor: selectedEmployees.includes(employee.id) ? 'lightblue' : 'inherit',
+                        }}>
+                        {employee?.name || ''}
                     </MenuItem>
                 ))}
             </Select>
         </div>
     );
 };
+
+
 
 
 export default ShiftManagement;

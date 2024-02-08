@@ -42,7 +42,7 @@ export const ApprovedShift = () => {
     handeljson(json);
     const fetchUserEvents = async () => {
       try {
-        const apiUrl = `shifthify/api/ApprovedShift?userID=${userID}&type=1&workplace=`;
+        const apiUrl = `shifthify/api/ApprovedShift?userID=${userID}&WorkPlace=${WorkPlace}`;
         const response = await axios.get(apiUrl);
         console.log("response:", response);
         // setEvents(response.data.events);
