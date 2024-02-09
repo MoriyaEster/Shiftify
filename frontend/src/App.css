@@ -5,6 +5,26 @@
   text-align: center;
 }
 
+.body {
+  background-color: hsl(0, 0%, 100%); /* Set the background color for the entire page */
+  text-decoration-color: black;
+}
+
+.container {
+  display: flex;
+  align-items: center; /* Center vertically */
+}
+
+.h3 {
+  font-size: 24px; /* Adjust as needed */
+  padding-bottom: 8px ;
+}
+
+.h5 {
+  font-size: 16px; /* Adjust as needed */
+  margin-right: 10px; /* Adjust spacing between headings */
+}
+
 .form-col {
   display: flex;
   flex-direction: column; /* Stack the TextField components and labels vertically */
@@ -19,4 +39,26 @@
 
 .label {
   margin-left: 8px;
+}
+
+.shift-button {
+  font-size: 10px;
+  padding: 3px 6px;
+  margin: 2px;
+}
+
+.img-backbutton, .img-profile  {
+  width: 40px;
+  height: 40px;
+}
+
+.img-logo {
+  width: 70px;
+  height: 70px;
+}
+
+.img-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
