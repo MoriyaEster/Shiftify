@@ -35,13 +35,14 @@ prompt-toolkit==3.0.41
 psutil==5.9.6
 ptyprocess==0.7.0
 pure-eval==0.2.2
+pycairo==1.25.1
 Pygments==2.11.2
 PyGObject==3.42.1
 PySocks==1.7.1
 python-dateutil==2.8.2
 python-dotenv==1.0.0
 pytz==2023.3.post1
-PyYAML==5.4.1
+PyYAML==6.0.1
 pyzmq==25.1.1
 requests==2.31.0
 selenium==4.15.2

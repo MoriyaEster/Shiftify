@@ -5,12 +5,13 @@ class Workplace(models.Model):
     name = models.TextField()
 
 class User(AbstractUser):
-    name = models.TextField()
+    username = models.TextField(unique=True,blank=True, null=True)
+    name = models.TextField(blank=True, null=True)
     phone_number = models.IntegerField(blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     password = models.TextField(blank=True, null=True)
     type = models.IntegerField(blank=True, null=True)
-    workplace = models.ManyToManyField(Workplace)
+    workplace = models.ManyToManyField(Workplace, blank=True)
 
 class Shifts(models.Model):
     date = models.DateTimeField()

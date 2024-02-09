@@ -129,3 +129,36 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ]
 }
+
+LOGS_LOCATION = Path(str(BASE_DIR) +'/logs')
+
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} [{pathname}:{funcName}:{lineno:d}:{levelname}] {message}',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'style': '{',
+        },
+        'guni': {
+            'format': '{asctime} : {message}',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'style': '{',
+        },
+    },
+    'disable_existing_loggers': False,
+    'handlers': {
+        'django_rotated_v2': {
+            'class': 'logging.FileHandler',
+            'filename':  Path(str(LOGS_LOCATION) +'/api.log'),
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'api': {
+            'handlers': ['django_rotated_v2'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
