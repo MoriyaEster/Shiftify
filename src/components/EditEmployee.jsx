@@ -2,15 +2,18 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-export function EditEmployee({ field }) {
+export function EditEmployee({ field, onEdit }) {
   const [show, setShow] = useState(false);
   const [fieldValue, setFieldValue] = useState('');
 
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
 
-  const handleEdit = () => {
-    // Handle edit logic here
+  const handleSaveChanges = () => {
+    // Call the onEdit function passed from the parent component
+    onEdit(fieldValue);
+    // Close the modal
+    handleClose();
   };
 
   return (
@@ -31,7 +34,7 @@ export function EditEmployee({ field }) {
           <Button variant="secondary" onClick={handleClose}>
             סגור
           </Button>
-          <Button variant="primary" onClick={handleEdit}>
+          <Button variant="primary" onClick={handleSaveChanges}>
             שמור שינויים
           </Button>
         </Modal.Footer>
