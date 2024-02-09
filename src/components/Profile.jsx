@@ -3,6 +3,7 @@ import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import EditEmployee from './EditEmployee';
+import UserConnectionChecker from './UserConnectionChecker';
 
 export const Profile = () => {
   const [showFullNameModal, setShowFullNameModal] = useState(false);
@@ -10,28 +11,22 @@ export const Profile = () => {
   const [showPhoneNumberModal, setShowPhoneNumberModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false); // Add state for email modal
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const { handleUserType, handleUserId,  handleUserName, handleWorkPlaces,handlpassword,handleUserPhoneNumber,
+    handleUserEmail} = useUser();
 
   // Fields left blank by default
   const user = {
-    fullName: '',
-    id: '',
-    phoneNumber: '',
-    email: '',
-    password: '',
+    fullName: handleUserName(),
+    id: handleUserId(),
+    phoneNumber: handleUserPhoneNumber(),
+    email: handleUserEmail(),
+    password: handlpassword(),
   };
 
-  const navigate = useNavigate();
-  const { handleUserConnection } = useUser();
-
-  useEffect(() => {
-    if (handleUserConnection() === false) {
-      // Redirect to /Registery
-      navigate('/');
-    }
-  }, [navigate]);
-
+  
   return (
     <div dir="rtl">
+    <UserConnectionChecker />
       <Header />
       <h1>פרופיל</h1>
       <div>

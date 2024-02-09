@@ -45,13 +45,15 @@ export const UserProvider = ({ children }) => {
       work_place: null,
       user_name: null,
       phone_number: null,
-      email: null
-
+      email: null,
+      password: null
     });
   };
 
   // Function to get user_id
   const handleUserId = () => user.user_id;
+
+  const handlpassword = () => user.password;
 
   const handleUserType = () => user.user_type;
 
@@ -99,7 +101,8 @@ export const UserProvider = ({ children }) => {
     handleWorkPlaceChoosen,
     handleUserPhoneNumber,
     handleUserEmail,
-    handleWorkPlaces
+    handleWorkPlaces,
+    handlpassword
   };
 
   return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;
