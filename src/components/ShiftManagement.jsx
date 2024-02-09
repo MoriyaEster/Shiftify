@@ -167,41 +167,82 @@ const handeljsonevents = (jsondata) => {
             return;
         }
     
+        const existingEmployeesM = selectedEmployeesM[key] || [];
+        const existingEmployeesN = selectedEmployeesN[key] || [];
+        const existingEmployeesE = selectedEmployeesE[key] || [];
+    
         switch (shift) {
             case 'morning':
-                setSelectedEmployeesM((prevSelectedEmployees) => ({
-                    ...prevSelectedEmployees,
-                    [key]: selectedEmployees.map((id) => employeesM.find((employee) => employee.id === id).name),
-                }));
-                setAllSelectedEmployees((prevAllSelectedEmployees) => ({
-                    ...prevAllSelectedEmployees,
-                    [key]: selectedEmployees.map((id) => employeesM.find((employee) => employee.id === id).name),
-                }));
+                handleShiftEmployeeSelection(existingEmployeesM, selectedEmployees, key, setSelectedEmployeesM);
                 break;
             case 'noon':
-                setSelectedEmployeesN((prevSelectedEmployees) => ({
-                    ...prevSelectedEmployees,
-                    [key]: selectedEmployees.map((id) => employeesN.find((employee) => employee.id === id).name),
-                }));
-                setAllSelectedEmployees((prevAllSelectedEmployees) => ({
-                    ...prevAllSelectedEmployees,
-                    [key]: selectedEmployees.map((id) => employeesN.find((employee) => employee.id === id).name),
-                }));
+                handleShiftEmployeeSelection(existingEmployeesN, selectedEmployees, key, setSelectedEmployeesN);
                 break;
             case 'evening':
-                setSelectedEmployeesE((prevSelectedEmployees) => ({
-                    ...prevSelectedEmployees,
-                    [key]: selectedEmployees.map((id) => employeesE.find((employee) => employee.id === id).name),
-                }));
-                setAllSelectedEmployees((prevAllSelectedEmployees) => ({
-                    ...prevAllSelectedEmployees,
-                    [key]: selectedEmployees.map((id) => employeesE.find((employee) => employee.id === id).name),
-                }));
+                handleShiftEmployeeSelection(existingEmployeesE, selectedEmployees, key, setSelectedEmployeesE);
                 break;
             default:
                 break;
         }
+    
+        console.log("AllSelectedEmployees", allSelectedEmployees);
+        console.log("morning:", selectedEmployeesM);
+        console.log("noon:", selectedEmployeesN);
+        console.log("evening:", selectedEmployeesE);
     };
+    
+    const handleShiftEmployeeSelection = (existingEmployees, uniqueSelectedEmployees, key, setShiftState) => {
+        console.log("!!!!!!!!!!!!!handleShiftEmployeeSelection:");
+        // Check if the employee is already in the shift by name
+    // Check if the last employee in uniqueSelectedEmployees is in existingEmployees
+const lastSelectedEmployee = uniqueSelectedEmployees[uniqueSelectedEmployees.length - 1];
+const isEmployeeInShift = existingEmployees.length > 0 && existingEmployees.some(employee => employee.name === lastSelectedEmployee.name);
+
+console.log("!isEmployeeInShift:", isEmployeeInShift);
+console.log("!existingEmployees:", existingEmployees);
+console.log("!uniqueSelectedEmployees:", uniqueSelectedEmployees);
+console.log("!key:", key);
+
+    // const isEmployeeInShift = false;
+    console.log("!isEmployeeInShift:", isEmployeeInShift);
+        console.log("!existingEmployees:", existingEmployees);
+        console.log("!uniqueSelectedEmployees:", uniqueSelectedEmployees);
+        console.log("!key:", key);
+        console.log("!isEmployeeInShift:", isEmployeeInShift);
+        if (isEmployeeInShift) {
+            // Remove the employee from the shift
+            setShiftState((prevSelectedEmployees) => ({
+                ...prevSelectedEmployees,
+                [key]: existingEmployees.filter(employee => !uniqueSelectedEmployees.some(selected => selected.name != employee.name)),
+            }));
+            console.log("added:", existingEmployees.filter(employee => !uniqueSelectedEmployees.some(selected => selected.name === employee.name)));
+            
+            console.log("morning:", selectedEmployeesM);
+            console.log("noon:", selectedEmployeesN);
+            console.log("evening:", selectedEmployeesE);
+    
+            // Remove the employee from allSelectedEmployees
+            setAllSelectedEmployees((prevAllSelectedEmployees) => ({
+                ...prevAllSelectedEmployees,
+                [key]: allSelectedEmployees[key].filter(employee => !uniqueSelectedEmployees.some(selected => selected.name === employee.name)),
+            }));
+        } else {
+            // Add the employee to the shift
+            setShiftState((prevSelectedEmployees) => ({
+                // ...prevSelectedEmployees,
+                [key]: [ ...uniqueSelectedEmployees],
+            }));
+    
+            // Add the employee to allSelectedEmployees
+            setAllSelectedEmployees((prevAllSelectedEmployees) => ({
+                ...prevAllSelectedEmployees,
+                [key]: [...uniqueSelectedEmployees],
+            }));
+        }
+    };
+    
+    
+    
     
     
     useEffect(() => {
@@ -238,22 +279,27 @@ const handleShiftSelection = (shift) => {
         (event) => !(event.title.includes(selectedDate) && event.title.includes(shift))
     );
 
-    let selectedEmployeeNames = [];
+    let selectedEmployeeObjects = [];
 
-    // Add the new event
-    switch (shift) {
-        case 'morning':
-            selectedEmployeeNames = selectedEmployeesM[key] || [];
-            break;
-        case 'noon':
-            selectedEmployeeNames = selectedEmployeesN[key] || [];
-            break;
-        case 'evening':
-            selectedEmployeeNames = selectedEmployeesE[key] || [];
-            break;
-        default:
-            break;
-    }
+// Add the new event
+switch (shift) {
+    case 'morning':
+        selectedEmployeeObjects = selectedEmployeesM[key] || [];
+        break;
+    case 'noon':
+        selectedEmployeeObjects = selectedEmployeesN[key] || [];
+        break;
+    case 'evening':
+        selectedEmployeeObjects = selectedEmployeesE[key] || [];
+        break;
+    default:
+        break;
+}
+
+// Extract names from the objects
+const selectedEmployeeNames = selectedEmployeeObjects.map(employee => employee.name);
+
+console.log("selectedEmployeeNames:", selectedEmployeeNames);
 
     const numEmployees = selectedEmployeeNames.length;
 
@@ -324,9 +370,9 @@ const handleShiftSelection = (shift) => {
                     dayCellContent={({ date }) => {
                         const clickedDate = changeDateFormat(date.toLocaleDateString('he-IL').replace(/\./g, '-'));
                         const today = new Date().toISOString().split('T')[0];
-                        console.log("mormimg:",employeesM);
-                        console.log("noun:",employeesN);
-                        console.log("evning:",employeesE);
+                        // console.log("mormimg:",employeesM);
+                        // console.log("noun:",employeesN);
+                        // console.log("evning:",employeesE);
                         return (
                             <div>
                                 {/* show dropdowns only on days that after today and not prev (today too) */}
@@ -368,7 +414,6 @@ const handleShiftSelection = (shift) => {
 }
 
 // Component for handling shift dropdowns
-// Component for handling shift dropdowns
 const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
     const [selectedEmployees, setSelectedEmployees] = React.useState(preselectedEmployees || []);
 
@@ -390,9 +435,9 @@ const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
                 style={{ fontSize: '12px', padding: '1px', margin: '1px' }}
             >
                 {employees.map((employee) => (
-                    <MenuItem key={employee?.id} value={employee?.id}
+                    <MenuItem key={employee?.id} value={employee} // Use entire employee object as value
                         style={{
-                            backgroundColor: selectedEmployees.includes(employee?.id) ? 'lightblue' : 'inherit',
+                            backgroundColor: selectedEmployees.some((selectedEmployee) => selectedEmployee.id === employee?.id) ? 'lightblue' : 'inherit',
                         }}>
                         {employee?.name || ''}
                     </MenuItem>
@@ -401,6 +446,7 @@ const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
         </div>
     );
 };
+
 
 
 
