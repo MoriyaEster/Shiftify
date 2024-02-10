@@ -13,12 +13,11 @@ export const WorkersManagement = () => {
   const { handleUserType, handleUserId, handleWorkPlace, handleUserName , handleUserPhoneNumber,
     handleUserEmail } = useUser();
 
-  const [userType, setUserType] = useState(handleUserType());
   const [userID, setUserID] = useState(handleUserId());
   const [userPhone, setUserPhone] = useState(handleUserPhoneNumber());
   const [userEmail, setEmail] = useState(handleUserEmail());
   const [userName, setUserName] = useState(handleUserName());
-  const [userWorkPlace, setWorkPlace] = useState(handleWorkPlace());
+ 
 
   // State to track the selected value of the dropdown
   const [selectedWorker, setSelectedWorker] = useState('');
@@ -28,14 +27,6 @@ export const WorkersManagement = () => {
   const [showModal, setShowModal] = useState(false);
   const [status, setStatus] = useState(null);
   const [contentPOPUP, setContentPOPUP] = useState(null);
-
-  // Dummy work places data for the dropdown options
-  const workPlaces = [
-    'Workplace 1',
-    'Workplace 2',
-    'Workplace 3',
-    // Add more work places as needed
-  ];
 
   // Dummy worker data for the dropdown options
   const workers = [
@@ -74,7 +65,7 @@ export const WorkersManagement = () => {
     //popup!
       //need to check the status
       setStatus(200);
-      setContentPOPUP("מחקת עובד בהצלחה ");
+      setContentPOPUP("העובד נמחק בהצלחה");
       setShowModal(true);
   };
 
@@ -84,7 +75,7 @@ export const WorkersManagement = () => {
 
   const handleAddWorker = () => {
     // Add your logic to handle removing a worker
-    console.log('Remove Worker button clicked');
+    console.log('ADD Worker button clicked');
     //popup!
       //need to check the status
       setStatus(200);
@@ -99,23 +90,6 @@ export const WorkersManagement = () => {
       <Header />
       <div dir="rtl">
         <h2>ניהול עובדים</h2>
-        <div>
-          {/* Dropdown select */}
-          <select 
-            className='body'
-            id="workePlaceSelect"
-            value={selectedWorker}
-            onChange={handleWorkerChange}
-            style={{ marginBottom: '5px' , color:'black'}}
-          >
-            <option value="">מקומות עבודה:</option>
-            {workPlaces.map((Workplace, index) => (
-              <option key={index} value={Workplace}>
-                {Workplace}
-            </option>
-            ))}
-          </select>
-        </div>
         <div>
           {/* Dropdown select */}
           <select 

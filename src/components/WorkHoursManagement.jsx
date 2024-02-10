@@ -3,6 +3,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import '/src/App.css';
 import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
+import Button from '@mui/material/Button';
+
 
 import UserConnectionChecker from './UserConnectionChecker';
 
@@ -12,7 +14,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
-
+import dayjs from 'dayjs';
 
 export const WorkHoursManagement = () => {
   
@@ -45,6 +47,18 @@ export const WorkHoursManagement = () => {
     setSelectedWorker(event.target.value);
   };
 
+  const [selectedDate, setSelectedDate] = useState(new Date());
+ 
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleShowMonth = () => {
+    console.log('Show month button clicked');
+    console.log(parseInt(selectedDate.$y, 10))
+    console.log(parseInt(selectedDate.$M, 10)+1);
+  };
+
 
   let content;
   switch (userType) {
@@ -75,23 +89,7 @@ export const WorkHoursManagement = () => {
           // need to send error
           break;
       }
-  let clock;
-  clock = (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DemoContainer
-        components={[
-          'TimePicker',
-          'MobileTimePicker',
-        ]}
-      >
-        <DemoItem>
-          <MobileTimePicker
-            ampm={false}
-            />
-        </DemoItem>
-      </DemoContainer>
-    </LocalizationProvider>
-  );
+
   return (
     <div>
       <UserConnectionChecker />
@@ -102,9 +100,23 @@ export const WorkHoursManagement = () => {
         <div dir="ltr">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DatePicker', 'DatePicker', 'DatePicker']}>
-              <DatePicker label={"חודש לבדיקה"} views={['month', 'year']} />
+              <DatePicker 
+                label={"חודש לבדיקה"} 
+                views={['month', 'year']}
+                onChange={handleDateChange}
+                disableFuture 
+                />
             </DemoContainer>
           </LocalizationProvider>
+        </div>
+        <div>
+          <Button 
+            color="primary"
+            variant="contained"
+            onClick={handleShowMonth}
+            style={{ marginBottom: '60px' }}
+            >הצג דוח
+          </Button>
         </div>
       </div>
     </div>
