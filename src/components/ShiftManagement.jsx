@@ -172,19 +172,15 @@ const handeljsonevents = (jsondata) => {
             return;
         }
     
-        const existingEmployeesM = selectedEmployeesM[key] || [];
-        const existingEmployeesN = selectedEmployeesN[key] || [];
-        const existingEmployeesE = selectedEmployeesE[key] || [];
-    
         switch (shift) {
             case 'morning':
-                handleShiftEmployeeSelection(existingEmployeesM, selectedEmployees, key, setSelectedEmployeesM);
+                setSelectedEmployeesM(()=>({[key]: [ ...selectedEmployees]}));
                 break;
             case 'noon':
-                handleShiftEmployeeSelection(existingEmployeesN, selectedEmployees, key, setSelectedEmployeesN);
+                setSelectedEmployeesN(()=>({[key]: [ ...selectedEmployees]}));
                 break;
             case 'evening':
-                handleShiftEmployeeSelection(existingEmployeesE, selectedEmployees, key, setSelectedEmployeesE);
+                setSelectedEmployeesE(()=>({[key]: [ ...selectedEmployees]}));
                 break;
             default:
                 break;
@@ -194,48 +190,6 @@ const handeljsonevents = (jsondata) => {
         console.log("noon:", selectedEmployeesN);
         console.log("evening:", selectedEmployeesE);
     };
-    
-    const handleShiftEmployeeSelection = (existingEmployees, uniqueSelectedEmployees, key, setShiftState) => {
-        console.log("!!!!!!!!!!!!!handleShiftEmployeeSelection:");
-        // Check if the employee is already in the shift by name
-    // Check if the last employee in uniqueSelectedEmployees is in existingEmployees
-const lastSelectedEmployee = uniqueSelectedEmployees[uniqueSelectedEmployees.length - 1];
-const isEmployeeInShift = existingEmployees.length > 0 && existingEmployees.some(employee => employee.name === lastSelectedEmployee.name);
-
-console.log("!isEmployeeInShift:", isEmployeeInShift);
-console.log("!existingEmployees:", existingEmployees);
-console.log("!uniqueSelectedEmployees:", uniqueSelectedEmployees);
-console.log("!key:", key);
-
-    // const isEmployeeInShift = false;
-    console.log("!isEmployeeInShift:", isEmployeeInShift);
-        console.log("!existingEmployees:", existingEmployees);
-        console.log("!uniqueSelectedEmployees:", uniqueSelectedEmployees);
-        console.log("!key:", key);
-        console.log("!isEmployeeInShift:", isEmployeeInShift);
-        if (isEmployeeInShift) {
-            // Remove the employee from the shift
-            setShiftState((prevSelectedEmployees) => ({
-                ...prevSelectedEmployees,
-                [key]: existingEmployees.filter(employee => !uniqueSelectedEmployees.some(selected => selected.name != employee.name)),
-            }));
-            console.log("added:", existingEmployees.filter(employee => !uniqueSelectedEmployees.some(selected => selected.name === employee.name)));
-            
-            console.log("morning:", selectedEmployeesM);
-            console.log("noon:", selectedEmployeesN);
-            console.log("evening:", selectedEmployeesE);
-        } else {
-            // Add the employee to the shift
-            setShiftState((prevSelectedEmployees) => ({
-                // ...prevSelectedEmployees,
-                [key]: [ ...uniqueSelectedEmployees],
-            }));
-        }
-    };
-    
-    
-    
-    
     
     useEffect(() => {
         // Call the function you want to execute after state update
@@ -251,7 +205,6 @@ console.log("!key:", key);
     
     }, [selectedDate, selectedEmployeesM, selectedEmployeesN, selectedEmployeesE]);
     
-
     
     // Handle shift selection and create/update events accordingly
 const handleShiftSelection = (shift) => {
@@ -439,11 +392,6 @@ const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
         </div>
     );
 };
-
-
-
-
-
 
 
 export default ShiftManagement;
