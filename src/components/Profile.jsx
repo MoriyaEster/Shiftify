@@ -3,7 +3,7 @@ import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import EditEmployee from './EditEmployee';
-import { editField } from './api'; // Import the function to send data to the backend
+// import { editField } from './api'; // Import the function to send data to the backend
 
 export const Profile = () => {
   const [showFullNameModal, setShowFullNameModal] = useState(false);
