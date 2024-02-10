@@ -27,8 +27,8 @@ export const SelectShifts = () => {
       // Modify the date format in the array
       const formattedArray = eventsArray.map((event) => ({
         title: event.title,
-        start: new Date(event.start),
-        end: new Date(event.end),
+        start: event.start,
+        end: event.end,
         date: event.date,
         type: event.type,
         userID: event.userID,
@@ -119,18 +119,20 @@ export const SelectShifts = () => {
     }
   };
 
+
   const handleShifts = () => {
     
     console.log("הגשת משמרות", events);
 
-    const jsonEvents = JSON.stringify(events);
-    console.log("Form events in JSON format:", jsonEvents);
+  // Wrap jsonEvents in an object with the key "docs"
+  const sendinpost = { docs: events };
+  console.log("Wrapped JSON for sending:", sendinpost);
   
     // Define the API endpoint (assuming the endpoint supports POST requests)
     const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&WorkPlace=${WorkPlace}`;
   
     // Make a POST request using Axios
-    axios.post(apiUrl, jsonEvents, {
+    axios.post(apiUrl, sendinpost, {
       headers: {
         'Content-Type': 'application/json', // Set the Content-Type header for JSON data
       },

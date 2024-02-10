@@ -266,9 +266,30 @@ const selectedEmployeeNames = selectedEmployeeObjects.map(employee => employee.n
     //send to the backend the events
     const handleShifts = () => {
         console.log("הגשת משמרות", events);
-        const jsonEvents = JSON.stringify(events);
-        console.log("לצחי", jsonEvents);
         //need to send to the backend the events
+        // Wrap jsonEvents in an object with the key "docs"
+        const sendinpost = { docs: events };
+        console.log("Wrapped JSON for sending:", sendinpost);
+        
+        // Define the API endpoint (assuming the endpoint supports POST requests)
+        const apiUrl = `shifthify/api/ShiftManagement?userID=${userID}&WorkPlace=${WorkPlace}`;
+    
+        // Make a POST request using Axios
+        axios.post(apiUrl, sendinpost, {
+        headers: {
+            'Content-Type': 'application/json', // Set the Content-Type header for JSON data
+        },
+        })
+        .then(response => {
+            // Handle successful response if needed
+            console.log("Data posted successfully:", response.data);
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error posting data:', error);
+            // Optionally, provide user feedback or take specific actions based on the error
+        });
+
     };
 
 
