@@ -29,6 +29,11 @@ export const SelectShifts = () => {
         title: event.title,
         start: new Date(event.start),
         end: new Date(event.end),
+        date: event.date,
+        type: event.type,
+        userID: event.userID,
+        WorkPlace: event.WorkPlace,
+        
       }));
       setEvents(formattedArray);
       console.log("events from json: ", formattedArray);
@@ -38,7 +43,8 @@ export const SelectShifts = () => {
   //get  info from backend
   useEffect(() => {
     // Fetch events for the user
-    const json  = '[{"title":"morning Shift - 2024-02-07","start":"2024-02-07T08:00:00","end":"2024-02-07T13:00:00"},{"title":"noon Shift - 2024-02-07","start":"2024-02-07T13:00:00","end":"2024-02-07T18:00:00"},{"title":"morning Shift - 2024-02-08","start":"2024-02-08T08:00:00","end":"2024-02-08T13:00:00"},{"title":"noon Shift - 2024-02-09","start":"2024-02-09T13:00:00","end":"2024-02-09T18:00:00"},{"title":"noon Shift - 2024-02-10","start":"2024-02-10T13:00:00","end":"2024-02-10T18:00:00"}]';
+    const json  = '[{"title":"morning Shift - 2024-02-07","start":"2024-02-07T08:00:00","end":"2024-02-07T13:00:00","date":"2024-02-07","type":"morning","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-07","start":"2024-02-07T13:00:00","end":"2024-02-07T18:00:00","date":"2024-02-07","type":"noon","userID":"54335","WorkPlace":"Workplace 2"},{"title":"morning Shift - 2024-02-08","start":"2024-02-08T08:00:00","end":"2024-02-08T13:00:00","date":"2024-02-08","type":"morning","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-09","start":"2024-02-09T13:00:00","end":"2024-02-09T18:00:00","date":"2024-02-09","type":"noon","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-10","start":"2024-02-10T13:00:00","end":"2024-02-10T18:00:00","date":"2024-02-10","type":"noon","userID":"54335","WorkPlace":"Workplace 2"}]'
+    
     handeljson(json);
     const fetchUserEvents = async () => {
       try {
@@ -102,7 +108,11 @@ export const SelectShifts = () => {
       const newEvent = {
         title: `${shift} Shift - ${selectedDate}`,
         start: `${selectedDate}T${shift === 'morning' ? '08:00:00' : shift === 'noon' ? '13:00:00' : '18:00:00'}`,
-        end: `${selectedDate}T${shift === 'morning' ? '13:00:00' : shift === 'noon' ? '18:00:00' : '23:00:00'}`
+        end: `${selectedDate}T${shift === 'morning' ? '13:00:00' : shift === 'noon' ? '18:00:00' : '23:00:00'}`,
+        date: `${selectedDate}`, 
+        type: `${shift}`,
+        userID: `${userID}`,
+        workPlace: `${WorkPlace}`,
       };
         //add the new event to event state
       setEvents(prevEvents => [...prevEvents, newEvent]);
@@ -110,12 +120,10 @@ export const SelectShifts = () => {
   };
 
   const handleShifts = () => {
-    // Add userID to each event object
-    const eventsWithUserID = events.map(event => ({ ...event, userID, WorkPlace }));
+    
+    console.log("הגשת משמרות", events);
 
-    console.log("הגשת משמרות", eventsWithUserID);
-
-    const jsonEvents = JSON.stringify(eventsWithUserID);
+    const jsonEvents = JSON.stringify(events);
     console.log("Form events in JSON format:", jsonEvents);
   
     // Define the API endpoint (assuming the endpoint supports POST requests)
