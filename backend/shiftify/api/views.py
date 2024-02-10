@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .models import User, Shifts, Workplace, ActualShift
 from .serializers import UserSeriazlier, ShiftsSerializer, WorkplaceSerializer, ActualShiftsSerializer
 import logging
+from datetime import date
 
 logger = logging.getLogger(__name__)
 
@@ -66,14 +67,129 @@ class LoginView(GenericAPIView):
 
 class SelectShiftsView(GenericAPIView):
     """View for managing shift selection by the worker"""
-    queryset = User
-    serializer_class = UserSeriazlier
+    queryset = Shifts
+    serializer_class = ShiftsSerializer
     
     def get(self, request):
-        pass
-    
+        try:
+            id = request.query_params.get("userid")
+            workplace = request.query_params.get("workplace")
+            if(id and workplace):
+                user_object = User.objects.get(username=id)
+                workplace_object = Workplace.objects.get(name=workplace)
+                data = self.get_queryset().objects.filter(workplace=workplace_object, proposed_users__in=[user_object])
+                serializer = self.get_serializer(data, many=True)
+                return Response({"docs":serializer.data}, status=200)
+            return Response(status=404)
+        except Exception as e:
+            logger.error(f"SelectShiftsView: {e}")
+            return Response(status=500)
+        
     def post(self, request):
-        pass
+        try:
+            for json_object in request.data.get("docs"):
+                username = json_object.get("userID")
+                workplace = json_object.get("workplace")
+                date_string = json_object.get("date")
+                shift_type = json_object.get("type")
+                title = json_object.get("title")
+                start = json_object.get("start")
+                end = json_object.get("end")
+                
+                workplace_object = Workplace.objects.get(name=workplace)
+                date_object = date.fromisoformat(date_string)
+                user_object = User.objects.get(username=username)
+                if(self.queryset.objects.filter(workplace=workplace_object, date=date_object, type=shift_type).exists()):
+                    shift = self.queryset.objects.get(workplace=workplace_object, date=date_object, type=shift_type)
+                    shift.proposed_users.add(user_object)
+                else:
+                    shift = self.queryset.objects.create(date=date_object, type=shift_type, 
+                                                         workplace=workplace_object, title=title, start=start, end=end)
+                    shift.proposed_users.add(user_object)
+            
+                shift.save()           
+                return Response(status=200)
+        except Exception as e:
+            logger.exception(f"SelectShiftsView: {e}, request:{request}")
+            return Response(e, status=500)
+
+
+class ApprovedShiftsView(GenericAPIView):
+    """View for viewing shifts approved for the user by the manager"""
+    queryset = Shifts
+    serializer_class = ShiftsSerializer
+    
+    def get(self, request):
+        try:
+            id = request.query_params.get("userid")
+            workplace = request.query_params.get("workplace")
+            if(id and workplace):
+                user_object = User.objects.get(username=id)
+                workplace_object = Workplace.objects.get(name=workplace)
+                data = self.get_queryset().objects.filter(workplace=workplace_object, assigned_users__in=[user_object])
+                serializer = self.get_serializer(data, many=True)
+                return Response({"docs":serializer.data}, status=200)
+            return Response(status=404)
+        except Exception as e:
+            logger.error(f"ApprovedShiftsView: {e}")
+            return Response(status=500)
+
+
+class ManagerShiftsView(GenericAPIView):
+    """View for the manager to choose users for shifts"""
+    queryset = Shifts
+    serializer_class = ShiftsSerializer
+    
+    def get(self, request):
+        try:
+            id = request.query_params.get("userid")
+            workplace = request.query_params.get("workplace")
+            date_string = request.query_params.get("date")
+            if(id and workplace):
+                user_object = User.objects.get(username=id)
+                workplace_object = Workplace.objects.get(name=workplace)
+                data = self.get_queryset().objects.filter(workplace=workplace_object, assigned_users__isnull=False)
+                serializer = self.get_serializer(data, many=True)
+                return Response({"docs":serializer.data}, status=200)
+            elif(date_string and workplace):
+                date_object = date.fromisoformat(date_string)
+                workplace_object = Workplace.objects.get(name=workplace)
+                data = self.get_queryset().objects.filter(workplace=workplace_object, assigned_users__isnull=False, date=date_object)
+                serializer = self.get_serializer(data, many=True)
+                return Response({"docs":serializer.data}, status=200)
+            return Response(status=404)
+        except Exception as e:
+            logger.error(f"ManagerShiftsView: {e}")
+            return Response(status=500)
+        
+    def post(self, request):
+        try:
+            for json_object in request.data.get("docs"):
+                username = json_object.get("userID")
+                workplace = json_object.get("workplace")
+                date_string = json_object.get("date")
+                shift_type = json_object.get("type")
+                title = json_object.get("title")
+                start = json_object.get("start")
+                end = json_object.get("end")
+                
+                workplace_object = Workplace.objects.get(name=workplace)
+                date_object = date.fromisoformat(date_string)
+                user_object = User.objects.get(username=username)
+                if(self.queryset.objects.filter(workplace=workplace_object, date=date_object, type=shift_type).exists()):
+                    shift = self.queryset.objects.get(workplace=workplace_object, date=date_object, type=shift_type)
+                    shift.proposed_users.add(user_object)
+                else:
+                    shift = self.queryset.objects.create(date=date_object, type=shift_type, 
+                                                         workplace=workplace_object, title=title, start=start, end=end)
+                    shift.proposed_users.add(user_object)
+            
+                shift.save()           
+                return Response(status=200)
+        except Exception as e:
+            logger.exception(f"ManagerShiftsView: {e}, request:{request}")
+            return Response(e, status=500)
+
 
 class UsersListView(GenericAPIView):
     queryset = User

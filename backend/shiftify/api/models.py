@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractUser
 
 class Workplace(models.Model):
     name = models.TextField()
+    
+    def __str__(self):
+        return str(self.name)
 
 class User(AbstractUser):
     username = models.TextField(unique=True,blank=True, null=True)
@@ -14,15 +17,17 @@ class User(AbstractUser):
     workplace = models.ManyToManyField(Workplace, blank=True)
 
 class Shifts(models.Model):
-    date = models.DateTimeField()
-    type = models.IntegerField()
+    date = models.DateField()
+    type = models.TextField(blank=True, null=True)
     workplace = models.ForeignKey(Workplace, on_delete=models.CASCADE)
     assigned_users = models.ManyToManyField(User, related_name="shifts_assigned_users")
     proposed_users = models.ManyToManyField(User, related_name="shifts_proposed_users")
+    title = models.TextField(blank=True, null=True)
+    start = models.TextField(blank=True, null=True)
+    end = models.TextField(blank=True, null=True)
 
 class ActualShift(models.Model):
-    date = models.DateTimeField()
-    type = models.IntegerField()
+    date = models.DateField()
     workplace = models.ForeignKey(Workplace, on_delete=models.CASCADE)
-    users = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     time_worked = models.IntegerField()
