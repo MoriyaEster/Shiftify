@@ -8,6 +8,7 @@ import { useUser} from '/src/UserContext.jsx';
 import { Link } from 'react-router-dom';
 import '/src/App.css';
 import axios from 'axios';
+import * as links from '/src/axios-handler.jsx';
 
 export const RegisteryForm = () => {
   const { handleSubmit, control } = useForm();
@@ -25,11 +26,11 @@ export const RegisteryForm = () => {
       ...data
     };
 
-    const jsonData = JSON.stringify(newData);
     
     console.log("newData:", newData);
     console.log("jsonData:", jsonData);
-    const response = await axios.post(url_register, newData)
+    console.log(links.url_register)
+    const response = await axios.post(links.url_register, newData)
     console.log("response:", response);
     try {
       //check the status

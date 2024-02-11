@@ -9,6 +9,7 @@ import { useUser } from '/src/UserContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import UserConnectionChecker from './UserConnectionChecker';
 import axios from 'axios';
+import * as links from '/src/axios-handler.jsx';
 
 const buttonClass = 'shift-button';
 
@@ -46,8 +47,7 @@ export const ApprovedShift = () => {
     handeljson(json);
     const fetchUserEvents = async () => {
       try {
-        const apiUrl = `shifthify/api/ApprovedShift?userID=${userID}&WorkPlace=${WorkPlace}`;
-        const response = await axios.get(apiUrl);
+        const response = await axios.get(links.url_approved_shifts + `?userID=${userID}&WorkPlace=${WorkPlace}`);
         console.log("response:", response);
         // setEvents(response.data.events);
         // handeljson(response.data.events);
