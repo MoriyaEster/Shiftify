@@ -108,7 +108,7 @@ class SelectShiftsView(GenericAPIView):
                     shift.proposed_users.add(user_object)
             
                 shift.save()           
-                return Response(status=200)
+            return Response(status=200)
         except Exception as e:
             logger.exception(f"SelectShiftsView: {e}, request:{request}")
             return Response(e, status=500)
@@ -165,7 +165,7 @@ class ManagerShiftsView(GenericAPIView):
     def post(self, request):
         try:
             for json_object in request.data.get("docs"):
-                username = json_object.get("userID")
+                employees = json_object.get("employees")
                 workplace = json_object.get("workplace")
                 date_string = json_object.get("date")
                 shift_type = json_object.get("type")
@@ -175,17 +175,18 @@ class ManagerShiftsView(GenericAPIView):
                 
                 workplace_object = Workplace.objects.get(name=workplace)
                 date_object = date.fromisoformat(date_string)
-                user_object = User.objects.get(username=username)
+                user_object_list = [User.objects.get(username=username) for username in employees]
                 if(self.queryset.objects.filter(workplace=workplace_object, date=date_object, type=shift_type).exists()):
                     shift = self.queryset.objects.get(workplace=workplace_object, date=date_object, type=shift_type)
-                    shift.proposed_users.add(user_object)
+                    shift.proposed_users.remove(user_object_list)
+                    shift.assigned_users = user_object_list
                 else:
                     shift = self.queryset.objects.create(date=date_object, type=shift_type, 
                                                          workplace=workplace_object, title=title, start=start, end=end)
-                    shift.proposed_users.add(user_object)
+                    shift.assigned_users = user_object_list
             
                 shift.save()           
-                return Response(status=200)
+            return Response(status=200)
         except Exception as e:
             logger.exception(f"ManagerShiftsView: {e}, request:{request}")
             return Response(e, status=500)
