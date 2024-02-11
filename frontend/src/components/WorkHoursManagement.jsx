@@ -13,20 +13,55 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
-import dayjs from 'dayjs';
+
 
 export const WorkHoursManagement = () => {
   
   const { handleUserType, handleUserId, handleWorkPlace, handleUserName , handleUserPhoneNumber,
     handleUserEmail } = useUser();
 
+  const [WorkPlace, setWorkPlace] = useState(handleWorkPlace());
   const [userType, setUserType] = useState(handleUserType());
   const [userID, setUserID] = useState(handleUserId());
   const [userPhone, setUserPhone] = useState(handleUserPhoneNumber());
   const [userEmail, setEmail] = useState(handleUserEmail());
   const [userName, setUserName] = useState(handleUserName());
-  const [userWorkPlace, setWorkPlace] = useState(handleWorkPlace());
+
+
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+
+  let workerslist
+
+  useEffect(() => {
+      const fetchData = async () => {
+          try {
+              const response = await axios.get(links.url_workers_management+`?userID=${userID}&WorkPlace=${WorkPlace}`); 
+              console.log(response.data)
+          } catch (error) {
+              setError(error);
+          }
+      };
+
+      fetchData();
+    }, []); // This empty array ensures that the effect runs only once, like componentDidMount
+
+    if (error) {
+      workerslist = <div>Error: {error.message}</div>;
+    } else if (!data) {
+        workerslist = <div>Loading...</div>;
+    } else {
+        // Assuming your response contains the 'users' field
+        workerslist =  (
+            <div>
+                {data.users.map(user => (
+                    <div key={userID}>{userName}</div>
+                    // Assuming user object has a 'name' field
+                ))}
+            </div>
+        );
+    }
+
 
   // State to track the selected value of the dropdown
   const [selectedWorker, setSelectedWorker] = useState('');
@@ -53,12 +88,16 @@ export const WorkHoursManagement = () => {
     setSelectedDate(date);
   };
 
-  const handleShowMonth = () => {
-    console.log('Show month button clicked');
-    console.log(parseInt(selectedDate.$y, 10))
-    console.log(parseInt(selectedDate.$M, 10)+1);
+  const handleShowMonth = async () => {
+    try {
+      console.log(parseInt(selectedDate.$y, 10))
+      console.log(parseInt(selectedDate.$M, 10)+1);
+      const response = await axios.get(links.url_managers_shifts`?userid=${userID}&work_place=${WorkPlace}&month=${parseInt(selectedDate.$M, 10)+1}&year=${parseInt(selectedDate.$y, 10)}`);
+      setData(response.data);
+    } catch (error) {
+      setError(error);
+    }
   };
-
 
   let content;
   switch (userType) {

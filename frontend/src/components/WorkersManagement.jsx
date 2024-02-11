@@ -5,6 +5,8 @@ import { Header } from './Header';
 import Button from '@mui/material/Button';
 import { ModelPopUp } from './ModelPopUp';
 import { useUser } from '/src/UserContext.jsx';
+import axios from 'axios';
+import * as links from '/src/axios-handler.jsx';
 
 import UserConnectionChecker from './UserConnectionChecker';
 
@@ -13,11 +15,45 @@ export const WorkersManagement = () => {
   const { handleUserType, handleUserId, handleWorkPlace, handleUserName , handleUserPhoneNumber,
     handleUserEmail } = useUser();
 
+  const [WorkPlace, setWorkPlace] = useState(handleWorkPlace());
   const [userID, setUserID] = useState(handleUserId());
   const [userPhone, setUserPhone] = useState(handleUserPhoneNumber());
   const [userEmail, setEmail] = useState(handleUserEmail());
   const [userName, setUserName] = useState(handleUserName());
  
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+
+  let workerslist
+
+  useEffect(() => {
+      const fetchData = async () => {
+          try {
+              const response = await axios.get(links.url_workers_management+`?userID=${userID}&WorkPlace=${WorkPlace}`); 
+              console.log(response.data)
+          } catch (error) {
+              setError(error);
+          }
+      };
+
+      fetchData();
+    }, []); // This empty array ensures that the effect runs only once, like componentDidMount
+
+    if (error) {
+      workerslist = <div>Error: {error.message}</div>;
+    } else if (!data) {
+        workerslist = <div>Loading...</div>;
+    } else {
+        // Assuming your response contains the 'users' field
+        workerslist =  (
+            <div>
+                {data.users.map(user => (
+                    <div key={userID}>{userName}</div>
+                    // Assuming user object has a 'name' field
+                ))}
+            </div>
+        );
+    }
 
   // State to track the selected value of the dropdown
   const [selectedWorker, setSelectedWorker] = useState('');
@@ -50,7 +86,6 @@ export const WorkersManagement = () => {
         <h5>תעודת זהות: {userID}</h5>
         <h5>טלפון: {userPhone}</h5>
         <h5>אימייל: {userEmail}</h5>
-
       </>
 
       );
@@ -59,30 +94,46 @@ export const WorkersManagement = () => {
     console.log('info of Worker button clicked');
   };
 
-  const handleRemoveWorker = () => {
-    // Add your logic to handle removing a worker
-    console.log('Remove Worker button clicked');
-    //popup!
-      //need to check the status
+  const handleRemoveWorker = async () => {
+    try {
+      const response = await axios.delete(links.url_workers_management, {
+        params: {
+          userid: userID,
+          work_place: WorkPlace
+        }
+      });
+      console.log(response);
+      //if status =>
       setStatus(200);
       setContentPOPUP("העובד נמחק בהצלחה");
       setShowModal(true);
+    } catch (error) {
+      console.error("Error removing worker:", error);
+    }
   };
 
   const handleInputWorkerID = (event) => {
     setNewWorkerID(event.target.value);
   };
 
-  const handleAddWorker = () => {
-    // Add your logic to handle removing a worker
-    console.log('ADD Worker button clicked');
-    //popup!
-      //need to check the status
+  const handleAddWorker = async () => {
+    try {
+      const response = await axios.post(links.url_workers_management, null, {
+        params: {
+          userid: newWorkerName,
+          work_place: WorkPlace
+        }
+      });
+      console.log(response);
+      //if status =>
       setStatus(200);
-      setContentPOPUP("הוספת עובד בהצלחה ");
+      setContentPOPUP("הוספת עובד בהצלחה");
       setShowModal(true);
-
+    } catch (error) {
+      console.error("Error adding worker:", error);
+    }
   };
+
 
   return (
     <div>
@@ -100,11 +151,11 @@ export const WorkersManagement = () => {
             style={{ marginBottom: '5px' , color:'black'}}
           >
             <option value="">עובדים:</option>
-            {workers.map((worker, index) => (
-              <option key={index} value={worker}>
-                {worker}
-              </option>
-            ))}
+            {workers.map(worker => (
+            <option key={worker.id} value={worker.id}>
+              {worker.name}
+            </option>
+          ))}
           </select>
         </div>
 
