@@ -3,7 +3,10 @@ import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import EditEmployee from './EditEmployee';
-// import { editField } from './api'; // Import the function to send data to the backend
+import axios from 'axios';
+import * as links from '/src/axios-handler.jsx';
+import UserConnectionChecker from './UserConnectionChecker';
+
 
 export const Profile = () => {
   const [showFullNameModal, setShowFullNameModal] = useState(false);
@@ -14,13 +17,14 @@ export const Profile = () => {
 
   const { handleUserType, handleUserId, handleUserName, handleWorkPlaces, handlpassword, handleUserPhoneNumber, handleUserEmail } = useUser();
 
-  const navigate = useNavigate();
 
-  const handleEditField = (field, value) => {
+  const handleEditField =  (field, value) => {
     // Call the backend API to update the field
     editField(field, value)
-      .then(() => {
+      .then(async(field,value) => {
         // Optionally, you can update the local state or perform other actions after successful update
+        const response = await axios.post(links.url_select_shifts+ `userID=${userID}&${field}=${value}`, sendinpost)
+        console.log(response)
       })
       .catch((error) => {
         // Handle error
@@ -30,6 +34,7 @@ export const Profile = () => {
   return (
     <div dir="rtl">
       <Header />
+      <UserConnectionChecker />
       <h1>פרופיל</h1>
       <div>
         <h2>שם מלא: {handleUserName()}</h2>
