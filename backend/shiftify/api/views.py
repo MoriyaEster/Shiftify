@@ -178,6 +178,7 @@ class ManagerShiftsView(GenericAPIView):
                 user_object_list = [User.objects.get(username=username) for username in employees]
                 if(self.queryset.objects.filter(workplace=workplace_object, date=date_object, type=shift_type).exists()):
                     shift = self.queryset.objects.get(workplace=workplace_object, date=date_object, type=shift_type)
+                    shift.title = title
                     shift.proposed_users.remove(user_object_list)
                     shift.assigned_users = user_object_list
                 else:
