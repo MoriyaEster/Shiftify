@@ -34,9 +34,24 @@ export const RegisteryForm = () => {
     console.log("response:", response);
     try {
       //check the status
-      setStatus(200);
-      setContentPOPUP("נרשמת בהצלחה");
-      setShowModal(true);
+      if(response.status === 201)
+      {
+        setStatus(200);
+        setContentPOPUP("נרשמת בהצלחה");
+        setShowModal(true);
+      }
+      if(response.status === 403)
+      {
+        setStatus(403);
+        setContentPOPUP("תז כבר קיים, נסה שוב");
+        setShowModal(true);
+      }
+      if(response.status === 500)
+      {
+        setStatus(403);
+        setContentPOPUP("שגיאה! נסה שוב בבקשה");
+        setShowModal(true);
+      }
       
       await handleLogin(jsonData);
     } catch (error) {
