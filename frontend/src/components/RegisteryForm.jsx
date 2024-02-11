@@ -4,9 +4,10 @@ import TextField from '@mui/material/TextField';
 import { useForm, Controller } from 'react-hook-form';
 import { useParams} from 'react-router-dom';
 import { ModelPopUp } from './ModelPopUp';
-import { useUser } from '/src/UserContext.jsx';
+import { useUser} from '/src/UserContext.jsx';
 import { Link } from 'react-router-dom';
 import '/src/App.css';
+import axios from 'axios';
 
 export const RegisteryForm = () => {
   const { handleSubmit, control } = useForm();
@@ -28,6 +29,8 @@ export const RegisteryForm = () => {
     
     console.log("newData:", newData);
     console.log("jsonData:", jsonData);
+    const response = await axios.post(url_register, newData)
+    console.log("response:", response);
     try {
       //check the status
       setStatus(200);
