@@ -9,7 +9,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
-import { useNavigate } from 'react-router-dom';
 import UserConnectionChecker from './UserConnectionChecker';
 import axios from 'axios';
 
@@ -21,7 +20,6 @@ export const ShiftManagement = () => {
     const [selectedEmployeesM, setSelectedEmployeesM] = useState({});
     const [selectedEmployeesN, setSelectedEmployeesN] = useState({});
     const [selectedEmployeesE, setSelectedEmployeesE] = useState({});
-    const [allSelectedEmployees, setAllSelectedEmployees] = useState({});
     const [employees, setEmployees] = useState([]);
     const [employeesM, setEmployeesM] = useState([]);
     const [employeesN, setEmployeesN] = useState([]);
@@ -40,9 +38,10 @@ const handeljsonevents = (jsondata) => {
     // Modify the date format in the array
     const formattedArray = eventsArray.map((event) => ({
       title: event.title,
-      start: new Date(event.start),
-      end: new Date(event.end),
-      employees: event.employees
+      start: event.start,
+      end: event.end,
+      employees: event.employees,
+      WorkPlace: event.WorkPlace,
     }));
     setEvents(formattedArray);
     console.log("events from json: ", formattedArray);
@@ -53,7 +52,7 @@ const handeljsonevents = (jsondata) => {
   //get events from backend
   useEffect (() => {
     // Fetch events for the user
-    const json = '[{"title": "morning - 2024-02-08 - סה\\"כ 1 - Employee 1","start": "2024-02-08T08:00:00","end": "2024-02-08T13:00:00","employees": ["Employee 1"]},{"title": "evening - 2024-02-08 - סה\\\\\\"כ 2 - Employee 1, Employee 2","start": "2024-02-08T18:00:00","end": "2024-02-08T23:00:00","employees": ["Employee 1", "Employee 2"]},{"title": "evening - 2024-02-09 - סה\\\\\\"כ 2 - Employee 1, Employee 2","start": "2024-02-09T18:00:00","end": "2024-02-09T23:00:00","employees": ["Employee 1", "Employee 2"]}]';
+    const json = '[{"title": "morning - 2024-02-08 - total 1- Employee 1","start": "2024-02-08T08:00:00","end": "2024-02-08T13:00:00","employees": ["Employee 1"],"WorkPlace": "Workplace 2","userID": "333"},{"title": "evening - 2024-02-08 - total 2 - Employee 1, Employee 2","start": "2024-02-08T18:00:00","end": "2024-02-08T23:00:00","employees": ["Employee 1", "Employee 2"],"WorkPlace": "Workplace 2","userID": "333"},{"title": "evening - 2024-02-09 - total 2 - Employee 1, Employee 2","start": "2024-02-09T18:00:00","end": "2024-02-09T23:00:00","employees": ["Employee 1", "Employee 2"],"WorkPlace": "Workplace 2","userID": "333"}]';
     handeljsonevents(json);
     const fetchUserEvents = async () => {
       try {
@@ -79,38 +78,45 @@ const handeljsonevents = (jsondata) => {
   const handeljsonemployees = (jsondata) => {
     const data = JSON.parse(jsondata);
 
-    // Assuming the JSON structure is like: {"date": "2024-02-08", "morning": ["Employee 1", "Employee 2"], ...}
-    const { date, morning, noon, evening } = data;
+    // Group the data by shift type
+    const groupedData = data.reduce((acc, shift) => {
+        if (!acc[shift.type]) {
+            acc[shift.type] = [];
+        }
 
-    // Modify the data structure for each shift and set it into state
-    const formattedMorning = morning.map((employeeName, index) => ({
-        id: index + 1,
-        name: employeeName,
-    }));
-    setEmployeesM(formattedMorning);
+        acc[shift.type] = acc[shift.type].concat(shift.employees);
 
-    const formattedNoon = noon.map((employeeName, index) => ({
-        id: index + 1,
-        name: employeeName,
-    }));
-    setEmployeesN(formattedNoon);
+        return acc;
+    }, {});
 
-    const formattedEvening = evening.map((employeeName, index) => ({
-        id: index + 1,
-        name: employeeName,
-    }));
-    setEmployeesE(formattedEvening);
+    // Map each shift type and set it into state
+    Object.keys(groupedData).forEach((shiftType) => {
+        const formattedEmployees = groupedData[shiftType].map((employeeName, index) => ({
+            id: index + 1,
+            name: employeeName,
+        }));
 
-    console.log("Morning employees from json: ", formattedMorning);
-    console.log("Noon employees from json: ", formattedNoon);
-    console.log("Evening employees from json: ", formattedEvening);
+        // Set the employees into the corresponding state
+        if (shiftType === "morning") {
+            setEmployeesM(formattedEmployees);
+        } else if (shiftType === "noon") {
+            setEmployeesN(formattedEmployees);
+        } else if (shiftType === "evening") {
+            setEmployeesE(formattedEmployees);
+        }
+
+        console.log(`${shiftType.charAt(0).toUpperCase() + shiftType.slice(1)} employees from json: `, formattedEmployees);
+    });
+    console.log("Morning employees from json: ", employeesM);
+    console.log("Noon employees from json: ", employeesN);
+    console.log("Evening employees from json: ", employeesE);
 };
 
 
   //get employees from backend
   useEffect(() => {
     // Fetch events for the user
-    const json  = '{"date": "2024-02-08","morning": ["Employee 1"],"noon": ["Employee 1", "Employee 2"],"evening": ["Employee 1", "Employee 2"]}';
+    const json  = '[{"date": "2024-02-08","type": "morning","employees": ["Employee 1"]},{"date": "2024-02-08","type": "noon","employees": ["Employee 1", "Employee 2"]},{"date": "2024-02-08","type": "evening","employees": ["Employee 1", "Employee 2"]}]';
     handeljsonemployees(json);
     console.log("selected date:", selectedDate)
     const fetchUserEmployees = async () => {
@@ -167,83 +173,24 @@ const handeljsonevents = (jsondata) => {
             return;
         }
     
-        const existingEmployeesM = selectedEmployeesM[key] || [];
-        const existingEmployeesN = selectedEmployeesN[key] || [];
-        const existingEmployeesE = selectedEmployeesE[key] || [];
-    
         switch (shift) {
             case 'morning':
-                handleShiftEmployeeSelection(existingEmployeesM, selectedEmployees, key, setSelectedEmployeesM);
+                setSelectedEmployeesM(()=>({[key]: [ ...selectedEmployees]}));
                 break;
             case 'noon':
-                handleShiftEmployeeSelection(existingEmployeesN, selectedEmployees, key, setSelectedEmployeesN);
+                setSelectedEmployeesN(()=>({[key]: [ ...selectedEmployees]}));
                 break;
             case 'evening':
-                handleShiftEmployeeSelection(existingEmployeesE, selectedEmployees, key, setSelectedEmployeesE);
+                setSelectedEmployeesE(()=>({[key]: [ ...selectedEmployees]}));
                 break;
             default:
                 break;
         }
     
-        console.log("AllSelectedEmployees", allSelectedEmployees);
         console.log("morning:", selectedEmployeesM);
         console.log("noon:", selectedEmployeesN);
         console.log("evening:", selectedEmployeesE);
     };
-    
-    const handleShiftEmployeeSelection = (existingEmployees, uniqueSelectedEmployees, key, setShiftState) => {
-        console.log("!!!!!!!!!!!!!handleShiftEmployeeSelection:");
-        // Check if the employee is already in the shift by name
-    // Check if the last employee in uniqueSelectedEmployees is in existingEmployees
-const lastSelectedEmployee = uniqueSelectedEmployees[uniqueSelectedEmployees.length - 1];
-const isEmployeeInShift = existingEmployees.length > 0 && existingEmployees.some(employee => employee.name === lastSelectedEmployee.name);
-
-console.log("!isEmployeeInShift:", isEmployeeInShift);
-console.log("!existingEmployees:", existingEmployees);
-console.log("!uniqueSelectedEmployees:", uniqueSelectedEmployees);
-console.log("!key:", key);
-
-    // const isEmployeeInShift = false;
-    console.log("!isEmployeeInShift:", isEmployeeInShift);
-        console.log("!existingEmployees:", existingEmployees);
-        console.log("!uniqueSelectedEmployees:", uniqueSelectedEmployees);
-        console.log("!key:", key);
-        console.log("!isEmployeeInShift:", isEmployeeInShift);
-        if (isEmployeeInShift) {
-            // Remove the employee from the shift
-            setShiftState((prevSelectedEmployees) => ({
-                ...prevSelectedEmployees,
-                [key]: existingEmployees.filter(employee => !uniqueSelectedEmployees.some(selected => selected.name != employee.name)),
-            }));
-            console.log("added:", existingEmployees.filter(employee => !uniqueSelectedEmployees.some(selected => selected.name === employee.name)));
-            
-            console.log("morning:", selectedEmployeesM);
-            console.log("noon:", selectedEmployeesN);
-            console.log("evening:", selectedEmployeesE);
-    
-            // Remove the employee from allSelectedEmployees
-            setAllSelectedEmployees((prevAllSelectedEmployees) => ({
-                ...prevAllSelectedEmployees,
-                [key]: allSelectedEmployees[key].filter(employee => !uniqueSelectedEmployees.some(selected => selected.name === employee.name)),
-            }));
-        } else {
-            // Add the employee to the shift
-            setShiftState((prevSelectedEmployees) => ({
-                // ...prevSelectedEmployees,
-                [key]: [ ...uniqueSelectedEmployees],
-            }));
-    
-            // Add the employee to allSelectedEmployees
-            setAllSelectedEmployees((prevAllSelectedEmployees) => ({
-                ...prevAllSelectedEmployees,
-                [key]: [...uniqueSelectedEmployees],
-            }));
-        }
-    };
-    
-    
-    
-    
     
     useEffect(() => {
         // Call the function you want to execute after state update
@@ -259,7 +206,6 @@ console.log("!key:", key);
     
     }, [selectedDate, selectedEmployeesM, selectedEmployeesN, selectedEmployeesE]);
     
-
     
     // Handle shift selection and create/update events accordingly
 const handleShiftSelection = (shift) => {
@@ -299,16 +245,16 @@ switch (shift) {
 // Extract names from the objects
 const selectedEmployeeNames = selectedEmployeeObjects.map(employee => employee.name);
 
-console.log("selectedEmployeeNames:", selectedEmployeeNames);
-
     const numEmployees = selectedEmployeeNames.length;
 
     const newEvent = {
-        // id: events.length > 0 ? Math.max(...events.map((event) => event.id)) + 1 : 1,
-        title: `${shift} - ${selectedDate}<br />סה"כ ${numEmployees}: <br /> ${selectedEmployeeNames.join(', ')}`,
+        title: `${shift} - ${selectedDate}<br /> total ${numEmployees}: <br /> ${selectedEmployeeNames.join(', ')}`,
         start: `${selectedDate}T${shift === 'morning' ? '08:00:00' : shift === 'noon' ? '13:00:00' : '18:00:00'}`,
         end: `${selectedDate}T${shift === 'morning' ? '13:00:00' : shift === 'noon' ? '18:00:00' : '23:00:00'}`,
         employees: selectedEmployeeNames,
+        date: `${selectedDate}`,
+        type: `${shift}`,
+        WorkPlace: `${WorkPlace}`
     };
 
     setEvents([...updatedEvents, newEvent]);
@@ -321,8 +267,30 @@ console.log("selectedEmployeeNames:", selectedEmployeeNames);
     //send to the backend the events
     const handleShifts = () => {
         console.log("הגשת משמרות", events);
-        console.log("כל העובדים ", allSelectedEmployees);
         //need to send to the backend the events
+        // Wrap jsonEvents in an object with the key "docs"
+        const sendinpost = { docs: events };
+        console.log("Wrapped JSON for sending:", sendinpost);
+        
+        // Define the API endpoint (assuming the endpoint supports POST requests)
+        const apiUrl = `shifthify/api/ShiftManagement?userID=${userID}&WorkPlace=${WorkPlace}`;
+    
+        // Make a POST request using Axios
+        axios.post(apiUrl, sendinpost, {
+        headers: {
+            'Content-Type': 'application/json', // Set the Content-Type header for JSON data
+        },
+        })
+        .then(response => {
+            // Handle successful response if needed
+            console.log("Data posted successfully:", response.data);
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error posting data:', error);
+            // Optionally, provide user feedback or take specific actions based on the error
+        });
+
     };
 
 
@@ -431,7 +399,7 @@ const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
                 multiple
                 value={selectedEmployees}
                 onChange={handleSelectChange}
-                renderValue={(selected) => `${selected.length}`}
+                renderValue={(selected) => `${new Set(selected.map(employee => employee.id)).size}`}
                 style={{ fontSize: '12px', padding: '1px', margin: '1px' }}
             >
                 {employees.map((employee) => (
@@ -446,11 +414,6 @@ const Dropdown = ({ label, employees, onSelect, preselectedEmployees }) => {
         </div>
     );
 };
-
-
-
-
-
 
 
 export default ShiftManagement;

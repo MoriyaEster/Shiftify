@@ -5,6 +5,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { useParams} from 'react-router-dom';
 import { ModelPopUp } from './ModelPopUp';
 import { useUser } from '/src/UserContext.jsx';
+import { Link } from 'react-router-dom';
+import '/src/App.css';
 
 export const RegisteryForm = () => {
   const { handleSubmit, control } = useForm();
@@ -83,6 +85,12 @@ export const RegisteryForm = () => {
 
   return (
     <>
+      <div dir="rtl">
+        <Link to="/">
+          <img className="img-backbutton" src="/src/photos/backbutton.jpg" alt="backbutton" />
+        </Link>
+        <img className="img-logo" src="/src/photos/logo.png" alt="logo" />
+      </div>   
       <h1>הרשמה</h1>
       <p>הכנס פרטים</p>
       <form onSubmit={handleSubmit(handleRegister)}>
