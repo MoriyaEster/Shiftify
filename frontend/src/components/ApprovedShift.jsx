@@ -43,18 +43,17 @@ export const ApprovedShift = () => {
   //get  info from backend
   useEffect(() => {
     // Fetch events for the user
-    const json  = '[{"title":"morning Shift - 2024-02-07","start":"2024-02-07T08:00:00","end":"2024-02-07T13:00:00","date":"2024-02-07","type":"morning","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-07","start":"2024-02-07T13:00:00","end":"2024-02-07T18:00:00","date":"2024-02-07","type":"noon","userID":"54335","WorkPlace":"Workplace 2"},{"title":"morning Shift - 2024-02-08","start":"2024-02-08T08:00:00","end":"2024-02-08T13:00:00","date":"2024-02-08","type":"morning","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-09","start":"2024-02-09T13:00:00","end":"2024-02-09T18:00:00","date":"2024-02-09","type":"noon","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-10","start":"2024-02-10T13:00:00","end":"2024-02-10T18:00:00","date":"2024-02-10","type":"noon","userID":"54335","WorkPlace":"Workplace 2"}]'
-    handeljson(json);
+    // const json  = '[{"title":"morning Shift - 2024-02-07","start":"2024-02-07T08:00:00","end":"2024-02-07T13:00:00","date":"2024-02-07","type":"morning","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-07","start":"2024-02-07T13:00:00","end":"2024-02-07T18:00:00","date":"2024-02-07","type":"noon","userID":"54335","WorkPlace":"Workplace 2"},{"title":"morning Shift - 2024-02-08","start":"2024-02-08T08:00:00","end":"2024-02-08T13:00:00","date":"2024-02-08","type":"morning","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-09","start":"2024-02-09T13:00:00","end":"2024-02-09T18:00:00","date":"2024-02-09","type":"noon","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-10","start":"2024-02-10T13:00:00","end":"2024-02-10T18:00:00","date":"2024-02-10","type":"noon","userID":"54335","WorkPlace":"Workplace 2"}]'
+    // handeljson(json);
     const fetchUserEvents = async () => {
       try {
         const response = await axios.get(links.url_approved_shifts + `?userID=${userID}&WorkPlace=${WorkPlace}`);
         console.log("response:", response);
-        // setEvents(response.data.events);
         // handeljson(response.data.events);
         if (response.status === 200) {
           console.log("Data fetched successfully:", response.data);
           // Update state or perform other actions with the data
-          // setEvents(response.data.events);
+          handeljson(response.data);
         } else {
           console.error(`Unexpected status code: ${response.status}`);
         }

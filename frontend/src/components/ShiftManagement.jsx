@@ -11,6 +11,7 @@ import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
 import UserConnectionChecker from './UserConnectionChecker';
 import axios from 'axios';
+import * as links from '/src/axios-handler.jsx';
 
 export const ShiftManagement = () => {
 
@@ -52,18 +53,17 @@ const handeljsonevents = (jsondata) => {
   //get events from backend
   useEffect (() => {
     // Fetch events for the user
-    const json = '[{"title": "morning - 2024-02-08 - total 1- Employee 1","start": "2024-02-08T08:00:00","end": "2024-02-08T13:00:00","employees": ["Employee 1"],"WorkPlace": "Workplace 2","userID": "333"},{"title": "evening - 2024-02-08 - total 2 - Employee 1, Employee 2","start": "2024-02-08T18:00:00","end": "2024-02-08T23:00:00","employees": ["Employee 1", "Employee 2"],"WorkPlace": "Workplace 2","userID": "333"},{"title": "evening - 2024-02-09 - total 2 - Employee 1, Employee 2","start": "2024-02-09T18:00:00","end": "2024-02-09T23:00:00","employees": ["Employee 1", "Employee 2"],"WorkPlace": "Workplace 2","userID": "333"}]';
-    handeljsonevents(json);
+    // const json = '[{"title": "morning - 2024-02-08 - total 1- Employee 1","start": "2024-02-08T08:00:00","end": "2024-02-08T13:00:00","employees": ["Employee 1"],"WorkPlace": "Workplace 2","userID": "333"},{"title": "evening - 2024-02-08 - total 2 - Employee 1, Employee 2","start": "2024-02-08T18:00:00","end": "2024-02-08T23:00:00","employees": ["Employee 1", "Employee 2"],"WorkPlace": "Workplace 2","userID": "333"},{"title": "evening - 2024-02-09 - total 2 - Employee 1, Employee 2","start": "2024-02-09T18:00:00","end": "2024-02-09T23:00:00","employees": ["Employee 1", "Employee 2"],"WorkPlace": "Workplace 2","userID": "333"}]';
+    // handeljsonevents(json);
     const fetchUserEvents = async () => {
       try {
-        const apiUrl = `shifthify/api/ShiftManagement?userID=${userID}&WorkPlace=${WorkPlace}'`;
-        const response = await axios.get(apiUrl);
+        const response = await axios.get(links.url_managers_shifts + `?userID=${userID}&WorkPlace=${WorkPlace}`);
         console.log("response:", response);
         // handeljsonevents(response.data.events);
         if (response.status === 200) {
           console.log("Data fetched successfully:", response.data);
           // Update state or perform other actions with the data
-          // setEvents(response.data.events);
+          handeljsonevents(response.data.events);
         } else {
           console.error(`Unexpected status code: ${response.status}`);
         }
@@ -116,19 +116,18 @@ const handeljsonevents = (jsondata) => {
   //get employees from backend
   useEffect(() => {
     // Fetch events for the user
-    const json  = '[{"date": "2024-02-08","type": "morning","employees": ["Employee 1"]},{"date": "2024-02-08","type": "noon","employees": ["Employee 1", "Employee 2"]},{"date": "2024-02-08","type": "evening","employees": ["Employee 1", "Employee 2"]}]';
-    handeljsonemployees(json);
+    // const json  = '[{"date": "2024-02-08","type": "morning","employees": ["Employee 1"]},{"date": "2024-02-08","type": "noon","employees": ["Employee 1", "Employee 2"]},{"date": "2024-02-08","type": "evening","employees": ["Employee 1", "Employee 2"]}]';
+    // handeljsonemployees(json);
     console.log("selected date:", selectedDate)
     const fetchUserEmployees = async () => {
       try {
-        const apiUrl = `shifthify/api/ShiftManagement?WorkPlace=${WorkPlace}&date=${selectedDate}`;
-        const response = await axios.get(apiUrl);
+        const response = await axios.get(links.url_managers_shifts + `?WorkPlace=${WorkPlace}&date=${selectedDate}`);
         console.log("response:", response);
         // handeljsonemployees(response.data.events);
         if (response.status === 200) {
           console.log("Data fetched successfully:", response.data);
           // Update state or perform other actions with the data
-          // setEvents(response.data.events);
+          handeljsonemployees(response.data);
         } else {
           console.error(`Unexpected status code: ${response.status}`);
         }
@@ -265,30 +264,24 @@ const selectedEmployeeNames = selectedEmployeeObjects.map(employee => employee.n
 
     
     //send to the backend the events
-    const handleShifts = () => {
+    const handleShifts = async () => {
         console.log("הגשת משמרות", events);
         //need to send to the backend the events
         // Wrap jsonEvents in an object with the key "docs"
         const sendinpost = { docs: events };
         console.log("Wrapped JSON for sending:", sendinpost);
         
-        // Define the API endpoint (assuming the endpoint supports POST requests)
-        const apiUrl = `shifthify/api/ShiftManagement?userID=${userID}&WorkPlace=${WorkPlace}`;
     
-        // Make a POST request using Axios
-        axios.post(apiUrl, sendinpost, {
-        headers: {
-            'Content-Type': 'application/json', // Set the Content-Type header for JSON data
-        },
-        })
+         //post
+        const response = await axios.post(links.url_managers_shifts+ `userID=${userID}&WorkPlace=${WorkPlace}`, sendinpost)
         .then(response => {
-            // Handle successful response if needed
-            console.log("Data posted successfully:", response.data);
+        // Handle successful response if needed
+        console.log("Data posted successfully:", response.data);
         })
         .catch(error => {
-            // Handle error
-            console.error('Error posting data:', error);
-            // Optionally, provide user feedback or take specific actions based on the error
+        // Handle error
+        console.error('Error posting data:', error);
+        // Optionally, provide user feedback or take specific actions based on the error
         });
 
     };

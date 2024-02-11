@@ -9,6 +9,7 @@ import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
 import UserConnectionChecker from './UserConnectionChecker';
 import axios from 'axios';
+import * as links from '/src/axios-handler.jsx';
 
 const buttonClass = 'shift-button';
 
@@ -42,21 +43,18 @@ export const SelectShifts = () => {
 
   //get  info from backend
   useEffect(() => {
-    // Fetch events for the user
-    const json  = '[{"title":"morning Shift - 2024-02-07","start":"2024-02-07T08:00:00","end":"2024-02-07T13:00:00","date":"2024-02-07","type":"morning","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-07","start":"2024-02-07T13:00:00","end":"2024-02-07T18:00:00","date":"2024-02-07","type":"noon","userID":"54335","WorkPlace":"Workplace 2"},{"title":"morning Shift - 2024-02-08","start":"2024-02-08T08:00:00","end":"2024-02-08T13:00:00","date":"2024-02-08","type":"morning","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-09","start":"2024-02-09T13:00:00","end":"2024-02-09T18:00:00","date":"2024-02-09","type":"noon","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-10","start":"2024-02-10T13:00:00","end":"2024-02-10T18:00:00","date":"2024-02-10","type":"noon","userID":"54335","WorkPlace":"Workplace 2"}]'
+    // // Fetch events for the user
+    // const json  = '[{"title":"morning Shift - 2024-02-07","start":"2024-02-07T08:00:00","end":"2024-02-07T13:00:00","date":"2024-02-07","type":"morning","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-07","start":"2024-02-07T13:00:00","end":"2024-02-07T18:00:00","date":"2024-02-07","type":"noon","userID":"54335","WorkPlace":"Workplace 2"},{"title":"morning Shift - 2024-02-08","start":"2024-02-08T08:00:00","end":"2024-02-08T13:00:00","date":"2024-02-08","type":"morning","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-09","start":"2024-02-09T13:00:00","end":"2024-02-09T18:00:00","date":"2024-02-09","type":"noon","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-10","start":"2024-02-10T13:00:00","end":"2024-02-10T18:00:00","date":"2024-02-10","type":"noon","userID":"54335","WorkPlace":"Workplace 2"}]'
     
-    handeljson(json);
+    // handeljson(json);
     const fetchUserEvents = async () => {
       try {
-        const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&type=0`;
-        const response = await axios.get(apiUrl);
+        const response = await axios.get(links.url_select_shifts + `?userID=${userID}&WorkPlace=${WorkPlace}`);
         console.log("response:", response);
-        // setEvents(response.data.events);
-        // handeljson(response.data.events);
         if (response.status === 200) {
           console.log("Data fetched successfully:", response.data);
           // Update state or perform other actions with the data
-          // setEvents(response.data.events);
+          handeljson(response.data.events);
         } else {
           console.error(`Unexpected status code: ${response.status}`);
         }
@@ -120,7 +118,7 @@ export const SelectShifts = () => {
   };
 
 
-  const handleShifts = () => {
+  const handleShifts = async () => {
     
     console.log("הגשת משמרות", events);
 
@@ -128,15 +126,8 @@ export const SelectShifts = () => {
   const sendinpost = { docs: events };
   console.log("Wrapped JSON for sending:", sendinpost);
   
-    // Define the API endpoint (assuming the endpoint supports POST requests)
-    const apiUrl = `shifthify/api/SelectShifts?userID=${userID}&WorkPlace=${WorkPlace}`;
-  
-    // Make a POST request using Axios
-    axios.post(apiUrl, sendinpost, {
-      headers: {
-        'Content-Type': 'application/json', // Set the Content-Type header for JSON data
-      },
-    })
+  //post
+    const response = await axios.post(links.url_select_shifts+ `userID=${userID}&WorkPlace=${WorkPlace}`, sendinpost)
       .then(response => {
         // Handle successful response if needed
         console.log("Data posted successfully:", response.data);
