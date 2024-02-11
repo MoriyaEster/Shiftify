@@ -38,9 +38,10 @@ const handeljsonevents = (jsondata) => {
     // Modify the date format in the array
     const formattedArray = eventsArray.map((event) => ({
       title: event.title,
-      start: new Date(event.start),
-      end: new Date(event.end),
-      employees: event.employees
+      start: event.start,
+      end: event.end,
+      employees: event.employees,
+      WorkPlace: event.WorkPlace,
     }));
     setEvents(formattedArray);
     console.log("events from json: ", formattedArray);
@@ -51,7 +52,7 @@ const handeljsonevents = (jsondata) => {
   //get events from backend
   useEffect (() => {
     // Fetch events for the user
-    const json = '[{"title": "morning - 2024-02-08 - total 1- Employee 1","start": "2024-02-08T08:00:00","end": "2024-02-08T13:00:00","employees": ["Employee 1"]},{"title": "evening - 2024-02-08 - total 2 - Employee 1, Employee 2","start": "2024-02-08T18:00:00","end": "2024-02-08T23:00:00","employees": ["Employee 1", "Employee 2"]},{"title": "evening - 2024-02-09 - total 2 - Employee 1, Employee 2","start": "2024-02-09T18:00:00","end": "2024-02-09T23:00:00","employees": ["Employee 1", "Employee 2"]}]';
+    const json = '[{"title": "morning - 2024-02-08 - total 1- Employee 1","start": "2024-02-08T08:00:00","end": "2024-02-08T13:00:00","employees": ["Employee 1"],"WorkPlace": "Workplace 2","userID": "333"},{"title": "evening - 2024-02-08 - total 2 - Employee 1, Employee 2","start": "2024-02-08T18:00:00","end": "2024-02-08T23:00:00","employees": ["Employee 1", "Employee 2"],"WorkPlace": "Workplace 2","userID": "333"},{"title": "evening - 2024-02-09 - total 2 - Employee 1, Employee 2","start": "2024-02-09T18:00:00","end": "2024-02-09T23:00:00","employees": ["Employee 1", "Employee 2"],"WorkPlace": "Workplace 2","userID": "333"}]';
     handeljsonevents(json);
     const fetchUserEvents = async () => {
       try {
