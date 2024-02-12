@@ -4,6 +4,8 @@ import '/src/App.css';
 import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
 import Button from '@mui/material/Button';
+import axios from 'axios';
+import * as links from '/src/axios-handler.jsx';
 
 
 import UserConnectionChecker from './UserConnectionChecker';
@@ -89,9 +91,19 @@ export const WorkHoursManagement = () => {
   //it sends it as integers values
   const handleShowMonth = async () => {
     try {
-      console.log(parseInt(selectedDate.$y, 10))
+      console.log(parseInt(selectedDate.$y, 10));
       console.log(parseInt(selectedDate.$M, 10)+1);
-      const response = await axios.get(links.url_managers_shifts`?userid=${userID}&work_place=${WorkPlace}&month=${parseInt(selectedDate.$M, 10)+1}&year=${parseInt(selectedDate.$y, 10)}`);
+      const response = await axios.get(links.url_work_hours+`?userid=${userID}&work_place=${WorkPlace}&month=${parseInt(selectedDate.$M, 10)+1}&year=${parseInt(selectedDate.$y, 10)}`)
+      .then(async function(response) {
+        console.log("response.data", response.data);
+        // Handle successful response if needed
+      })
+      .catch(async function(error) {
+        // Handle error
+        console.log("error", error);
+        // Optionally, provide user feedback or take specific actions based on the error
+      });
+      
       setData(response.data);
     } catch (error) {
       setError(error);

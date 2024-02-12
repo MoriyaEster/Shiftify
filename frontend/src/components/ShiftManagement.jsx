@@ -3,6 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import { ModelPopUp } from './ModelPopUp';
 import heLocale from '@fullcalendar/core/locales/he';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
@@ -25,6 +26,9 @@ export const ShiftManagement = () => {
     const [employeesM, setEmployeesM] = useState([]);
     const [employeesN, setEmployeesN] = useState([]);
     const [employeesE, setEmployeesE] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [status, setStatus] = useState(null);
+    const [contentPOPUP, setContentPOPUP] = useState(null);
 	
     const calendarRef = React.createRef();
 
@@ -35,14 +39,16 @@ export const ShiftManagement = () => {
 
       
 const handeljsonevents = (jsondata) => {
-    const eventsArray = JSON.parse(jsondata);
+    // const eventsArray = JSON.parse(jsondata);
     // Modify the date format in the array
-    const formattedArray = eventsArray.map((event) => ({
+    const formattedArray = jsondata.map((event) => ({
       title: event.title,
       start: event.start,
       end: event.end,
-      employees: event.employees,
-      WorkPlace: event.WorkPlace,
+      assigned_users: event.assigned_users,
+      WorkPlace: event.workplace,
+      date: event.date,
+      type: event.type,
     }));
     setEvents(formattedArray);
     console.log("events from json: ", formattedArray);
@@ -53,7 +59,6 @@ const handeljsonevents = (jsondata) => {
   //get events from backend
   useEffect (() => {
     // Fetch events for the user
-    // const json = '[{"title": "morning - 2024-02-08 - total 1- Employee 1","start": "2024-02-08T08:00:00","end": "2024-02-08T13:00:00","employees": ["Employee 1"],"WorkPlace": "Workplace 2","userID": "333"},{"title": "evening - 2024-02-08 - total 2 - Employee 1, Employee 2","start": "2024-02-08T18:00:00","end": "2024-02-08T23:00:00","employees": ["Employee 1", "Employee 2"],"WorkPlace": "Workplace 2","userID": "333"},{"title": "evening - 2024-02-09 - total 2 - Employee 1, Employee 2","start": "2024-02-09T18:00:00","end": "2024-02-09T23:00:00","employees": ["Employee 1", "Employee 2"],"WorkPlace": "Workplace 2","userID": "333"}]';
     // handeljsonevents(json);
     const fetchUserEvents = async () => {
       try {
@@ -63,7 +68,7 @@ const handeljsonevents = (jsondata) => {
         if (response.status === 200) {
           console.log("Data fetched successfully:", response.data);
           // Update state or perform other actions with the data
-          handeljsonevents(response.data.events);
+          handeljsonevents(response.data.docs);
         } else {
           console.error(`Unexpected status code: ${response.status}`);
         }
@@ -76,7 +81,7 @@ const handeljsonevents = (jsondata) => {
   }, [userID]);
 
   const handeljsonemployees = (jsondata) => {
-    const data = JSON.parse(jsondata);
+    const data = jsondata.docs;
 
     // Group the data by shift type
     const groupedData = data.reduce((acc, shift) => {
@@ -84,7 +89,7 @@ const handeljsonevents = (jsondata) => {
             acc[shift.type] = [];
         }
 
-        acc[shift.type] = acc[shift.type].concat(shift.employees);
+        acc[shift.type] = acc[shift.type].concat(shift.proposed_users);
 
         return acc;
     }, {});
@@ -121,15 +126,17 @@ const handeljsonevents = (jsondata) => {
     console.log("selected date:", selectedDate)
     const fetchUserEmployees = async () => {
       try {
-        const response = await axios.get(links.url_managers_shifts + `?WorkPlace=${WorkPlace}&date=${selectedDate}`);
-        console.log("response:", response);
-        // handeljsonemployees(response.data.events);
-        if (response.status === 200) {
-          console.log("Data fetched successfully:", response.data);
-          // Update state or perform other actions with the data
-          handeljsonemployees(response.data);
-        } else {
-          console.error(`Unexpected status code: ${response.status}`);
+        if(selectedDate != null){
+            const response = await axios.get(links.url_managers_shifts + `?WorkPlace=${WorkPlace}&date=${selectedDate}`);
+            console.log("response:", response);
+            // handeljsonemployees(response.data.events);
+            if (response.status === 200) {
+            console.log("Data fetched successfully:", response.data);
+            // Update state or perform other actions with the data
+            handeljsonemployees(response.data);
+            } else {
+            console.error(`Unexpected status code: ${response.status}`);
+            }
         }
       } catch (error) {
         console.error('Error fetching user events:', error);
@@ -250,7 +257,7 @@ const selectedEmployeeNames = selectedEmployeeObjects.map(employee => employee.n
         title: `${shift} - ${selectedDate}<br /> total ${numEmployees}: <br /> ${selectedEmployeeNames.join(', ')}`,
         start: `${selectedDate}T${shift === 'morning' ? '08:00:00' : shift === 'noon' ? '13:00:00' : '18:00:00'}`,
         end: `${selectedDate}T${shift === 'morning' ? '13:00:00' : shift === 'noon' ? '18:00:00' : '23:00:00'}`,
-        employees: selectedEmployeeNames,
+        assigned_users: selectedEmployeeNames,
         date: `${selectedDate}`,
         type: `${shift}`,
         WorkPlace: `${WorkPlace}`
@@ -273,14 +280,21 @@ const selectedEmployeeNames = selectedEmployeeObjects.map(employee => employee.n
         
     
          //post
-        const response = await axios.post(links.url_managers_shifts+ `userID=${userID}&WorkPlace=${WorkPlace}`, sendinpost)
+        const response = await axios.post(links.url_managers_shifts, sendinpost)
         .then(response => {
         // Handle successful response if needed
-        console.log("Data posted successfully:", response.data);
+        if(response.status === 200)
+        {
+          setStatus(200);
+          setContentPOPUP("המשמרות אושרו בהצלחה");
+          setShowModal(true);
+        }
         })
         .catch(error => {
         // Handle error
-        console.error('Error posting data:', error);
+        setStatus(500);
+        setContentPOPUP("תקלה באישור המשמרות");
+        setShowModal(true);
         // Optionally, provide user feedback or take specific actions based on the error
         });
 
@@ -370,6 +384,7 @@ const selectedEmployeeNames = selectedEmployeeObjects.map(employee => employee.n
                     variant="contained"
                     onClick={handleShifts}
                 > הגשת משמרות</Button>
+            <ModelPopUp show={showModal} onClose={() => setShowModal(false)} status={status} content={contentPOPUP}/>
             </div>
         );
 }

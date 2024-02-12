@@ -30,12 +30,18 @@ class RegisterView(GenericAPIView):
                 return Response(status=403)
             
             # if the user does not exists, create it
-            new_user_object = User.objects.create(username=id, name=name, phone_number=phone_number, email=email, password=password, type=user_type)
+            if(user_type == "0"):
+                new_user_object = User.objects.create(username=id, name=name, phone_number=phone_number, email=email, password=password, type=user_type)
+            else:
+                workplace = request.data.get("workplace")
+                workplace_object = Workplace.objects.create(name=workplace)
+                new_user_object = User.objects.create(username=id, name=name, phone_number=phone_number, email=email, password=password, type=user_type)
+                new_user_object.workplace.add(workplace_object)
             new_user_object.save()
             
             # serialize the user data and return it
             user_data = self.get_serializer(new_user_object).data
-            return Response({"user": user_data}, status=201)
+            return Response(user_data, status=201)
         except Exception as e:
             logger.exception(f"RegisterView: {e}, request:{request}")
             return Response(e, status=500)
@@ -51,13 +57,13 @@ class LoginView(GenericAPIView):
             # Gather the data from the request
             id = request.data.get("userID")
             password = request.data.get("password")
-            user_found = User.objects.get(username=id, password=password)
             
             # Check if the user exists
-            if user_found:
+            if User.objects.filter(username=id, password=password).exists():
+                user_found = User.objects.get(username=id, password=password)
                 # serialize the user data and return it
                 user_data = self.get_serializer(user_found).data
-                return Response({"user": user_data}, status=200)
+                return Response(user_data, status=200)
             else:
                 return Response(status=404)
         except Exception as e:
@@ -72,8 +78,8 @@ class SelectShiftsView(GenericAPIView):
     
     def get(self, request):
         try:
-            id = request.query_params.get("userid")
-            workplace = request.query_params.get("workplace")
+            id = request.query_params.get("userID")
+            workplace = request.query_params.get("WorkPlace")
             if(id and workplace):
                 user_object = User.objects.get(username=id)
                 workplace_object = Workplace.objects.get(name=workplace)
@@ -89,7 +95,7 @@ class SelectShiftsView(GenericAPIView):
         try:
             for json_object in request.data.get("docs"):
                 username = json_object.get("userID")
-                workplace = json_object.get("workplace")
+                workplace = json_object.get("WorkPlace")
                 date_string = json_object.get("date")
                 shift_type = json_object.get("type")
                 title = json_object.get("title")
@@ -121,8 +127,8 @@ class ApprovedShiftsView(GenericAPIView):
     
     def get(self, request):
         try:
-            id = request.query_params.get("userid")
-            workplace = request.query_params.get("workplace")
+            id = request.query_params.get("userID")
+            workplace = request.query_params.get("WorkPlace")
             if(id and workplace):
                 user_object = User.objects.get(username=id)
                 workplace_object = Workplace.objects.get(name=workplace)
@@ -142,8 +148,8 @@ class ManagerShiftsView(GenericAPIView):
     
     def get(self, request):
         try:
-            id = request.query_params.get("userid")
-            workplace = request.query_params.get("workplace")
+            id = request.query_params.get("userID")
+            workplace = request.query_params.get("WorkPlace")
             date_string = request.query_params.get("date")
             if(id and workplace):
                 user_object = User.objects.get(username=id)
@@ -154,7 +160,7 @@ class ManagerShiftsView(GenericAPIView):
             elif(date_string and workplace):
                 date_object = date.fromisoformat(date_string)
                 workplace_object = Workplace.objects.get(name=workplace)
-                data = self.get_queryset().objects.filter(workplace=workplace_object, assigned_users__isnull=False, date=date_object)
+                data = self.get_queryset().objects.filter(workplace=workplace_object, proposed_users__isnull=False, date=date_object)
                 serializer = self.get_serializer(data, many=True)
                 return Response({"docs":serializer.data}, status=200)
             return Response(status=404)
@@ -165,8 +171,8 @@ class ManagerShiftsView(GenericAPIView):
     def post(self, request):
         try:
             for json_object in request.data.get("docs"):
-                employees = json_object.get("employees")
-                workplace = json_object.get("workplace")
+                assigned_users = json_object.get("assigned_users")
+                workplace = json_object.get("WorkPlace")
                 date_string = json_object.get("date")
                 shift_type = json_object.get("type")
                 title = json_object.get("title")
@@ -175,16 +181,19 @@ class ManagerShiftsView(GenericAPIView):
                 
                 workplace_object = Workplace.objects.get(name=workplace)
                 date_object = date.fromisoformat(date_string)
-                user_object_list = [User.objects.get(username=username) for username in employees]
+                user_object_list = [User.objects.get(username=username) for username in assigned_users]
                 if(self.queryset.objects.filter(workplace=workplace_object, date=date_object, type=shift_type).exists()):
                     shift = self.queryset.objects.get(workplace=workplace_object, date=date_object, type=shift_type)
                     shift.title = title
-                    shift.proposed_users.remove(user_object_list)
-                    shift.assigned_users = user_object_list
+                    for user_obj in user_object_list:
+                        if(not shift.assigned_users.contains(user_obj)):
+                            shift.proposed_users.remove(user_obj)
+                            shift.assigned_users.add(user_obj)
                 else:
                     shift = self.queryset.objects.create(date=date_object, type=shift_type, 
                                                          workplace=workplace_object, title=title, start=start, end=end)
-                    shift.assigned_users = user_object_list
+                    for user_obj in user_object_list:
+                        shift.assigned_users.add(user_obj)
             
                 shift.save()           
             return Response(status=200)
@@ -213,9 +222,9 @@ class UsersListView(GenericAPIView):
     def post(self, request):
         try:
             # Gather the data from the request
-            id = request.data.get("userID")
-            name = request.data.get("fullName")
-            phone_number = request.data.get("phoneNumber")
+            id = request.data.get("user_id")
+            name = request.data.get("user_name")
+            phone_number = request.data.get("phone_number")
             email = request.data.get("email")
             password = request.data.get("password")
             user_type = request.data.get("user_type")
@@ -261,13 +270,30 @@ class WorkHoursView(GenericAPIView):
             else:
                 data = self.get_queryset().objects.all()
             serializer = self.get_serializer(data, many=True)
-            return Response({"users":serializer.data})
+            return Response(serializer.data)
         except Exception as e:
             logger.error(f"WorkHoursView: {e}")
             return Response(status=500)
     
     def post(self, request):
-        pass
+        try:
+            id = request.data.get("userID")
+            workplace = request.data.get("work_place")
+            date_string = request.data.get("date")
+            time_worked = request.data.get("time_worked")
+            
+            if(id and workplace and date_string and time_worked):
+                user = User.objects.get(username=id)
+                workplace_object = Workplace.objects.get(name=workplace)
+                date_object = date.fromisoformat(date_string)
+                data = self.get_queryset().objects.create(user=user, workplace=workplace_object,date=date_object, time_worked=time_worked)
+                data.save()
+                return Response(status=200)
+            else:
+                return Response(status=403)
+        except Exception as e:
+            logger.error(f"WorkHoursView: {e}")
+            return Response(status=500)
 
 
 class WorkersView(GenericAPIView):
@@ -276,12 +302,12 @@ class WorkersView(GenericAPIView):
     
     def get(self, request):
         try:
-            workplace = request.query_params.get("work_place")
+            workplace = request.query_params.get("WorkPlace")
             if(workplace):
                 workplace = Workplace.objects.get(name=workplace)
-                data = self.get_queryset().objects.filter(workplace=workplace)
+                data = self.get_queryset().objects.filter(workplace=workplace, type=0)
                 serializer = self.get_serializer(data, many=True)
-                return Response({"users":serializer.data}, status=200)
+                return Response(serializer.data, status=200)
             else:
                 return Response(status=404)
         except Exception as e:
@@ -311,8 +337,8 @@ class WorkersView(GenericAPIView):
             
             if(id and workplace):
                 user = User.objects.get(username=id)
-                workplace = Workplace.objects.get(name=workplace)
-                user.workplace.remove(workplace)
+                workplace_object = Workplace.objects.get(name=workplace)
+                user.workplace.remove(workplace_object)
                 return Response(status=200)
             else:
                 return Response(status=404)

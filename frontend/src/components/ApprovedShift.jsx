@@ -24,16 +24,16 @@ export const ApprovedShift = () => {
   const [events, setEvents] = useState([]);
   
   const handeljson = (jsondata) => {
-    const eventsArray = JSON.parse(jsondata);
+    // const eventsArray = JSON.parse(jsondata);
       // Modify the date format in the array
-      const formattedArray = eventsArray.map((event) => ({
+      const formattedArray = jsondata.map((event) => ({
         title: event.title,
         start: new Date(event.start),
         end: new Date(event.end),
         date: event.date,
         type: event.type,
-        userID: event.userID,
-        workPlace: event.workPlace,
+        userID: event.username,
+        workPlace: event.workplace,
       }));
       setEvents(formattedArray);
       console.log("events from json: ", formattedArray);
@@ -53,7 +53,7 @@ export const ApprovedShift = () => {
         if (response.status === 200) {
           console.log("Data fetched successfully:", response.data);
           // Update state or perform other actions with the data
-          handeljson(response.data);
+          handeljson(response.data.docs);
         } else {
           console.error(`Unexpected status code: ${response.status}`);
         }
@@ -84,6 +84,11 @@ export const ApprovedShift = () => {
         locales={[heLocale]}
         locale="he"
         events={events}
+        eventContent={({ event }) => (
+          <>
+              <div style={{ fontSize: '12px' }} dangerouslySetInnerHTML={{ __html: event.title }}></div>
+          </>
+      )}
       />
     </div>
   );

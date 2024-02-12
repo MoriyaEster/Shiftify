@@ -72,27 +72,39 @@ export const ConnectionForm = () => {
             ...data
         };
 
-        const response = await axios.post(links.url_login, newData)
-        console.log("response:", response);
-
+        console.log("before post");
+        axios.post(links.url_login, newData)
+        .then(async function (response) {
+            console.log(response);
+            if(response.status === 200)
+            {
+              setStatus(200);
+              setContentPOPUP("התחברת בהצלחה");
+              setShowModal(true);
+            }
+            
+            console.log("response.data", response.data)
+            await handleLogin(response.data);
+        })
+        .catch(async function (error) {
+            if(error.response.status === 404)
+            {
+              setStatus(404);
+              setContentPOPUP("שם משתמש או סיסמה שגויים");
+              setShowModal(true);
+            }
+            else
+            {
+              setStatus(500);
+              setContentPOPUP("שגיאה! נסה שוב בבקשה");
+              setShowModal(true);
+            }
+            console.log(error);
+        });
         // Use the callback function of setState to get the latest state
         const jsonState = JSON.stringify(newData);
         console.log("state.employer:", state.employer);
         console.log("Form data in JSON format:", jsonState);
-        try {
-            //check the status
-            setStatus(200);
-            setContentPOPUP("התחברת בהצלחה");
-            setShowModal(true);
-
-            await handleLogin(jsonState);
-            console.log("Form data in JSON format:", jsonState);
-        } catch (error) {
-            console.error("Registration failed:", error);
-            setStatus(-1);
-            setContentPOPUP("שגיאה! נסה שוב בבקשה");
-            setShowModal(true);
-        }
     };
 
     const values = { userID: state.userID, password: state.password };

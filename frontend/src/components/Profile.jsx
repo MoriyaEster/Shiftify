@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Header } from './Header';
-import { useUser } from '/src/UserContext.jsx';
+import { useUser} from '/src/UserContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import EditEmployee from './EditEmployee';
 import axios from 'axios';
@@ -15,21 +15,23 @@ export const Profile = () => {
   const [showEmailModal, setShowEmailModal] = useState(false); 
   const [showPasswordModal, setShowPasswordModal] = useState(false);
 
-  const { handleUserType, handleUserId, handleUserName, handleWorkPlaces, handlpassword, handleUserPhoneNumber, handleUserEmail } = useUser();
+  const { handleUserType, handleUserId, handleUserName, handleWorkPlaces, handlpassword, handleUserPhoneNumber, handleUserEmail, handleUserNameChoosen, handleEmailChoosen, handlePhoneNumberChoosen, handlePassWordChoosen } = useUser();
 
 
-  const handleEditField =  (field, value) => {
+  const handleEditField = async (json) => {
     // Call the backend API to update the field
-    editField(field, value)
-      .then(async(field,value) => {
-        // Optionally, you can update the local state or perform other actions after successful update
-        const response = await axios.post(links.url_select_shifts+ `userID=${userID}&${field}=${value}`, sendinpost)
-        console.log(response)
-      })
-      .catch((error) => {
-        // Handle error
-      });
+    const response = await axios.post(links.url_users, json)
+    .then(async function(response) {
+      console.log("json", json);
+      // Handle successful response if needed
+    })
+    .catch(async function(error) {
+      // Handle error
+      console.log("json", json);
+      // Optionally, provide user feedback or take specific actions based on the error
+    });
   };
+
 
   return (
     <div dir="rtl">
@@ -38,23 +40,19 @@ export const Profile = () => {
       <h1>פרופיל</h1>
       <div>
         <h2>שם מלא: {handleUserName()}</h2>
-        <EditEmployee field="שם מלא" show={showFullNameModal} onClose={() => setShowFullNameModal(false)} onEdit={(value) => handleEditField('fullName', value)} />
-      </div>
-      <div>
-        <h2>תעודת זהות: {handleUserId()}</h2>
-        <EditEmployee field="תעודת זהות" show={showIdModal} onClose={() => setShowIdModal(false)} onEdit={(value) => handleEditField('id', value)} />
+        <EditEmployee field="שם מלא" show={showFullNameModal} onClose={() => setShowFullNameModal(false)} onEdit={(value) => {handleEditField({'user_id':handleUserId(), 'user_name': value}); handleUserNameChoosen(value);}} />
       </div>
       <div>
         <h2>מספר טלפון: {handleUserPhoneNumber()}</h2>
-        <EditEmployee field="מספר טלפון" show={showPhoneNumberModal} onClose={() => setShowPhoneNumberModal(false)} onEdit={(value) => handleEditField('phoneNumber', value)} />
+        <EditEmployee field="מספר טלפון" show={showPhoneNumberModal} onClose={() => setShowPhoneNumberModal(false)} onEdit={(value) => {handleEditField({'user_id':handleUserId(), 'phone_number': value}); handlePhoneNumberChoosen(value)} }/>
       </div>
       <div>
         <h2>אימייל: {handleUserEmail()}</h2>
-        <EditEmployee field="אימייל" show={showEmailModal} onClose={() => setShowEmailModal(false)} onEdit={(value) => handleEditField('email', value)} />
+        <EditEmployee field="אימייל" show={showEmailModal} onClose={() => setShowEmailModal(false)} onEdit={(value) => {handleEditField({'user_id':handleUserId(), 'email': value}); handleEmailChoosen(value)}} />
       </div>
       <div>
-        <h2>סיסמא: {handlpassword()}</h2>
-        <EditEmployee field="סיסמא" show={showPasswordModal} onClose={() => setShowPasswordModal(false)} onEdit={(value) => handleEditField('password', value)} />
+        <h2>סיסמא: ##########</h2>
+        <EditEmployee field="סיסמא" show={showPasswordModal} onClose={() => setShowPasswordModal(false)} onEdit={(value) => {handleEditField({'user_id':handleUserId(), 'password': value}); handlePassWordChoosen(value)}} />
       </div>
     </div>
   );

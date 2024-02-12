@@ -28,38 +28,36 @@ export const RegisteryForm = () => {
 
     
     console.log("newData:", newData);
-    console.log("jsonData:", jsonData);
     console.log(links.url_register)
-    const response = await axios.post(links.url_register, newData)
-    console.log("response:", response);
-    try {
-      //check the status
-      if(response.status === 201)
-      {
-        setStatus(200);
-        setContentPOPUP("נרשמת בהצלחה");
-        setShowModal(true);
-      }
-      if(response.status === 403)
-      {
-        setStatus(403);
-        setContentPOPUP("תז כבר קיים, נסה שוב");
-        setShowModal(true);
-      }
-      if(response.status === 500)
-      {
-        setStatus(403);
-        setContentPOPUP("שגיאה! נסה שוב בבקשה");
-        setShowModal(true);
-      }
-      
-      await handleLogin(jsonData);
-    } catch (error) {
-      console.error("Registration failed:", error);
-      setStatus(-1);
-      setContentPOPUP("שגיאה! נסה שוב בבקשה");
-      setShowModal(true);
-    }
+
+    axios.post(links.url_register, newData)
+        .then(async function (response) {
+            console.log(response);
+            if(response.status === 201)
+            {
+              setStatus(200);
+              setContentPOPUP("נרשמת בהצלחה");
+              setShowModal(true);
+            }
+
+            await handleLogin(response.data);
+        })
+        .catch(async function (error) {
+            if(error.response.status === 403)
+            {
+              setStatus(403);
+              setContentPOPUP("תז כבר קיים, נסה שוב");
+              setShowModal(true);
+            }
+            else
+            {
+              setStatus(500);
+              setContentPOPUP("שגיאה! נסה שוב בבקשה");
+              setShowModal(true);
+            }
+            console.log(error);
+        });
+
   }
 
   useEffect(() => {

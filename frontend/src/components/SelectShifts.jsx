@@ -3,6 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import { ModelPopUp } from './ModelPopUp';
 import heLocale from '@fullcalendar/core/locales/he';
 import Button from '@mui/material/Button';
 import { Header } from './Header';
@@ -22,18 +23,21 @@ export const SelectShifts = () => {
   const { handleUserId ,handleWorkPlace } = useUser();
   const [userID, setUserID] = useState(handleUserId());
   const [WorkPlace, setWorkPlace] = useState(handleWorkPlace());
+  const [showModal, setShowModal] = useState(false);
+  const [status, setStatus] = useState(null);
+  const [contentPOPUP, setContentPOPUP] = useState(null);
   
   const handeljson = (jsondata) => {
-    const eventsArray = JSON.parse(jsondata);
+    // const eventsArray = JSON.parse(jsondata);
       // Modify the date format in the array
-      const formattedArray = eventsArray.map((event) => ({
+      const formattedArray = jsondata.map((event) => ({
         title: event.title,
         start: event.start,
         end: event.end,
         date: event.date,
         type: event.type,
-        userID: event.userID,
-        WorkPlace: event.WorkPlace,
+        userID: userID,
+        WorkPlace: WorkPlace,
         
       }));
       setEvents(formattedArray);
@@ -44,7 +48,6 @@ export const SelectShifts = () => {
   //get  info from backend
   useEffect(() => {
     // // Fetch events for the user
-    // const json  = '[{"title":"morning Shift - 2024-02-07","start":"2024-02-07T08:00:00","end":"2024-02-07T13:00:00","date":"2024-02-07","type":"morning","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-07","start":"2024-02-07T13:00:00","end":"2024-02-07T18:00:00","date":"2024-02-07","type":"noon","userID":"54335","WorkPlace":"Workplace 2"},{"title":"morning Shift - 2024-02-08","start":"2024-02-08T08:00:00","end":"2024-02-08T13:00:00","date":"2024-02-08","type":"morning","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-09","start":"2024-02-09T13:00:00","end":"2024-02-09T18:00:00","date":"2024-02-09","type":"noon","userID":"54335","WorkPlace":"Workplace 2"},{"title":"noon Shift - 2024-02-10","start":"2024-02-10T13:00:00","end":"2024-02-10T18:00:00","date":"2024-02-10","type":"noon","userID":"54335","WorkPlace":"Workplace 2"}]'
     
     // handeljson(json);
     const fetchUserEvents = async () => {
@@ -54,7 +57,7 @@ export const SelectShifts = () => {
         if (response.status === 200) {
           console.log("Data fetched successfully:", response.data);
           // Update state or perform other actions with the data
-          handeljson(response.data.events);
+          handeljson(response.data.docs);
         } else {
           console.error(`Unexpected status code: ${response.status}`);
         }
@@ -110,7 +113,7 @@ export const SelectShifts = () => {
         date: `${selectedDate}`, 
         type: `${shift}`,
         userID: `${userID}`,
-        workPlace: `${WorkPlace}`,
+        WorkPlace: `${WorkPlace}`,
       };
         //add the new event to event state
       setEvents(prevEvents => [...prevEvents, newEvent]);
@@ -127,14 +130,21 @@ export const SelectShifts = () => {
   console.log("Wrapped JSON for sending:", sendinpost);
   
   //post
-    const response = await axios.post(links.url_select_shifts+ `userID=${userID}&WorkPlace=${WorkPlace}`, sendinpost)
-      .then(response => {
+    const response = await axios.post(links.url_select_shifts, sendinpost)
+      .then(async function(response) {
         // Handle successful response if needed
-        console.log("Data posted successfully:", response.data);
+        if(response.status === 200)
+        {
+          setStatus(200);
+          setContentPOPUP("המשמרות הוגשו בהצלחה");
+          setShowModal(true);
+        }
       })
-      .catch(error => {
+      .catch(async function(error) {
         // Handle error
-        console.error('Error posting data:', error);
+        setStatus(500);
+        setContentPOPUP("תקלה בהגשת משמרות");
+        setShowModal(true);
         // Optionally, provide user feedback or take specific actions based on the error
       });
   };
@@ -191,6 +201,7 @@ export const SelectShifts = () => {
         variant="contained"
         onClick={handleShifts}
       > הגשת משמרות</Button>
+      <ModelPopUp show={showModal} onClose={() => setShowModal(false)} status={status} content={contentPOPUP}/>
     </div>
   );
 };

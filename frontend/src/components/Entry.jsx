@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import '/src/App.css';
+import axios from 'axios';
+import * as links from '/src/axios-handler.jsx';
 
 export const Entry = ({ workPlaceValue , userID}) => {
   const [time, setTime] = useState(0);
@@ -22,17 +24,28 @@ export const Entry = ({ workPlaceValue , userID}) => {
     setIsRunning(!isRunning);
   };
 
-  const reset = () => {
+  const reset = async () => {
     if (isRunning) return;
     const jsonData = {
-      "time": time,
-      "workPlaceValue": workPlaceValue,
-      "userID": userID
+      "time_worked": time,
+      "work_place": workPlaceValue,
+      "userID": userID,
+      "date": new Date().toISOString().split('T')[0],
     };
     console.log("jsonData ", jsonData);
     console.log("time ", time);
     console.log("Selected work place value: ", workPlaceValue);
     console.log("Selected used id: ", userID);
+
+    const response = await axios.post(links.url_work_hours, jsonData)
+    .then(async function(response) {
+      // Handle successful response if needed
+    })
+    .catch(async function(error) {
+      // Handle error
+      // Optionally, provide user feedback or take specific actions based on the error
+    });
+
     setTime(0);
   };
 

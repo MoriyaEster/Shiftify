@@ -7,3 +7,4 @@ export const url_workers_management = base_url + "workers-mangement/";
 export const url_select_shifts = base_url + "select-shifts/";
 export const url_approved_shifts = base_url + "approved-shifts/";
 export const url_managers_shifts = base_url + "shift-management/";
+export const url_work_hours = base_url + "work-hours/";

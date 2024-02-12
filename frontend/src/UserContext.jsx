@@ -20,18 +20,16 @@ export const UserProvider = ({ children }) => {
   // Function to handle login
   const handleLogin = (data) => {
 
-    const parsedData = JSON.parse(data);
-    console.log("parsedData", parsedData);
-    console.log("userID", parsedData.userID);
-    console.log("employer", parsedData.employer);
+    console.log("userID", data.username);
+    console.log("employer", data.type);
     setUser({
-      user_id: parsedData.userID,
-      user_type: parsedData.employer,
+      user_id: data.username,
+      user_type: data.type,
       connected: true,
-      work_places: parsedData.workPlaces,
-      user_name: parsedData.userName,
-      phone_number: parsedData.phoneNumber,
-      email: parsedData.email
+      work_places: data.workplace,
+      user_name: data.name,
+      phone_number: "0"+data.phone_number,
+      email: data.email
     });
   };
 
@@ -70,17 +68,61 @@ export const UserProvider = ({ children }) => {
 
   //const handleWorkPlaces = () => user.work_places;
   const handleWorkPlaces = () => {
-    const jsonData = {
-      "workPlaces": ["Workplace 1", "Workplace 2", "Workplace 3"],
-    };
-    console.log("jsonData", jsonData);
-    return jsonData;  // Return just the array
+    // const jsonData = {
+    //   "workPlaces": ["Workplace 1", "Workplace 2", "Workplace 3"],
+    // };
+    // console.log("jsonData", jsonData);
+    return user.work_places;  // Return just the array
   };
 
   const handleWorkPlaceChoosen = (work_place) => {
     setUser((prevUser) => ({
       ...prevUser,
       work_place: work_place
+    }));
+    // Log the updated state using the callback function
+    setUser((updatedUser) => {
+      return updatedUser; // Return the updated state
+    });
+  };
+
+  const handleUserNameChoosen = (user_name) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      user_name: user_name
+    }));
+    // Log the updated state using the callback function
+    setUser((updatedUser) => {
+      return updatedUser; // Return the updated state
+    });
+  };
+
+  const handleEmailChoosen = (email) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      email: email
+    }));
+    // Log the updated state using the callback function
+    setUser((updatedUser) => {
+      return updatedUser; // Return the updated state
+    });
+  };
+
+  const handlePhoneNumberChoosen = (phone_number) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      phone_number: phone_number
+    }));
+    // Log the updated state using the callback function
+    setUser((updatedUser) => {
+      return updatedUser; // Return the updated state
+    });
+  };
+
+  const handlePassWordChoosen = (password) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      password: password
     }));
     // Log the updated state using the callback function
     setUser((updatedUser) => {
@@ -102,7 +144,11 @@ export const UserProvider = ({ children }) => {
     handleUserPhoneNumber,
     handleUserEmail,
     handleWorkPlaces,
-    handlpassword
+    handlpassword,
+    handleUserNameChoosen,
+    handleEmailChoosen,
+    handlePhoneNumberChoosen,
+    handlePassWordChoosen
   };
 
   return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;

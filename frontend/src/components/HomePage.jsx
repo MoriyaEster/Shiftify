@@ -44,7 +44,8 @@ export const HomePage = () => {
   };
 
   const generateOptions = () => {
-    return state.workPlaces.workPlaces.map((workPlace, index) => ({
+    console.log("state", state);
+    return state.workPlaces.map((workPlace, index) => ({
       id: index + 1,
       value: workPlace,
     }));

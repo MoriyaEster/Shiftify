@@ -26,13 +26,15 @@ export const WorkersManagement = () => {
 
 
   //get request to get the employees of manager userId and Workplace WorkPlace
-  let workerslist
+  let workerslist;
+  const [workers, setWorkers] = useState([]);
 
   useEffect(() => {
       const fetchData = async () => {
           try {
               const response = await axios.get(links.url_workers_management+`?userID=${userID}&WorkPlace=${WorkPlace}`); 
-              console.log(response.data)
+              setWorkers(response.data);
+              console.log("blablabla", response.data)
           } catch (error) {
               setError(error);
           }
@@ -67,12 +69,6 @@ export const WorkersManagement = () => {
   const [contentPOPUP, setContentPOPUP] = useState(null);
 
   // Dummy worker data for the dropdown options, after the backend delete it
-  const workers = [
-    'Worker 1',
-    'Worker 2',
-    'Worker 3',
-    // Add more workers as needed
-  ];
 
   // Event handler for dropdown value change
   const handleWorkerChange = (event) => {
@@ -83,7 +79,7 @@ export const WorkersManagement = () => {
     try {
       const response = await axios.delete(links.url_workers_management, {
         params: {
-          userid: userID,
+          userid: selectedWorker,
           work_place: WorkPlace
         }
       });
@@ -137,7 +133,7 @@ export const WorkersManagement = () => {
           >
             <option value="">עובדים:</option>
             {workers.map(worker => (
-            <option key={worker.id} value={worker.id}>
+            <option key={worker.username} value={worker.username}>
               {worker.name}
             </option>
           ))}
@@ -159,8 +155,8 @@ export const WorkersManagement = () => {
           {/* Input box for adding a new worker */}
           <input className='body'
             type="text"
-            id="newWorkerName"
-            value={newWorkerName}
+            id="newWorkerID"
+            value={newWorkerID}
             onChange={handleInputWorkerID} 
             placeholder="ת.ז:"
             style={{ marginBottom: '5px' }}

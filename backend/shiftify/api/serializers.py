@@ -22,7 +22,8 @@ class ShiftsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class ActualShiftsSerializer(serializers.ModelSerializer):
-
+    workplace = serializers.StringRelatedField()
+    user = serializers.StringRelatedField()
     class Meta:
         model = ActualShift
         fields = "__all__"
