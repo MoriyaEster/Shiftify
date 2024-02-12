@@ -23,8 +23,6 @@ export const WorkHoursManagement = () => {
   const [WorkPlace, setWorkPlace] = useState(handleWorkPlace());
   const [userType, setUserType] = useState(handleUserType());
   const [userID, setUserID] = useState(handleUserId());
-  const [userPhone, setUserPhone] = useState(handleUserPhoneNumber());
-  const [userEmail, setEmail] = useState(handleUserEmail());
   const [userName, setUserName] = useState(handleUserName());
 
 
@@ -88,6 +86,7 @@ export const WorkHoursManagement = () => {
     setSelectedDate(date);
   };
 
+  //it sends it as integers values
   const handleShowMonth = async () => {
     try {
       console.log(parseInt(selectedDate.$y, 10))

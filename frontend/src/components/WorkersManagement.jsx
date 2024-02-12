@@ -24,6 +24,8 @@ export const WorkersManagement = () => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
+
+  //get request to get the employees of manager userId and Workplace WorkPlace
   let workerslist
 
   useEffect(() => {
@@ -57,14 +59,14 @@ export const WorkersManagement = () => {
 
   // State to track the selected value of the dropdown
   const [selectedWorker, setSelectedWorker] = useState('');
-  const [newWorkerName, setNewWorkerID] = useState('');
+  const [newWorkerID, setNewWorkerID] = useState('');
 
   //for popup
   const [showModal, setShowModal] = useState(false);
   const [status, setStatus] = useState(null);
   const [contentPOPUP, setContentPOPUP] = useState(null);
 
-  // Dummy worker data for the dropdown options
+  // Dummy worker data for the dropdown options, after the backend delete it
   const workers = [
     'Worker 1',
     'Worker 2',
@@ -75,23 +77,6 @@ export const WorkersManagement = () => {
   // Event handler for dropdown value change
   const handleWorkerChange = (event) => {
     setSelectedWorker(event.target.value);
-  };
-
-  const [info, setInfo] = useState(null);
-  const handleGetInfoOfWorker = () => {
-    // Add your logic to handle getting info of a worker
-    setInfo(
-      <>
-        <h5>שם: {userName}</h5>
-        <h5>תעודת זהות: {userID}</h5>
-        <h5>טלפון: {userPhone}</h5>
-        <h5>אימייל: {userEmail}</h5>
-      </>
-
-      );
-      
-    
-    console.log('info of Worker button clicked');
   };
 
   const handleRemoveWorker = async () => {
@@ -120,7 +105,7 @@ export const WorkersManagement = () => {
     try {
       const response = await axios.post(links.url_workers_management, null, {
         params: {
-          userid: newWorkerName,
+          userid: newWorkerID,
           work_place: WorkPlace
         }
       });
@@ -164,17 +149,6 @@ export const WorkersManagement = () => {
           <Button 
             color="primary"
             variant="contained"
-            onClick={handleGetInfoOfWorker}
-            style={{ marginBottom: '5px' }}
-            >פרטי עובד
-          </Button>
-          {info}
-        </div>
-
-        <div>
-          <Button 
-            color="primary"
-            variant="contained"
             onClick={handleRemoveWorker}
             style={{ marginBottom: '60px' }}
             >מחיקת עובד
@@ -187,7 +161,7 @@ export const WorkersManagement = () => {
             type="text"
             id="newWorkerName"
             value={newWorkerName}
-            onChange={handleInputWorkerID} // כנראה שלא צריך כי יש כפתור
+            onChange={handleInputWorkerID} 
             placeholder="ת.ז:"
             style={{ marginBottom: '5px' }}
           />
