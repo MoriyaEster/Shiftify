@@ -1,4 +1,10 @@
-const base_url = "http://localhost:8000/api/";
+let base_url;
+
+if (import.meta.env.VITE_BASE_LINE_URL) {
+    base_url = import.meta.env.VITE_BASE_LINE_URL;
+} else {
+    base_url = "http://localhost:8000/api/";
+}
 
 export const url_register = base_url + "register/";
 export const url_login = base_url + "login/";

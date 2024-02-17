@@ -1,0 +1,22 @@
+version: "3"
+services:
+
+  frontend:
+    build: frontend/
+    container_name: frontend
+    restart: always
+    depends_on:
+      - backend
+    # environment:
+    #   - VITE_BASE_LINE_URL=http://backend:8000/api/
+    links:
+      - backend
+    ports:
+      - "5173:5173"
+    
+  backend:
+    build: backend/shiftify/
+    container_name: backend
+    restart: always
+    ports:
+      - "8000:8000"

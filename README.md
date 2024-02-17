@@ -1,15 +1,5 @@
 
 ## SETUP
-### Frontend
-* `sudo apt-get update -y`
-* `apt-get install -y locales`
-* `sudo apt-get install curl -y`
-* `curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - &&\ 
-sudo apt-get install -y nodejs`
-* `cd frontend`
-* `npm i`
-* `npm run dev -o`
-
-### Backend
-* `cd backend`
-* `sudo apt-get install python3`
+* `docker-compose up` - takes about 15 minutes!
+* then you can shut it down with `docker-compose stop`
+* and start it again with `docker-compose start`
