@@ -155,7 +155,7 @@ if (formattedEvents.length > 0) {
         color="primary"
         variant="contained"
         onClick={handleSendMail}
-      > שתף עם המייל (gmail)</Button>
+      > שתף עם המייל </Button>
       <Button
         color="primary"
         variant="contained"

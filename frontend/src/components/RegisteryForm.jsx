@@ -104,7 +104,7 @@ export const RegisteryForm = () => {
     <>
       <div dir="rtl">
         <Link to="/">
-          <img className="img-backbutton" src="/src/photos/backbutton.jpg" alt="backbutton" />
+          <img className="img-backbutton" src="/src/photos/backbutton.png" alt="backbutton" />
         </Link>
         <img className="img-logo" src="/src/photos/logo.png" alt="logo" />
       </div>   
