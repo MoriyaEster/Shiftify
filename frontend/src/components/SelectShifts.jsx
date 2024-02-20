@@ -8,9 +8,11 @@ import heLocale from '@fullcalendar/core/locales/he';
 import Button from '@mui/material/Button';
 import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
+import '/src/App.css';
 import UserConnectionChecker from './UserConnectionChecker';
 import axios from 'axios';
 import * as links from '/src/axios-handler.jsx';
+
 
 const buttonClass = 'shift-button';
 
@@ -152,14 +154,16 @@ export const SelectShifts = () => {
   
 
   return (
-    <div>
+    <div >
       <Header />
-      <UserConnectionChecker />
+      {/* <UserConnectionChecker /> */}
+      <div class = "cmp-text">
       <h1>בחירת משמרות</h1>
       <p>לחץ על תאריך רצוי ובחר זמינות עבור </p>
       <p> E-ערב , N-צהריים, M-בוקר </p>
       <p>(לחיצה על כפתור תוסיף משמרת ולחיצה נוספת תוריד משמרת)</p>
       <h4>{WorkPlace} :מקום העבודה הנבחר </h4>
+      </div>
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -182,7 +186,7 @@ export const SelectShifts = () => {
           const clickedDate = changeDateFormat(date.toLocaleDateString('he-IL').replace(/\./g, '-'));
           const today = new Date().toISOString().split('T')[0];
           return (
-            <div>
+            <div >
               {(selectedDate === clickedDate) && (clickedDate >= today) && (
                 <>
                   <button onClick={() => handleShiftSelection('morning')} className={`${buttonClass}`}>M</button>

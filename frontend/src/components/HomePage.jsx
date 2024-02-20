@@ -105,7 +105,7 @@ export const HomePage = () => {
   return (
     <div dir="rtl">
       <Header />
-      <h1>שלום {state.userName} </h1>
+      <h1 class="welcome-heading">שלום{state.userName} </h1>
       <div>
         <h3>בחר מקום עבודה:</h3>
         <Dropdown options={options} onSelect={handleOptionSelect} />

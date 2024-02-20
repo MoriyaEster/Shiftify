@@ -14,7 +14,7 @@
 }
 
 a {
-  font-weight: 500;
+  font-weight:500;
   color: #646cff;
   text-decoration: inherit;
 }
@@ -31,9 +31,10 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 2.2em;
   line-height: 1.1;
 }
+
 
 button {
   border-radius: 8px;
@@ -66,3 +67,54 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.container {
+  width: 70%;
+  margin: auto;
+  text-align: right; 
+}
+
+
+.profile-button {
+  position: absolute;
+  top: 20px;
+  right: 20px; 
+}
+
+
+
+body {
+  background-color:#89BCD9;
+}
+
+h1 {
+  margin: 30px;
+  font-family: 'Lobster', cursive;
+  text-shadow:3px 0 #232931;
+  font-size: 4rem;
+  color: bla;
+}
+
+p {
+  font-size: 2rem;
+  color: black;
+  font-family: 'Indie Flower', cursive;
+}
+
+img {
+  width: 80%;
+}
+
+footer {
+  margin-top: 5%;
+  color: #EEEEEE;
+  text-align: center;
+  font-family: 'Indie Flower', cursive;
+}
+
+.cmp-text {
+  color: black;
+}
+
+
+

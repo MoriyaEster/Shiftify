@@ -15,11 +15,11 @@ export const Header = () => {
     <>
       <div className="img-container" dir="rtl">
         <Link to="/HomePage">
-          <img className="img-backbutton" src="src/photos/backbutton.jpg" alt="backbutton" />
+          <img className="img-backbutton" src="src/photos/backbutton.png" alt="backbutton" />
         </Link>
         <img className="img-logo" src="src/photos/logo.png" alt="logo" />
         <Link to="/Profile">
-          <img className="img-profile" src="src/photos/profile.jpg" alt="profile" />
+          <img className="img-profile" src="src/photos/profile.png" alt="profile" />
         </Link>
         <Link to="/">
           <Button
