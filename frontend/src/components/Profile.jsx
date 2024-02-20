@@ -51,7 +51,7 @@ export const Profile = () => {
         <EditEmployee field="אימייל" show={showEmailModal} onClose={() => setShowEmailModal(false)} onEdit={(value) => {handleEditField({'user_id':handleUserId(), 'email': value}); handleEmailChoosen(value)}} />
       </div>
       <div>
-        <h2>סיסמא: ##########</h2>
+        <h2>סיסמא: ******</h2>
         <EditEmployee field="סיסמא" show={showPasswordModal} onClose={() => setShowPasswordModal(false)} onEdit={(value) => {handleEditField({'user_id':handleUserId(), 'password': value}); handlePassWordChoosen(value)}} />
       </div>
     </div>
