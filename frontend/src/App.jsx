@@ -11,8 +11,17 @@ import { WorkHoursManagement } from './components/WorkHoursManagement';
 import { ShiftManagement } from './components/ShiftManagement';
 import { ApprovedShift } from './components/ApprovedShift';
 import { UserProvider } from './UserContext';
+import { createClient } from '@supabase/supabase-js';
+import { SessionContextProvider } from '@supabase/auth-helpers-react';
 
 import { createBrowserRouter,BrowserRouter as Router, Routes, Route, BrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
+
+
+const supabase = createClient(
+  "https://zrlktsabdcwchgdxkywd.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpybGt0c2FiZGN3Y2hnZHhreXdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg1MTEyNzYsImV4cCI6MjAyNDA4NzI3Nn0.hF9L12hTmqhWhDGTLlCD43SsEjXt8Xs7GmsypqnRv7E" 
+);
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -36,7 +45,9 @@ const router = createBrowserRouter(
 function App() {
   return (
     <UserProvider>
+      <SessionContextProvider supabaseClient={supabase}>
     <RouterProvider router={router} />
+    </SessionContextProvider>
     </UserProvider>
   );
 }

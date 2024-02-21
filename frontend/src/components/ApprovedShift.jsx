@@ -12,6 +12,7 @@ import * as links from '/src/axios-handler.jsx';
 import Button from '@mui/material/Button';
 import emailjs from 'emailjs-com';
 import { ModelPopUp } from './ModelPopUp';
+import { useSession, useSupabaseClient, useSessionContext } from '@supabase/auth-helpers-react';
 
 export const ApprovedShift = () => {
   // save userID
@@ -137,13 +138,62 @@ if (formattedEvents.length > 0) {
     console.log("Sending email to:", userEmail);
   };
 
-  const handleGoogleCalendar = () => {
+  const session = useSession(); // tokens, when session exists we have a user
+  const supabase = useSupabaseClient(); // talk to supabase!
+  const { isLoading } = useSessionContext();
+  
+  if(isLoading) {
+    return <></>
+  }
+
+  const handleGoogleCalendar = async () => {
     if (userEmail.endsWith('@gmail.com')) {
-      console.log("Connecting events to Google Calendar");
+      const googleCalendarEvents = events.map((event) => ({
+        summary: event.title,
+        start:  {
+          'dateTime': event.start.toISOString(), // Date.toISOString() ->
+          'timeZone': Intl.DateTimeFormat().resolvedOptions().timeZone // America/Los_Angeles
+        },
+        end:  {
+          'dateTime': event.end.toISOString(), // Date.toISOString() ->
+          'timeZone': Intl.DateTimeFormat().resolvedOptions().timeZone // America/Los_Angeles
+        },
+        description: `Type: ${event.type}\nWorkplace: ${event.workPlace}\nUserID: ${event.userID}`,
+      }));
+  
+      try {
+        await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
+        method: "POST",
+        headers: {
+        'Authorization':'Bearer ' + session.provider_token // Access token for google
+      },
+      body: JSON.stringify(googleCalendarEvents)
+      }).then((data) => {
+        return data.json();
+      }).then((data) => {
+        console.log(data);
+        alert("Event created, check your Google Calendar!");
+      });
+      } catch (error) {
+        console.error('Error adding events to Google Calendar:', error);
+      }
     } else {
       console.log("User does not have a Gmail address");
     }
   };
+
+  async function googleSignIn() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        scopes: 'https://www.googleapis.com/auth/calendar'
+      }
+    });
+    if(error) {
+      alert("Error logging in to Google provider with Supabase");
+      console.log(error);
+    }
+  }
 
   return (
     <div>
@@ -161,6 +211,11 @@ if (formattedEvents.length > 0) {
         variant="contained"
         onClick={handleGoogleCalendar}
       > שתף עם יומן גוגל</Button>
+      {session ?
+      <></> 
+      : 
+      <button onClick={() => googleSignIn()}>Sign In With Google</button>
+      }
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView={"timeGridWeek"}
