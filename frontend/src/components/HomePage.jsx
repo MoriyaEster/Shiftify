@@ -32,7 +32,7 @@ export const HomePage = () => {
     return (
       <select onChange={(e) => onSelect(e.target.value)} value={state.work_place_value}>
         <option value="" disabled>
-          בחר מקום עבודה
+        ----------
         </option>
         {options.map((option) => (
           <option key={option.id} value={option.value}>
