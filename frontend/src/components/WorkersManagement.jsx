@@ -159,7 +159,7 @@ export const WorkersManagement = () => {
             value={newWorkerID}
             onChange={handleInputWorkerID} 
             placeholder="ת.ז:"
-            style={{ marginBottom: '5px' }}
+            style={{ marginBottom: '5px' , color:'black'}}
           />
         </div>
 
