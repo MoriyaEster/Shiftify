@@ -17,11 +17,11 @@ import { useSession, useSupabaseClient, useSessionContext } from '@supabase/auth
 export const ApprovedShift = () => {
   // save userID
   const { handleUserId, handleWorkPlace, handleUserEmail, handleUserName } = useUser();
-  const [userID, setUserID] = useState(handleUserId());
-  const [WorkPlace, setWorkPlace] = useState(handleWorkPlace());
-  const [userEmail, setUserEmail] = useState(handleUserEmail());
-  const [userName, setUserName] = useState(handleUserName());
-  const [events, setEvents] = useState([]);
+  const [userID, setUserID] = useState("");
+  const [WorkPlace, setWorkPlace] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userName, setUserName] = useState("");
+  const [events, setEvents] = useState([]); 
 
   //popup
   const [showModal, setShowModal] = useState(false);
@@ -44,8 +44,16 @@ export const ApprovedShift = () => {
   }
 
   useEffect(() => {
+    const fetchData = async () => {
+      setUserID(handleUserId());
+      setUserEmail(handleUserEmail());
+      setUserName(handleUserName());
+      setWorkPlace(handleWorkPlace());
+    };
+    fetchData();
     const fetchUserEvents = async () => {
       try {
+        if(userID != null){
         const response = await axios.get(links.url_approved_shifts + `?userID=${userID}&WorkPlace=${WorkPlace}`);
         console.log("response:", response);
         if (response.status === 200) {
@@ -53,7 +61,7 @@ export const ApprovedShift = () => {
           handeljson(response.data.docs);
         } else {
           console.error(`Unexpected status code: ${response.status}`);
-        }
+        }}
       } catch (error) {
         console.error('Error fetching user events:', error);
       }
@@ -145,6 +153,11 @@ if (formattedEvents.length > 0) {
   if(isLoading) {
     return <></>
   }
+  
+  // useEffect(() => {
+  //   console.log('session:', session);
+  //   console.log('supabase:', supabase);
+  // }, [session, supabase]);
 
   const handleGoogleCalendar = async () => {
     if (userEmail.endsWith('@gmail.com')) {

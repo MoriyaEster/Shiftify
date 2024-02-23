@@ -13,7 +13,6 @@ import { ApprovedShift } from './components/ApprovedShift';
 import { UserProvider } from './UserContext';
 import { createClient } from '@supabase/supabase-js';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
-
 import { createBrowserRouter,BrowserRouter as Router, Routes, Route, BrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
 
 

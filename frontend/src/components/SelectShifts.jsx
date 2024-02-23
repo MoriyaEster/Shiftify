@@ -157,7 +157,7 @@ export const SelectShifts = () => {
     <div >
       <Header />
       {/* <UserConnectionChecker /> */}
-      <div class = "cmp-text">
+      <div className = "cmp-text">
       <h1>בחירת משמרות</h1>
       <p>לחץ על תאריך רצוי ובחר זמינות עבור </p>
       <p> E-ערב , N-צהריים, M-בוקר </p>

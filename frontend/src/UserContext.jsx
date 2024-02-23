@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect  } from 'react';
 
 // Create the context
 const UserContext = createContext();
@@ -33,8 +33,27 @@ export const UserProvider = ({ children }) => {
     });
   };
 
+   // Load user information from sessionStorage on component mount
+   useEffect(() => {
+    const savedUser = sessionStorage.getItem('user');
+    console.log("get User: ",savedUser);
+    if (savedUser != null) {
+      setUser(JSON.parse(savedUser));
+      console.log("user: ",user);
+    }
+  }, []);
+
+  //save user if it changed
+  useEffect(() => {
+    if (user.user_id != null) {
+    sessionStorage.setItem('user', JSON.stringify(user));
+    console.log("put user: ",sessionStorage.getItem('user'));
+    }
+  }, [user]);
+
   // Function to handle logout
   const handleLogout = () => {
+    sessionStorage.removeItem('user');
     setUser({
       user_id: null,
       user_type: null,
@@ -49,31 +68,79 @@ export const UserProvider = ({ children }) => {
   };
 
   // Function to get user_id
-  const handleUserId = () => user.user_id;
+  const handleUserId = () => {
+    if (user.user_id == null) {
+      const savedUser = sessionStorage.getItem('user');
+      if(savedUser != null)
+      return savedUser.user_id;
+    }
+    return user.user_id;}
 
-  const handlpassword = () => user.password;
+  const handlpassword = () => {
+    if (user.password == null) {
+      const savedUser = sessionStorage.getItem('user');
+      if(savedUser != null)
+      return savedUser.password;
+    }
+    return user.password;};
 
-  const handleUserType = () => user.user_type;
+  const handleUserType = () => {
+    if (user.user_type == null) {
+      const savedUser = sessionStorage.getItem('user');
+      if(savedUser != null)
+      return savedUser.user_type;
+    }
+    return user.user_type;};
 
-  const handleUserName = () => user.user_name;
+  const handleUserName = () => {
+    if (user.user_name == null) {
+      const savedUser = sessionStorage.getItem('user');
+      if(savedUser != null)
+      return savedUser.user_name;
+    }
+    return user.user_name;};
 
-  const handleUserPhoneNumber = () => user.phone_number;
+  const handleUserPhoneNumber = () => {
+    if (user.phone_number == null) {
+      const savedUser = sessionStorage.getItem('user');
+      if(savedUser != null)
+      return savedUser.phone_number;
+    }
+    return user.phone_number;};
 
-  const handleUserEmail = () => user.email;
+  const handleUserEmail = () => {
+    if (user.email == null) {
+      const savedUser = sessionStorage.getItem('user');
+      if(savedUser != null)
+      return savedUser.email;
+    }
+    return user.email;};
 
   // Function to check if the user is connected
-  const handleUserConnection = () => user.connected;
+  const handleUserConnection = () => {
+    if (user.connected == null) {
+      const savedUser = sessionStorage.getItem('user');
+      if(savedUser != null)
+      return savedUser.connected;
+    }
+    return user.connected;};
 
-  const handleWorkPlace = () => user.work_place;
+  const handleWorkPlace = () => {
+    if (user.work_place == null) {
+      const savedUser = sessionStorage.getItem('user');
+      if(savedUser != null)
+      return savedUser.work_place;
+    }
+    return user.work_place;};
 
   //const handleWorkPlaces = () => user.work_places;
   const handleWorkPlaces = () => {
-    // const jsonData = {
-    //   "workPlaces": ["Workplace 1", "Workplace 2", "Workplace 3"],
-    // };
-    // console.log("jsonData", jsonData);
-    return user.work_places;  // Return just the array
-  };
+    if (user.work_places == null) {
+      const savedUser = sessionStorage.getItem('user');
+      if(savedUser != null)
+      return savedUser.work_places;
+    }
+    return user.work_places;};
 
   const handleWorkPlaceChoosen = (work_place) => {
     setUser((prevUser) => ({

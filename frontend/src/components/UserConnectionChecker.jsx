@@ -7,13 +7,15 @@ export const UserConnectionChecker = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const savedUser = sessionStorage.getItem('user');
+        console.log("savedUser",savedUser);
+        if (savedUser == null) {
         if (handleUserConnection() === false) {
             // Redirect to /Registery
             navigate('/');
-        }
+        }}
     }, [handleUserConnection, navigate]);
 
-    // You can render something here if needed, or just return null
     return null;
 };
 

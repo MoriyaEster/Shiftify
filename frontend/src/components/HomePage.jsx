@@ -5,34 +5,39 @@ import TextField from '@mui/material/TextField';
 import Entry from './Entry';
 import { Header } from './Header';
 import { useUser } from '/src/UserContext.jsx';
+import UserConnectionChecker from './UserConnectionChecker';
 
 export const HomePage = () => {
-  const navigate = useNavigate();
 
   const { handleUserConnection, handleUserType, handleUserId, handleWorkPlaceChoosen, handleUserName, handleWorkPlaces } = useUser();
-
-  useEffect(() => {
-    if (handleUserConnection() === false) {
-      navigate('/');
-    }
-  }, [navigate]);
 
   const [state, setState] = useState({
     step: 0,
     work_place_value: "",
-    userType: handleUserType(),
-    userID: handleUserId(),
-    userName: handleUserName(),
-    workPlaces: handleWorkPlaces()
+    userType: "",
+    userID: "",
+    userName: "",
+    workPlaces: []
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const userType = handleUserType();
+      const userID = handleUserId();
+      const userName = handleUserName();
+      const workPlaces = handleWorkPlaces();
 
+      setState((prevState) => ({ ...prevState, userType, userID, userName, workPlaces }));
+    };
+
+    fetchData();
+  }, [state.userID]); 
 
   const Dropdown = ({ options, onSelect }) => {
     return (
       <select onChange={(e) => onSelect(e.target.value)} value={state.work_place_value}>
         <option value="" disabled>
-        ----------
+                   
         </option>
         {options.map((option) => (
           <option key={option.id} value={option.value}>
@@ -105,7 +110,8 @@ export const HomePage = () => {
   return (
     <div dir="rtl">
       <Header />
-      <h1 class="welcome-heading">שלום {state.userName} </h1>
+      <UserConnectionChecker />
+      <h1 className="welcome-heading">שלום {state.userName} </h1>
       <div>
         <h3>בחר מקום עבודה:</h3>
         <Dropdown options={options} onSelect={handleOptionSelect} />
