@@ -29,15 +29,19 @@ export const WorkHoursManagement = () => {
 
 
   const [data, setData] = useState(null);
+  const [data1, setData1] = useState(null);
   const [error, setError] = useState(null);
+  const [error1, setError1] = useState(null);
 
   let workerslist
+  const [workers, setWorkers] = useState([]);
 
   useEffect(() => {
       const fetchData = async () => {
           try {
               const response = await axios.get(links.url_workers_management+`?userID=${userID}&WorkPlace=${WorkPlace}`); 
               console.log(response.data)
+              setWorkers(response.data);
           } catch (error) {
               setError(error);
           }
@@ -65,21 +69,12 @@ export const WorkHoursManagement = () => {
 
   // State to track the selected value of the dropdown
   const [selectedWorker, setSelectedWorker] = useState('');
-  const [newWorkerName, setNewWorkerID] = useState('');
-
-  
-
-  // Dummy worker data for the dropdown options
-  const workers = [
-    'Worker 1',
-    'Worker 2',
-    'Worker 3',
-    // Add more workers as needed
-  ];
 
   // Event handler for dropdown value change
   const handleWorkerChange = (event) => {
     setSelectedWorker(event.target.value);
+    console.log("on change:", event.target.value )
+    setUserID(event.target.value)
   };
 
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -93,20 +88,19 @@ export const WorkHoursManagement = () => {
     try {
       console.log(parseInt(selectedDate.$y, 10));
       console.log(parseInt(selectedDate.$M, 10)+1);
-      const response = await axios.get(links.url_work_hours+`?userid=${userID}&work_place=${WorkPlace}&month=${parseInt(selectedDate.$M, 10)+1}&year=${parseInt(selectedDate.$y, 10)}`)
-      .then(async function(response) {
-        console.log("response.data", response.data);
-        // Handle successful response if needed
-      })
-      .catch(async function(error) {
-        // Handle error
-        console.log("error", error);
-        // Optionally, provide user feedback or take specific actions based on the error
-      });
-      
-      setData(response.data);
-    } catch (error) {
-      setError(error);
+      const response = await axios.get(links.url_work_hours+`?userid=${userID}&work_place=${WorkPlace}&month=${parseInt(selectedDate.$M, 10)+1}&year=${parseInt(selectedDate.$y, 10)}`);
+      console.log("response", response);
+
+      if (response && response.data) {
+          console.log("response.data", response.data);
+          setData1(response.data);
+          setError1(null);
+      } else {
+          throw new Error("Invalid response or missing data");
+      }
+    } catch (error1) {
+        console.error("Error fetching data:", error1);
+        setError1(error1);
     }
   };
 
@@ -122,14 +116,14 @@ export const WorkHoursManagement = () => {
                   id="workerSelect"
                   value={selectedWorker}
                   onChange={handleWorkerChange}
-                  style={{ marginBottom: '5px' ,color:'black'}}
+                  style={{ marginBottom: '5px' , color:'black'}}
                 >
                   <option value="">עובדים:</option>
-                  {workers.map((worker, index) => (
-                    <option key={index} value={worker}>
-                      {worker}
-                    </option>
-                  ))}
+                  {workers.map(worker => (
+                  <option key={worker.username} value={worker.username}>
+                    {worker.name}
+                  </option>
+                ))}
                 </select>
               </div>
             </>
@@ -139,7 +133,7 @@ export const WorkHoursManagement = () => {
           // need to send error
           break;
       }
-
+  
   return (
     <div>
       <UserConnectionChecker />
@@ -167,6 +161,25 @@ export const WorkHoursManagement = () => {
             style={{ marginBottom: '60px' }}
             >הצג דוח
           </Button>
+          {error1 && <div>Error: {error1.message}</div>}
+          {data1 && data1.length > 0 && (
+            <table>
+                <thead>
+                    <tr>
+                        <th style={{ marginLeft: '10px' }}>תאריך</th>
+                        <th style={{ marginRight: '10px' }}>שניות</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {data1.map((item, index) => (
+                        <tr key={index}>
+                            <td>{item.date}</td>
+                            <td>{item.time_worked / 100}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

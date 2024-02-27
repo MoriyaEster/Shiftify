@@ -68,8 +68,6 @@ export const WorkersManagement = () => {
   const [status, setStatus] = useState(null);
   const [contentPOPUP, setContentPOPUP] = useState(null);
 
-  // Dummy worker data for the dropdown options, after the backend delete it
-
   // Event handler for dropdown value change
   const handleWorkerChange = (event) => {
     setSelectedWorker(event.target.value);
@@ -114,7 +112,6 @@ export const WorkersManagement = () => {
       console.error("Error adding worker:", error);
     }
   };
-
 
   return (
     <div>
