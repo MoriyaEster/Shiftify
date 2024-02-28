@@ -224,11 +224,11 @@ if (formattedEvents.length > 0) {
         variant="contained"
         onClick={handleGoogleCalendar}
       > שתף עם יומן גוגל</Button>
-      {session ?
+      {/* {session ?
       <></> 
       : 
       <button onClick={() => googleSignIn()}>Sign In With Google</button>
-      }
+      } */}
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView={"timeGridWeek"}
