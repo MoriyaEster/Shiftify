@@ -219,11 +219,11 @@ if (formattedEvents.length > 0) {
         variant="contained"
         onClick={handleSendMail}
       > שתף עם המייל </Button>
-      <Button
+      {/* <Button
         color="primary"
         variant="contained"
         onClick={handleGoogleCalendar}
-      > שתף עם יומן גוגל</Button>
+      > שתף עם יומן גוגל</Button> */}
       {/* {session ?
       <></> 
       : 
