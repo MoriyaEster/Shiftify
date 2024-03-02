@@ -1,5 +1,7 @@
 FROM ubuntu:latest
 
+RUN mkdir test
+
 RUN apt update && apt install sudo -y
 
 RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1000 admin 

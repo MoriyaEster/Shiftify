@@ -95,23 +95,36 @@ const handeljsonevents = (jsondata) => {
     }, {});
 
     // Map each shift type and set it into state
-    Object.keys(groupedData).forEach((shiftType) => {
-        const formattedEmployees = groupedData[shiftType].map((employeeName, index) => ({
+Object.keys(groupedData).forEach((shiftType) => {
+    // Create a Set to keep track of unique employee names
+    const uniqueEmployeeNames = new Set();
+
+    // Filter out duplicate employee names and format the employees
+    const formattedEmployees = groupedData[shiftType]
+        .filter((employeeName) => {
+            if (!uniqueEmployeeNames.has(employeeName)) {
+                uniqueEmployeeNames.add(employeeName);
+                return true;
+            }
+            return false;
+        })
+        .map((employeeName, index) => ({
             id: index + 1,
             name: employeeName,
         }));
 
-        // Set the employees into the corresponding state
-        if (shiftType === "morning") {
-            setEmployeesM(formattedEmployees);
-        } else if (shiftType === "noon") {
-            setEmployeesN(formattedEmployees);
-        } else if (shiftType === "evening") {
-            setEmployeesE(formattedEmployees);
-        }
+    // Set the unique employees into the corresponding state
+    if (shiftType === "morning") {
+        setEmployeesM(formattedEmployees);
+    } else if (shiftType === "noon") {
+        setEmployeesN(formattedEmployees);
+    } else if (shiftType === "evening") {
+        setEmployeesE(formattedEmployees);
+    }
 
-        console.log(`${shiftType.charAt(0).toUpperCase() + shiftType.slice(1)} employees from json: `, formattedEmployees);
-    });
+    console.log(`${shiftType.charAt(0).toUpperCase() + shiftType.slice(1)} employees from json: `, formattedEmployees);
+});
+
     console.log("Morning employees from json: ", employeesM);
     console.log("Noon employees from json: ", employeesN);
     console.log("Evening employees from json: ", employeesE);
